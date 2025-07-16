@@ -1,0 +1,178 @@
+{
+  "project": "stage_1_1",
+  "month": "Nov",
+  "cover": [
+    "cover/11_E2B.png"
+  ],
+  "title": [
+    "title/10_E2G.png",
+    "title/11_E2B.png",
+    "title/9_E2Y.png"
+  ],
+  "subtitle": [
+    {
+      "pageNum": 1,
+      "sentenceNum": 1,
+      "text": "Shape World"
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 1,
+      "text": "Look at the triangles."
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 1,
+      "text": "They're mountains."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 1,
+      "text": "No, no!"
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 2,
+      "text": "It's a fox."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 3,
+      "text": "How many?"
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 4,
+      "text": "One fox."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 1,
+      "text": "Look at the circle."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 2,
+      "text": "It's the moon."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 1,
+      "text": "No, no!"
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 2,
+      "text": "It's a bear."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 3,
+      "text": "How many?"
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 4,
+      "text": "Two bears."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 1,
+      "text": "Look at the square."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 2,
+      "text": "It's a window."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 1,
+      "text": "No, no!"
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 2,
+      "text": "It's a cracker."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 3,
+      "text": "How many?"
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 4,
+      "text": "Three yummy crackers."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 1,
+      "text": "Look at the rectangles."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 2,
+      "text": "They're blocks."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 1,
+      "text": "No, no!"
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 2,
+      "text": "They're elephant's legs."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 3,
+      "text": "How many?"
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 4,
+      "text": "Four legs."
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 1,
+      "text": "Shapes are everywhere."
+    }
+  ],
+  "thumbnail": [
+    {
+      "file": "thumbnail/E2B_conversation.png",
+      "youtube": "https://youtu.be/erM82OK3yes"
+    },
+    {
+      "file": "thumbnail/E2B_motion.png",
+      "youtube": "https://youtu.be/Kb_4QkD0U4w"
+    },
+    {
+      "file": "thumbnail/E2B_phonics_story.png",
+      "youtube": "https://youtu.be/LoJzjQCcyX8"
+    },
+    {
+      "file": "thumbnail/E2B_phonics_chant.png",
+      "youtube": "https://youtu.be/LoJzjQCcyX8"
+    },
+    {
+      "file": "thumbnail/E2B_situation_chant.png",
+      "youtube": "https://youtu.be/1WF0d-pylfM"
+    },
+    {
+      "file": "thumbnail/E2B_full_story.png",
+      "youtube": "https://youtu.be/QEktEgqSBJQ"
+    },
+    {
+      "file": "thumbnail/E2B_story_song.png",
+      "youtube": "https://youtu.be/QEktEgqSBJQ"
+    },
+    {
+      "file": "thumbnail/E2B_storytelling.png",
+      "youtube": "https://youtu.be/14tdwXlSsNs"
+    }
+  ]
+}

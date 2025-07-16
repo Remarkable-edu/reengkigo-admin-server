@@ -1,0 +1,206 @@
+{
+  "project": "juice",
+  "month": "Dec",
+  "cover": [
+    "cover/12_U2P.png"
+  ],
+  "title": [
+    "title/11_U2B.png",
+    "title/12_U2P.png",
+    "title/1_U1R.png"
+  ],
+  "subtitle": [
+    {
+      "pageNum": 1,
+      "sentenceNum": 1,
+      "text": "Welcome, Baby"
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 1,
+      "text": "Lily’s family is in joy."
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 1,
+      "text": "The baby is coming soon!"
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 1,
+      "text": "Lily wants to welcome the baby."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 1,
+      "text": "Sally comes to help."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 1,
+      "text": "There is an empty wall."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 1,
+      "text": "They need to buy balloons."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 1,
+      "text": "There are many balloons."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 1,
+      "text": "There is also candy and jelly!"
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 1,
+      "text": "They have candy and jelly."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 2,
+      "text": "But just one balloon!"
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 1,
+      "text": "Lily wants to cry."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 1,
+      "text": "They call Quokkas for help."
+    },
+    {
+      "pageNum": 13,
+      "sentenceNum": 1,
+      "text": "They get a reply."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 1,
+      "text": "kitty"
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 2,
+      "text": "apply"
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 1,
+      "text": "sticky"
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 2,
+      "text": "dry"
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 1,
+      "text": "1. Draw a kitty."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 2,
+      "text": "2. Apply the paint to it."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 1,
+      "text": "3. Fix it with sticky tape."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 2,
+      "text": "4. Dry and spy on it."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 1,
+      "text": "The kitty comes to life."
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 1,
+      "text": "Lily and Sally spy on it."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 1,
+      "text": "Lily’s daddy and mommy are happy."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 1,
+      "text": "Lily has a shy smile."
+    }
+  ],
+  "thumbnail": [
+    {
+      "file": "thumbnail/U2P_Chant_1.png",
+      "youtube": "https://youtu.be/rXu-0h-VY7s"
+    },
+    {
+      "file": "thumbnail/U2P_Chant_2.png",
+      "youtube": "https://youtu.be/Z8fOwChuA6o"
+    },
+    {
+      "file": "thumbnail/U2P_Chant_3.png",
+      "youtube": "https://youtu.be/sd_PuPiLKuc"
+    },
+    {
+      "file": "thumbnail/U2P_full_song.png",
+      "youtube": "https://youtu.be/dMUL77NZbO8"
+    },
+    {
+      "file": "thumbnail/U2P_full_story.png",
+      "youtube": "https://youtu.be/YM4Nummryrs"
+    },
+    {
+      "file": "thumbnail/U2P_Read_1.png",
+      "youtube": "https://youtu.be/Pcc1cejTkKw"
+    },
+    {
+      "file": "thumbnail/U2P_Read_2.png",
+      "youtube": "https://youtu.be/v0panzgN2NI"
+    },
+    {
+      "file": "thumbnail/U2P_Read_3.png",
+      "youtube": "https://youtu.be/6vlbY2KZLZs"
+    },
+    {
+      "file": "thumbnail/U2P_read_all.png",
+      "youtube": "https://youtu.be/pM4NF76lMz0"
+    },
+    {
+      "file": "thumbnail/U2P_Song_1.png",
+      "youtube": "https://youtu.be/Z3GH0gJpZi8"
+    },
+    {
+      "file": "thumbnail/U2P_Song_2.png",
+      "youtube": "https://youtu.be/BGluMqgCaTQ"
+    },
+    {
+      "file": "thumbnail/U2P_Song_3.png",
+      "youtube": "https://youtu.be/E9ZhpH3Jlac"
+    },
+    {
+      "file": "thumbnail/U2P_Story_1.png",
+      "youtube": "https://youtu.be/m0FA9gvG1Q0"
+    },
+    {
+      "file": "thumbnail/U2P_Story_2.png",
+      "youtube": "https://youtu.be/kZ3Ohrx47Uk"
+    },
+    {
+      "file": "thumbnail/U2P_Story_3.png",
+      "youtube": "https://youtu.be/G1KPA924erg"
+    }
+  ]
+}

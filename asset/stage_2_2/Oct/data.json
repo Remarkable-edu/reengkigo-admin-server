@@ -1,0 +1,443 @@
+{
+  "project": "stage_2_2",
+  "month": "Oct",
+  "cover": [
+    "cover/10_B8G.png"
+  ],
+  "title": [
+    "title/10_B8G.png",
+    "title/11_B8B.png",
+    "title/9_B8Y.png"
+  ],
+  "subtitle": [
+    {
+      "pageNum": 1,
+      "sentenceNum": 1,
+      "text": "The Rabbit and the Hare"
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 1,
+      "text": "Once upon a time, there were two brothers, Rabbit and Hare."
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 2,
+      "text": "\"I have a long tail,\" said Rabbit."
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 3,
+      "text": "\"I have a magic tail,\" said Hare."
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 1,
+      "text": "One day, Rabbit said, \"I'm going far away to play.\""
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 2,
+      "text": "\"Be careful, brother Rabbit,\" said Hare."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 1,
+      "text": "Rabbit came to a cave."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 1,
+      "text": "Someone was sleeping inside."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 2,
+      "text": "\"Wake up!\" said Rabbit, but no one answered."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 3,
+      "text": "\"I'll make you wake up!\" said Rabbit, and he shot his bow and arrow."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 1,
+      "text": "A big bear came out of the cave."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 2,
+      "text": "\"Roar! who shot me in the nose!\" asked Bear."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 1,
+      "text": "\"I did! Ha, ha, ha!\" answered Rabbit."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 2,
+      "text": "\"Little bunny, I'm going to eat you!\" roared Bear."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 1,
+      "text": "Bear grabbed Rabbit."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 2,
+      "text": "\"Brother Hare, brother Harel Help me!\" cried Rabbit."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 3,
+      "text": "Hare appeared."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 4,
+      "text": "\"Bear, let him gol\" he yelled."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 5,
+      "text": "\"Nol I'm going to eat himl\" said Bear."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 6,
+      "text": "\"Then I'll grow bigger than you!\" yelled Hare."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 7,
+      "text": "So Hare grew bigger than Bear."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 1,
+      "text": "\"I'll leave your brother alone!\" said Bear, and he ran away."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 2,
+      "text": "\"Don't be bad, brother Rabbit,\" said Hare."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 3,
+      "text": "\"Sure, sure,\" said Rabbit."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 1,
+      "text": "The next day, Rabbit came to a cliff."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 2,
+      "text": "A hungry vulture saw Rabbit."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 3,
+      "text": "\"Ha, ha! Look at the little bunny!\" said Vulture."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 4,
+      "text": "\"Hey, little bunny!\" called Vulture."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 5,
+      "text": "\"I'm not a little bunny!\" yelled Rabbit."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 1,
+      "text": "\"You can't climb up here, little bunny!\" said Vulture."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 2,
+      "text": "\"Yes, I can!\" said Rabbit."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 3,
+      "text": "\"No, you can't!\" said Vulture."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 4,
+      "text": "\"I'll come up and get you!\" said Rabbit."
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 1,
+      "text": "\"Then come up and get me, little bunny!\" said Vulture."
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 2,
+      "text": "Rabbit climbed up the cliff."
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 3,
+      "text": "'Ha, ha, ha!' laughed Vulture."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 1,
+      "text": "Vulture was very hungry, so he grabbed Rabbit."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 1,
+      "text": "\"I'm going to eat you!\" he said."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 2,
+      "text": "\"Brother Hare, brother Harel Help me!\" cried Rabbit."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 1,
+      "text": "Hare appeared."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 2,
+      "text": "\"Vulture, let him go!\" he yelled."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 3,
+      "text": "\"No, I'm going to eat him!\" said Vulture."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 4,
+      "text": "\"Then I 'II teach you a lesson!\" yelled Hare."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 5,
+      "text": "Hare grabbed Vulture and beat him against the ground."
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 1,
+      "text": "'Ack, help me!\" cried Vulture, and he flew away."
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 2,
+      "text": "\"Thank you, brother Hare."
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 3,
+      "text": "You saved my life!'' said Rabbit."
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 4,
+      "text": "\"Oh, brother Rabbit! Don't be so bad!\" said Hare."
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 5,
+      "text": "\"Next time, I won't help you.\""
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 6,
+      "text": "\"Sure, sure,\" said Rabbit."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 1,
+      "text": "The next day, Rabbit saw three wolves."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 2,
+      "text": "Their tails were tied together."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 3,
+      "text": "They were playing a game."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 4,
+      "text": "\"May I play with you?\" asked Rabbit."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 5,
+      "text": "\"No, you can't!\" said the first wolf."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 6,
+      "text": "\"My tail is long and strong,\" said Rabbit."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 1,
+      "text": "The second wolf looked at him."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 1,
+      "text": "'Are you sure, brother Rabbit?\" said the wolf."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 2,
+      "text": "\"Sure!'' said Rabbit."
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 1,
+      "text": "So Rabbit joined in the game."
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 2,
+      "text": "He pulled and pulled."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 1,
+      "text": "\"Stop, Rabbitt! "
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 2,
+      "text": "You'll lose your tail!\" cried the third wolf."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 3,
+      "text": "\"No, I'm going to win!\" cried Rabbit."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 4,
+      "text": "The wolves pulled and pulled."
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 1,
+      "text": "Rabbit's tail ripped."
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 2,
+      "text": "\"Oh, no!\" cried the wolves."
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 3,
+      "text": "\"Where is my long tail?\" cried Rabbit."
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 4,
+      "text": "\"Brother Hare, brother Hare! Help me!\" "
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 5,
+      "text": "Help me!\" "
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 1,
+      "text": "The second wolf turned into Hare."
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 2,
+      "text": "\"What in the world?\" cried the other wolves."
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 3,
+      "text": "\"Brother Rabbit, I warned you,\" said Hare."
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 4,
+      "text": "\"I'm sorry, brother Hare,\" cried Rabbit."
+    },
+    {
+      "pageNum": 28,
+      "sentenceNum": 1,
+      "text": "But Hare loved his brother and felt sorry for him."
+    },
+    {
+      "pageNum": 28,
+      "sentenceNum": 2,
+      "text": "\"I'll make my tail short, too,\" said Hare ."
+    },
+    {
+      "pageNum": 28,
+      "sentenceNum": 3,
+      "text": "\"I like our short tails!\" said Rabbit."
+    },
+    {
+      "pageNum": 28,
+      "sentenceNum": 4,
+      "text": "\"You look great, little rabbits!\" said the wolves."
+    },
+    {
+      "pageNum": 28,
+      "sentenceNum": 5,
+      "text": "After that, they were happy together,\nand to this day, rabbits still have short tails."
+    }
+  ],
+  "thumbnail": [
+    {
+      "file": "thumbnail/B8G_education_reena.png",
+      "youtube": "https://youtu.be/Q5fnLSaEdUg"
+    },
+    {
+      "file": "thumbnail/B8G_musicvideo_mr.png",
+      "youtube": "https://youtu.be/UYyeu73Rq_g"
+    },
+    {
+      "file": "thumbnail/B8G_music_video.png",
+      "youtube": "https://youtu.be/-Q8K6B-2o8U"
+    },
+    {
+      "file": "thumbnail/B8G_hares_song.png",
+      "youtube": "https://youtu.be/anzKSZnqUVI"
+    },
+    {
+      "file": "thumbnail/B8G_rabbits_song.png",
+      "youtube": "https://youtu.be/dBNNIzXDvE4"
+    },
+    {
+      "file": "thumbnail/B8G_the_animals_song.png",
+      "youtube": "https://youtu.be/gxJ1yuX_flA"
+    },
+    {
+      "file": "thumbnail/B8G_story.png",
+      "youtube": "https://youtu.be/fdMRb7fMPOk"
+    },
+    {
+      "file": "thumbnail/B8G_ani.png",
+      "youtube": "https://youtu.be/Q5fnLSaEdUg"
+    }
+  ]
+}

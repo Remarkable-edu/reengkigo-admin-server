@@ -1,0 +1,349 @@
+{
+  "project": "stage_2_1",
+  "month": "Jun",
+  "cover": [
+    "cover/6_R5P.png"
+  ],
+  "title": [
+    "title/5_R5B.png",
+    "title/6_R5P.png",
+    "title/7_K6R.png"
+  ],
+  "subtitle": [
+    {
+      "pageNum": 1,
+      "sentenceNum": 1,
+      "text": "The Sphinx"
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 1,
+      "text": "Long ago, there was an old Pharaoh who was very sick."
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 2,
+      "text": "The Pharaoh had two sons, Ahtep and Tut."
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 3,
+      "text": "Ahtep was mean, but Tut was kind."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 1,
+      "text": "One day, their father said, \"Tut will be the next Pharaoh.\""
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 2,
+      "text": "\"Thank you, father,\" said Tut."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 3,
+      "text": "\"No! I want to be the Pharaoh!\" said Ahtep."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 1,
+      "text": "Tut loved his brother, so he said, \"Ahtep, we can both be the Pharaoh.\""
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 2,
+      "text": "\"No,\" said Ahtep, and turned away."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 3,
+      "text": "He was very jealous."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 1,
+      "text": "That night, in secret, Ahtep ordered his guards to kill his brother."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 2,
+      "text": "\"Put Tut in the cage with the hungry lion,\" Ahtep said with a mean smile."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 3,
+      "text": "\"No! Please!\" cried Tut."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 4,
+      "text": "But Ahtep walked away."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 5,
+      "text": "\"Goodbye, brother. Ha, ha, ha!\""
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 1,
+      "text": "However, the guard liked Tut, so they freed him after Ahtep left."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 2,
+      "text": "\"Shh!\" they said."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 3,
+      "text": "\"Tut, you're the real pharaoh,\" said one guard."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 4,
+      "text": "\"Hurry, run away!\" said the other."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 5,
+      "text": "Tut thanked them and quickly ran from the palace."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 1,
+      "text": "He rode a camel all the way to the Great Pyramids."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 2,
+      "text": "Finally, he said, \"I'm so tired,\" and lay down in the sand."
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 1,
+      "text": "Suddenly, the winds began to blow wildly."
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 2,
+      "text": "\"Whoosh...Grrr...ROAR...!\""
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 1,
+      "text": "\"Who's there?\" cried Tut."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 2,
+      "text": "\"I'am the Sphinx,\" said a face in the sand, \"and I will guard you.\""
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 3,
+      "text": "\"Me? Why?\" asked Tut."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 4,
+      "text": "\"You are the Pharaoh!\" cried the Sphinx."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 5,
+      "text": "\"Now dig me out of the sand.\""
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 1,
+      "text": "And so Tut began to dig."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 2,
+      "text": "Soon people saw him."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 3,
+      "text": "\"What are you doing?\" asked a woman."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 4,
+      "text": "\"I'm digging the Sphinx out of the sand,\" he said."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 1,
+      "text": "Tut told the people his story."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 2,
+      "text": "They believed he was the real Pharaoh, so they helped him."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 3,
+      "text": "Tut is the Pharaoh! the people told others."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 1,
+      "text": "Soon, the whole city was digging."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 2,
+      "text": "After a while, they had freed the Sphinx."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 1,
+      "text": "Not long after, Ahtep heard about his brother."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 2,
+      "text": "\"Tut is alive?\" cried Ahtep."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 3,
+      "text": "\"Not for long. Ha, ha, ha!\""
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 4,
+      "text": "\"Sir,\" said the guards, \"what should we do?\""
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 5,
+      "text": "\"Let's go see the Sphinx,\" he said."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 1,
+      "text": "Ahtep took his army to the Sphinx."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 2,
+      "text": "When Tut saw him, he was sad."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 3,
+      "text": "\"Ahtep, let's not fight,\" he said."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 4,
+      "text": "\"Come, my brother. Give me a hug,\" said Ahtep."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 1,
+      "text": "Tut walked closer, and then Ahtep smiled wickedly and raised \nhis knife to kill him."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 2,
+      "text": "\"No, Ahtep!\" cried Tut."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 1,
+      "text": "Suddenly, the Sphinx's face began to glow."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 2,
+      "text": "It moved, and then it roared."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 3,
+      "text": "\"Tut is the Pharaoh!\" it yelled."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 4,
+      "text": "Ahtep was shocked, but he still yelled, \"No! I want to be the Pharaoh!\""
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 1,
+      "text": "The Sphinx opened its mouth and grabbed Ahtep with its long tongue ..."
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 2,
+      "text": "SLURP!"
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 1,
+      "text": "And then swallowed him whole."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 2,
+      "text": "GULP!"
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 1,
+      "text": "Then the Sphinx spit out the Pharaoh's crown."
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 2,
+      "text": "\"Tut is the Pharaoh!\" roared the Sphinx, and Tut put on the crown."
+    },
+    {
+      "pageNum": 28,
+      "sentenceNum": 1,
+      "text": "All the people cheered, \"Long live the Pharaoh! Long live the Pharaoh!\""
+    },
+    {
+      "pageNum": 28,
+      "sentenceNum": 2,
+      "text": "Then the Sphinx smiled and turned back into a statue."
+    }
+  ],
+  "thumbnail": [
+    {
+      "file": "thumbnail/R5P_ani.png",
+      "youtube": "https://youtu.be/frnzKEj9zhU"
+    },
+    {
+      "file": "thumbnail/R5P_4_ul.png",
+      "youtube": "https://youtu.be/frnzKEj9zhU"
+    },
+    {
+      "file": "thumbnail/R5P_music_video.png",
+      "youtube": "https://youtu.be/FzNHrZ_YfMQ"
+    },
+    {
+      "file": "thumbnail/R5P_story.png",
+      "youtube": "https://youtu.be/frnzKEj9zhU"
+    },
+    {
+      "file": "thumbnail/R5P_ahteps_song.png",
+      "youtube": "https://youtu.be/zC8S3RiR_Cw"
+    },
+    {
+      "file": "thumbnail/R5P_ahteps_song.png",
+      "youtube": "https://youtu.be/l1HKsl7P_oU"
+    },
+    {
+      "file": "thumbnail/R5P_story.png",
+      "youtube": "https://youtu.be/4LXIiDsOG8E"
+    }
+  ]
+}

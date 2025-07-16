@@ -1,0 +1,328 @@
+{
+  "project": "stage_2_1",
+  "month": "May",
+  "cover": [
+    "cover/5_R5B.png"
+  ],
+  "title": [
+    "title/4_R5G.png",
+    "title/5_R5B.png",
+    "title/6_R5P.png"
+  ],
+  "subtitle": [
+    {
+      "pageNum": 1,
+      "sentenceNum": 1,
+      "text": "The Wise Judge"
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 1,
+      "text": "Not so very long ago, there was a nasty snake named Viper."
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 2,
+      "text": "One day, Viper got stuck under a rock."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 1,
+      "text": "After a while, the snake saw a boy walking by."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 2,
+      "text": "In his most sugary voice, Viper said, \"Little boy, please help me.\""
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 3,
+      "text": "\"What's wrong?\" asked the boy, whose name was Francesco."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 4,
+      "text": "\"I'm stuck under this rock,\" said Viper."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 1,
+      "text": "Now Francesco was afraid of the snake, but he didn't want it to die."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 2,
+      "text": "\"Will you bite me?\" he asked."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 3,
+      "text": "\"Of course not,\" said Viper."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 1,
+      "text": "Francesco lifted up the rock, and Viper slithered out."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 2,
+      "text": "\"There, you're free,\" said Francesco."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 3,
+      "text": "\"Ah, much better. And now, I'm going to eat you,\" said the snake."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 1,
+      "text": "\"What?\" asked Francesco."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 2,
+      "text": "\"That'sss right. I won't bite you, but I will eat you!\" he said, laughing."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 1,
+      "text": "\"But I helped you!\" said Francesco."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 2,
+      "text": "\"Yes,\" said Viper, \"but I love tasty children.\""
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 3,
+      "text": "Viper wrapped himself around the boy's legs."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 4,
+      "text": "\"No!\" cried Francesco."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 1,
+      "text": "Just as Viper was about to eat him, a wise owl flew over to them."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 2,
+      "text": "\"Whoo-whoo,\" she called."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 3,
+      "text": "\"Who's in trouble?\""
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 1,
+      "text": "Francesco said, \"Owl, I helped Viper, but now he's going to eat me!\""
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 2,
+      "text": "\"No, no,\" lied Viper."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 3,
+      "text": "\"This boy stepped on my tail.\""
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 1,
+      "text": "\"Hmm ... Viper, you poor snake,\" said Owl, but she winked at the boy."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 1,
+      "text": "By that time, other animals had gathered around."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 2,
+      "text": "They didn't like Viper at all."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 3,
+      "text": "\"You're the meanest snake in the woods,\" said Wolf."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 4,
+      "text": "\"You're nothing but trouble,\" screeched Bird."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 1,
+      "text": "\"You're no good!\" snorted Boar."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 2,
+      "text": "\"You're a sneaky snake!\" said Deer."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 1,
+      "text": "\"Friends,\" said Owl, \"let me be the judge.\""
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 2,
+      "text": "Everyone was quiet."
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 1,
+      "text": "\"Proceed,\" said Viper."
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 2,
+      "text": "\"Viper, what happened?\" asked Owl."
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 3,
+      "text": "\"I was ssstuck under this rock,\" said Viper."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 1,
+      "text": "\"Boar, can you lift the rock?\" asked Owl."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 2,
+      "text": "\"Of course,\" said Boar, and he did."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 3,
+      "text": "\"Viper, show me how you were stuck,\" said Owl."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 4,
+      "text": "Viper slithered under the rock."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 5,
+      "text": "\"Like thisss,\" said Viper."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 1,
+      "text": "\"Deer, stand on this side of the rock,\" said Owl."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 2,
+      "text": "\"Sure,\" said Deer, and she put two hooves on the rock."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 3,
+      "text": "\"Ugh,\" the snake groaned."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 1,
+      "text": "\"Wolf, stand on the other side,\" said Owl."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 2,
+      "text": "\"Of course,\" said Wolf, and he put two paws on the rock."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 3,
+      "text": "\"Are you stuck?\" Owl asked Viper."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 4,
+      "text": "\"Ugh ... yes!\" Viper groaned."
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 1,
+      "text": "The rock was pushed down tight, and Viper was stuck."
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 2,
+      "text": "\"Do you want to help him?\" Owl asked Francesco."
+    },
+    {
+      "pageNum": 27,
+      "sentenceNum": 1,
+      "text": "\"No!\" said Francesco."
+    },
+    {
+      "pageNum": 27,
+      "sentenceNum": 2,
+      "text": "\"Then let us leave the problem,\" said Owl."
+    },
+    {
+      "pageNum": 27,
+      "sentenceNum": 3,
+      "text": "So they left, and all the animals stepped on Viper's tail as they walked away."
+    },
+    {
+      "pageNum": 28,
+      "sentenceNum": 1,
+      "text": "\"Get back here!\" Viper hissed, but he couldn't do anything about it."
+    },
+    {
+      "pageNum": 28,
+      "sentenceNum": 2,
+      "text": "All the animals cheered for the wise Owl."
+    }
+  ],
+  "thumbnail": [
+    {
+      "file": "thumbnail/R5B_ani.png",
+      "youtube": "https://youtu.be/zXfZ8Tm97G0"
+    },
+    {
+      "file": "thumbnail/R5B_education_reena.png",
+      "youtube": "https://youtu.be/zXfZ8Tm97G0"
+    },
+    {
+      "file": "thumbnail/R5B_musicvideo_mr.png",
+      "youtube": "https://youtu.be/TimD83XSetg"
+    },
+    {
+      "file": "thumbnail/R5B_music_video.png",
+      "youtube": "https://youtu.be/3ldTTWFxtr0"
+    },
+    {
+      "file": "thumbnail/R5B_owls_song.png",
+      "youtube": "https://youtu.be/uofLWdrNCY4"
+    },
+    {
+      "file": "thumbnail/R5B_owls_song.png",
+      "youtube": "https://youtu.be/Oj3IoOVhRCU"
+    },
+    {
+      "file": "thumbnail/R5B_owls_song.png",
+      "youtube": "https://youtu.be/F8PeiYEvC6M"
+    },
+    {
+      "file": "thumbnail/R5B_story.png",
+      "youtube": "https://youtu.be/IyAwwq5uX8s"
+    }
+  ]
+}

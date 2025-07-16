@@ -1,0 +1,147 @@
+   Compiling reengkigo-admin-app v0.1.0 (/Users/gyujinkim/Desktop/reengkigo/server_test)
+warning: variable `original_filename` is assigned to, but never used
+  --> src/handlers/admin_head.rs:79:13
+   |
+79 |     let mut original_filename: Option<String> = None;
+   |             ^^^^^^^^^^^^^^^^^
+   |
+   = note: consider using `_original_filename` instead
+   = note: `#[warn(unused_variables)]` on by default
+
+warning: variable `curriculum` is assigned to, but never used
+  --> src/handlers/admin_head.rs:80:13
+   |
+80 |     let mut curriculum: Option<String> = None;
+   |             ^^^^^^^^^^
+   |
+   = note: consider using `_curriculum` instead
+
+warning: variable `month` is assigned to, but never used
+  --> src/handlers/admin_head.rs:81:13
+   |
+81 |     let mut month: Option<String> = None;
+   |             ^^^^^
+   |
+   = note: consider using `_month` instead
+
+warning: value assigned to `original_filename` is never read
+  --> src/handlers/admin_head.rs:92:13
+   |
+92 |             original_filename = Some(filename.clone());
+   |             ^^^^^^^^^^^^^^^^^
+   |
+   = help: maybe it is overwritten before being read?
+   = note: `#[warn(unused_assignments)]` on by default
+
+warning: value assigned to `curriculum` is never read
+   --> src/handlers/admin_head.rs:125:13
+    |
+125 |             curriculum = Some(text);
+    |             ^^^^^^^^^^
+    |
+    = help: maybe it is overwritten before being read?
+
+warning: value assigned to `month` is never read
+   --> src/handlers/admin_head.rs:128:13
+    |
+128 |             month = Some(text);
+    |             ^^^^^
+    |
+    = help: maybe it is overwritten before being read?
+
+warning: `reengkigo-admin-app` (lib) generated 6 warnings
+warning: associated function `require_any_role` is never used
+  --> src/middleware/auth.rs:95:18
+   |
+16 | impl AuthMiddleware {
+   | ------------------- associated function in this implementation
+...
+95 |     pub async fn require_any_role(
+   |                  ^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: `reengkigo-admin-app` (bin "reengkigo-admin-app") generated 7 warnings (6 duplicates)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.91s
+     Running `target/debug/reengkigo-admin-app`
+[2m2025-07-16T06:17:33.789355Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m65:[0m Loading application configuration...
+[2m2025-07-16T06:17:33.791422Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m76:[0m Configuration loaded successfully
+[2m2025-07-16T06:17:33.791486Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m77:[0m name: "reengkigo"
+[2m2025-07-16T06:17:33.791550Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m78:[0m Database: mongodb://localhost:27017
+[2m2025-07-16T06:17:33.791625Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::database[0m[2m:[0m [2msrc/services/database.rs[0m[2m:[0m[2m39:[0m Connecting to MongoDB: mongodb://localhost:27017
+[2m2025-07-16T06:17:33.801823Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::database[0m[2m:[0m [2msrc/services/database.rs[0m[2m:[0m[2m52:[0m MongoDB connection established successfully
+[2m2025-07-16T06:17:33.803842Z[0m [32m INFO[0m [2mreengkigo_admin_app[0m[2m:[0m [2msrc/main.rs[0m[2m:[0m[2m91:[0m Starting server on 0.0.0.0:3000
+[2m2025-07-16T06:18:34.107123Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m49:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:18:34.107213Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m50:[0m AdminUser can_access_admin: true
+[2m2025-07-16T06:18:34.107283Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m68:[0m require_admin_role: AdminUser found: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:18:34.107321Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m69:[0m require_admin_role: can_access_admin: true
+[2m2025-07-16T06:18:34.131379Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m49:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:18:34.131454Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m50:[0m AdminUser can_access_admin: true
+[2m2025-07-16T06:18:34.131503Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m68:[0m require_admin_role: AdminUser found: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:18:34.131523Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m69:[0m require_admin_role: can_access_admin: true
+[2m2025-07-16T06:18:34.163855Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::asset[0m[2m:[0m [2msrc/services/asset.rs[0m[2m:[0m[2m100:[0m Retrieved 72 assets
+[2m2025-07-16T06:18:55.249707Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m49:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:18:55.249892Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m50:[0m AdminUser can_access_admin: true
+[2m2025-07-16T06:18:55.249978Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m68:[0m require_admin_role: AdminUser found: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:18:55.250009Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m69:[0m require_admin_role: can_access_admin: true
+[2m2025-07-16T06:18:55.250208Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::admin_head[0m[2m:[0m [2msrc/handlers/admin_head.rs[0m[2m:[0m[2m76:[0m File upload request received
+[2m2025-07-16T06:18:55.252505Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::admin_head[0m[2m:[0m [2msrc/handlers/admin_head.rs[0m[2m:[0m[2m91:[0m Processing file: 1번.png (type: image/png, size: 114033 bytes)
+[2m2025-07-16T06:18:55.253348Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::admin_head[0m[2m:[0m [2msrc/handlers/admin_head.rs[0m[2m:[0m[2m118:[0m File saved to: asset/uploads/1752646735_1번.png
+[2m2025-07-16T06:18:56.862695Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m49:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:18:56.862894Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m50:[0m AdminUser can_access_admin: true
+[2m2025-07-16T06:18:56.862973Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m68:[0m require_admin_role: AdminUser found: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:18:56.863004Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m69:[0m require_admin_role: can_access_admin: true
+[2m2025-07-16T06:18:56.869378Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::asset[0m[2m:[0m [2msrc/services/asset.rs[0m[2m:[0m[2m406:[0m Replaced asset/stage_3/Mar/cover/3_L9Y.png with uploaded file, keeping original filename
+[2m2025-07-16T06:18:56.869456Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::asset[0m[2m:[0m [2msrc/services/asset.rs[0m[2m:[0m[2m212:[0m Replaced existing cover files with uploaded files
+[2m2025-07-16T06:18:56.870247Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::asset[0m[2m:[0m [2msrc/services/asset.rs[0m[2m:[0m[2m354:[0m Wrote asset files for: stage_3 - Mar
+[2m2025-07-16T06:18:56.872299Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::asset[0m[2m:[0m [2msrc/services/asset.rs[0m[2m:[0m[2m258:[0m Updated asset: stage_3 - Mar
+[2m2025-07-16T06:18:56.876714Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m49:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:18:56.876791Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m50:[0m AdminUser can_access_admin: true
+[2m2025-07-16T06:18:56.876835Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m68:[0m require_admin_role: AdminUser found: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:18:56.876856Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m69:[0m require_admin_role: can_access_admin: true
+[2m2025-07-16T06:18:56.903176Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::asset[0m[2m:[0m [2msrc/services/asset.rs[0m[2m:[0m[2m100:[0m Retrieved 72 assets
+[2m2025-07-16T06:18:59.131545Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m49:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:18:59.131727Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m50:[0m AdminUser can_access_admin: true
+[2m2025-07-16T06:18:59.131803Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m68:[0m require_admin_role: AdminUser found: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:18:59.131834Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m69:[0m require_admin_role: can_access_admin: true
+[2m2025-07-16T06:18:59.152876Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m49:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:18:59.152964Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m50:[0m AdminUser can_access_admin: true
+[2m2025-07-16T06:18:59.153023Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m68:[0m require_admin_role: AdminUser found: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:18:59.153052Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m69:[0m require_admin_role: can_access_admin: true
+[2m2025-07-16T06:18:59.182692Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::asset[0m[2m:[0m [2msrc/services/asset.rs[0m[2m:[0m[2m100:[0m Retrieved 72 assets
+[2m2025-07-16T06:18:59.995114Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m49:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:18:59.995238Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m50:[0m AdminUser can_access_admin: true
+[2m2025-07-16T06:18:59.995311Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m68:[0m require_admin_role: AdminUser found: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:18:59.995334Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m69:[0m require_admin_role: can_access_admin: true
+[2m2025-07-16T06:19:00.017532Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m49:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:19:00.017590Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m50:[0m AdminUser can_access_admin: true
+[2m2025-07-16T06:19:00.017630Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m68:[0m require_admin_role: AdminUser found: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:19:00.017648Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m69:[0m require_admin_role: can_access_admin: true
+[2m2025-07-16T06:19:00.048497Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::asset[0m[2m:[0m [2msrc/services/asset.rs[0m[2m:[0m[2m100:[0m Retrieved 72 assets
+[2m2025-07-16T06:19:00.639684Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m49:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:19:00.639826Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m50:[0m AdminUser can_access_admin: true
+[2m2025-07-16T06:19:00.639908Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m68:[0m require_admin_role: AdminUser found: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:19:00.639934Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m69:[0m require_admin_role: can_access_admin: true
+[2m2025-07-16T06:19:00.661617Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m49:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:19:00.661671Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m50:[0m AdminUser can_access_admin: true
+[2m2025-07-16T06:19:00.661724Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m68:[0m require_admin_role: AdminUser found: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:19:00.661740Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m69:[0m require_admin_role: can_access_admin: true
+[2m2025-07-16T06:19:00.690628Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::asset[0m[2m:[0m [2msrc/services/asset.rs[0m[2m:[0m[2m100:[0m Retrieved 72 assets
+[2m2025-07-16T06:19:10.491936Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m49:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:19:10.492147Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m50:[0m AdminUser can_access_admin: true
+[2m2025-07-16T06:19:10.492226Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m68:[0m require_admin_role: AdminUser found: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:19:10.492253Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m69:[0m require_admin_role: can_access_admin: true
+[2m2025-07-16T06:19:10.511739Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m49:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:19:10.511821Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m50:[0m AdminUser can_access_admin: true
+[2m2025-07-16T06:19:10.511869Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m68:[0m require_admin_role: AdminUser found: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:19:10.511890Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m69:[0m require_admin_role: can_access_admin: true
+[2m2025-07-16T06:19:10.539594Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::asset[0m[2m:[0m [2msrc/services/asset.rs[0m[2m:[0m[2m100:[0m Retrieved 72 assets
+[2m2025-07-16T06:19:11.016590Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m49:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:19:11.016773Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m50:[0m AdminUser can_access_admin: true
+[2m2025-07-16T06:19:11.016858Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m68:[0m require_admin_role: AdminUser found: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:19:11.016890Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m69:[0m require_admin_role: can_access_admin: true
+[2m2025-07-16T06:19:11.039868Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m49:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:19:11.039989Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m50:[0m AdminUser can_access_admin: true
+[2m2025-07-16T06:19:11.040073Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m68:[0m require_admin_role: AdminUser found: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-16T06:19:11.040150Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m69:[0m require_admin_role: can_access_admin: true
+[2m2025-07-16T06:19:11.069670Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::asset[0m[2m:[0m [2msrc/services/asset.rs[0m[2m:[0m[2m100:[0m Retrieved 72 assets

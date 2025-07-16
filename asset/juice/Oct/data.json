@@ -1,0 +1,194 @@
+{
+  "project": "juice",
+  "month": "Oct",
+  "cover": [
+    "cover/10_U2G.png"
+  ],
+  "title": [
+    "title/10_U2G.png"
+  ],
+  "subtitle": [
+    {
+      "pageNum": 1,
+      "sentenceNum": 1,
+      "text": "Follow The Rules"
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 1,
+      "text": "Coco looks down on Toto."
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 1,
+      "text": "Toto is in a fume."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 1,
+      "text": "They race along the lake."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 1,
+      "text": "The finish line is the prune tree."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 1,
+      "text": "The wise owl sets the pole."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 1,
+      "text": "Animals play a joke on Toto."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 1,
+      "text": "The owl gives the signal."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 1,
+      "text": "In a flash, Coco is off."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 1,
+      "text": "Coco runs fast."
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 1,
+      "text": "Soon she is far ahead."
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 2,
+      "text": "She has enough time."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 1,
+      "text": "Coco wants to rest."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 2,
+      "text": "She finds a cave."
+    },
+    {
+      "pageNum": 13,
+      "sentenceNum": 1,
+      "text": "And Coco falls asleep."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 1,
+      "text": "Toto walks on mute."
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 1,
+      "text": "He has a smile on his face."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 1,
+      "text": "Poke! Wake! Late! Rule!"
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 1,
+      "text": "What is Quokkas’ plan?"
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 1,
+      "text": "Toto pokes Coco."
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 1,
+      "text": "And he wakes her."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 1,
+      "text": "Coco and Toto are too late."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 1,
+      "text": "Because they follow this rule."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 2,
+      "text": "Be good friends."
+    }
+  ],
+  "thumbnail": [
+    {
+      "file": "thumbnail/U2G_Chant_1.png",
+      "youtube": "https://youtu.be/EcOV7o9ZP3Q"
+    },
+    {
+      "file": "thumbnail/U2G_Chant_2.png",
+      "youtube": "https://youtu.be/3iYssbD2hPQ"
+    },
+    {
+      "file": "thumbnail/U2G_Chant_3.png",
+      "youtube": "https://youtu.be/J1Ng-bBzFng"
+    },
+    {
+      "file": "thumbnail/U2G_angki_ree.png",
+      "youtube": "https://youtu.be/EcOV7o9ZP3Q"
+    },
+    {
+      "file": "thumbnail/U2G_full_song.png",
+      "youtube": "https://youtu.be/6faM0kUFvOI"
+    },
+    {
+      "file": "thumbnail/U2G_full_story.png",
+      "youtube": "https://youtu.be/lqbp4uIdMss"
+    },
+    {
+      "file": "thumbnail/U2G_Read_1.png",
+      "youtube": "https://youtu.be/CB988r1B-X8"
+    },
+    {
+      "file": "thumbnail/U2G_Read_2.png",
+      "youtube": "https://youtu.be/9CYyMlvWfxU"
+    },
+    {
+      "file": "thumbnail/U2G_Read_3.png",
+      "youtube": "https://youtu.be/YV9akcMWsoM"
+    },
+    {
+      "file": "thumbnail/U2G_Song_1.png",
+      "youtube": "https://youtu.be/JWFVIVADOvQ"
+    },
+    {
+      "file": "thumbnail/U2G_Song_2.png",
+      "youtube": "https://youtu.be/eMa7hHlNuQA"
+    },
+    {
+      "file": "thumbnail/U2G_Song_3.png",
+      "youtube": "https://youtu.be/oF7GKGRWYXU"
+    },
+    {
+      "file": "thumbnail/U2G_Story_1.png",
+      "youtube": "https://youtu.be/XXb5XqgmnV0"
+    },
+    {
+      "file": "thumbnail/U2G_Story_2.png",
+      "youtube": "https://youtu.be/Ngjr6i-P6HQ"
+    },
+    {
+      "file": "thumbnail/U2G_Story_3.png",
+      "youtube": "https://youtu.be/61W71p7if8c"
+    }
+  ]
+}

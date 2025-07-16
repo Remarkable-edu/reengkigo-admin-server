@@ -1,0 +1,414 @@
+{
+  "project": "stage_2_2",
+  "month": "Jul",
+  "cover": [
+    "cover/7_B8R.png"
+  ],
+  "title": [
+    "title/6_A7P.png",
+    "title/7_B8R.png",
+    "title/8_B8O.png"
+  ],
+  "subtitle": [
+    {
+      "pageNum": 1,
+      "sentenceNum": 1,
+      "text": "The Flying Tortoise"
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 1,
+      "text": "Long ago, the sky people in the clouds planned a great feast."
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 1,
+      "text": "The Queen of the sky said, \"Eveyone who can fly is welcome at the great feast!\""
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 1,
+      "text": "The birds were very excited."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 2,
+      "text": "\"I can't wait!\" said Black Crane."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 3,
+      "text": "\"It's going to be so good!\" said Grey Feather."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 4,
+      "text": "\"I'm so hungry!\" said Yellow Neck and Red Collar."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 1,
+      "text": "As they were talking, a sly tortoise was listening."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 1,
+      "text": "\"Birds, I'm hungry, too."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 2,
+      "text": "I go with you?\" Tortoise asked."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 3,
+      "text": "\"Tortoise, you can't flyl\" said Black Crane."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 4,
+      "text": "\"Sure I can,\" he said."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 5,
+      "text": "Then he asked, \"May I have a feather, please?\""
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 6,
+      "text": "\"Sure,\" said Black Crane, and handed him a long, black feather."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 7,
+      "text": "\"Thank you,\" said Tortoise."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 1,
+      "text": "Then Tortoise asked the others, \"Would you guys share with me, too?\""
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 2,
+      "text": "\"Of course,\" said Grey Feather, and handed him several feathers."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 3,
+      "text": "\"Here you go!"
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 4,
+      "text": "Tweet, tweet, tweet!\" said Yellow Neck and Red Collar."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 1,
+      "text": "The birds were very generous, and they all shared their feathers."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 1,
+      "text": "Tortoise took all the feathers and began to build himself wings."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 2,
+      "text": "He had a sneaky smile on his face as he worked."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 1,
+      "text": "Finally, Tortoise raised his colorful wings and began to fly."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 2,
+      "text": "\"Look at me!\" he shouted."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 3,
+      "text": "\"I'm flying!\""
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 4,
+      "text": "The birds whistled and said, \"Wowl\""
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 1,
+      "text": "\"You look like a bird!\" said Yellow Neck and Red Collar."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 2,
+      "text": "\"I should have a bird name, then,\" said Tortoise."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 3,
+      "text": "\"What should we call you?\" asked Grey Feather."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 4,
+      "text": "\"Call me 'King of the Birds,'\" he said."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 5,
+      "text": "\"What a funny name for a tortoisel\" said Black Crane, laughing."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 6,
+      "text": "Tortoise laughed, too, but it was a sneaky laugh."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 7,
+      "text": "\"Heh, heh, heh.\""
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 1,
+      "text": "Then the bird flew to the Great Feast."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 2,
+      "text": "\"Hello, great Queen of the sky,\" said Black Crane."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 3,
+      "text": "\"Welcome!\" said the Queen of the sky."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 4,
+      "text": "\"Who is your leader?\""
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 1,
+      "text": "Tortoise stepped forward."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 2,
+      "text": "\"I am the King of the Birds.\""
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 3,
+      "text": "The Queen thought, \"He's so colorful."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 4,
+      "text": "He must be their king!\""
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 1,
+      "text": "The birds were very surprised."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 2,
+      "text": "Black the Queen said, \"Queen, he's not ?\""
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 3,
+      "text": "But the Queen of the sky said, \"Shh!\""
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 4,
+      "text": "Grey Feather said, \" But the Queen, he's not ?\""
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 1,
+      "text": "\"Quiet!\" said the Queen."
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 2,
+      "text": "Yellow Neck and Red Collar said, \"No, Queen!  He's not ?\""
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 3,
+      "text": "\"SILENCE!\" boomed the Queen."
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 4,
+      "text": "\"In my country, the king eats first!\""
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 1,
+      "text": "And so the birds waited while Tortoise went to the great table."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 1,
+      "text": "He ate fish cooked with palm-oil."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 2,
+      "text": "Chomp, chomp, chomp."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 3,
+      "text": "He ate stews and soups."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 4,
+      "text": "Slurp, slurp, slurp."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 5,
+      "text": "He ate nuts and yams."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 6,
+      "text": "Crunch, crunch, crunch."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 7,
+      "text": "He ate and he ate, until it was all gone ."
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 1,
+      "text": "The queen said, \"What a bad king I He ate ALL the food I\""
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 2,
+      "text": "Then Black Crane yelled, \"Tortoise, you are not our kingl\" \nand the birds all screeched and screamed."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 1,
+      "text": "\"Uh, oh,\" said Tortoise."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 2,
+      "text": "\"Time to go!\""
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 3,
+      "text": "He tried to fly away, but he had eaten so much that he could not fly very fast."
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 1,
+      "text": "The birds quickly caught up with him."
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 2,
+      "text": "\"If you won't share with us ... ,\" said Yellow Neck,"
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 3,
+      "text": "\" .. . we won't share with youl\" said Red Collar."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 1,
+      "text": "They began to take their feathers back."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 2,
+      "text": "\"Hey! Wait!\" cried Tortoise."
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 1,
+      "text": "\"I'm falling!\" he cried."
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 2,
+      "text": "Tortoise flapped and flapped, but he fell like a stone."
+    },
+    {
+      "pageNum": 27,
+      "sentenceNum": 1,
+      "text": "CRACK!"
+    },
+    {
+      "pageNum": 27,
+      "sentenceNum": 2,
+      "text": "He hie the ground and his shell broke into pieces."
+    },
+    {
+      "pageNum": 28,
+      "sentenceNum": 1,
+      "text": "\"Oh, nol Look at my shell I\" he cried."
+    },
+    {
+      "pageNum": 28,
+      "sentenceNum": 2,
+      "text": "\"You got what you deserved, Tortoise,\" said Black Crane."
+    },
+    {
+      "pageNum": 28,
+      "sentenceNum": 3,
+      "text": "And ever since then, all tortoises have rough shells."
+    }
+  ],
+  "thumbnail": [
+    {
+      "file": "thumbnail/B8R_ani.png",
+      "youtube": "https://youtu.be/vlGRziPjAyg"
+    },
+    {
+      "file": "thumbnail/B8R_musicvideo_mr.png",
+      "youtube": "https://youtu.be/npt_lcKspKc"
+    },
+    {
+      "file": "thumbnail/B8R_musicvideo.png",
+      "youtube": "https://youtu.be/euvAOJnZINA"
+    },
+    {
+      "file": "thumbnail/B8R_song_1.png",
+      "youtube": "https://youtu.be/KlQc0cFqyQU"
+    },
+    {
+      "file": "thumbnail/B8R_song_2.png",
+      "youtube": "https://youtu.be/KlQc0cFqyQU"
+    },
+    {
+      "file": "thumbnail/B8R_song_3.png",
+      "youtube": "https://youtu.be/KlQc0cFqyQU"
+    },
+    {
+      "file": "thumbnail/B8R_story.png",
+      "youtube": "https://youtu.be/iYnfPYg8E1Y"
+    }
+  ]
+}

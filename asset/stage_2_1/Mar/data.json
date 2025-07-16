@@ -1,0 +1,377 @@
+{
+  "project": "stage_2_1",
+  "month": "Mar",
+  "cover": [
+    "cover/3_R5Y.png"
+  ],
+  "title": [
+    "title/3_R5Y.png"
+  ],
+  "subtitle": [
+    {
+      "pageNum": 1,
+      "sentenceNum": 1,
+      "text": "The White Lamb"
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 1,
+      "text": "There once was an old, stone barn where some barnyard animals lived."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 1,
+      "text": "One evening, a thief came to the barn to hide."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 2,
+      "text": "\"Get out!\" yelled the thief."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 3,
+      "text": "He kicked all the animals out."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 4,
+      "text": "\"Baa, baa,\" said the white lamb,"
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 5,
+      "text": "but he kicked her out, too."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 1,
+      "text": "Well, that was quite enough to make little lamb angry."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 2,
+      "text": "\"It's our barn,\" she said."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 3,
+      "text": "Now the lamb was very smart."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 4,
+      "text": "but she was SO small."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 5,
+      "text": "\"Help me, big bull,\" she said."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 1,
+      "text": "\"Snort,\" said the bull,"
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 2,
+      "text": "and followed along."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 3,
+      "text": "Of course the bull was very big."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 4,
+      "text": "but he was SO scared."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 5,
+      "text": "\"Help me, brave dog,\" he said."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 1,
+      "text": "\"Ruff,\" said the dog,"
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 2,
+      "text": "and followed along."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 3,
+      "text": "The dog was very brave..."
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 4,
+      "text": "but he was SO old."
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 5,
+      "text": "\"Help me, young cat,\" he said."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 1,
+      "text": "\"Meow,\" said the cat,"
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 2,
+      "text": "and followed along."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 3,
+      "text": "Now the cat was young and full of energy..."
+    },
+    {
+      "pageNum": 13,
+      "sentenceNum": 4,
+      "text": "but she was VERY shy and quiet."
+    },
+    {
+      "pageNum": 13,
+      "sentenceNum": 5,
+      "text": "\"Help me, loud goose,\" she whispered."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 1,
+      "text": "\"HONK!\" yelled the goose,"
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 2,
+      "text": "and followed along."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 3,
+      "text": "The goose was loud and proud."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 4,
+      "text": "but she was VERY slow."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 5,
+      "text": "\"Help me, quick rooster,\" she said."
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 1,
+      "text": "\"Cock-a-doodle-do,\" said the rooster,"
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 2,
+      "text": "and followed along."
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 3,
+      "text": "Now the rooster was quick."
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 4,
+      "text": "but he was also crazy."
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 5,
+      "text": "He needed help,"
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 6,
+      "text": "and the lamb had the plan."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 1,
+      "text": "\"We'll help each other,\" said the dog."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 2,
+      "text": "\"We'll strike at nightfall,\" whispered the cat."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 3,
+      "text": "\"We'll get him good!\" yelled the goose."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 4,
+      "text": "\"Listen,\" said the lamb, and she whispered her plan."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 1,
+      "text": "Night came."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 2,
+      "text": "The man slept."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 3,
+      "text": "The animals waited."
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 1,
+      "text": "\"Now,\" whispered the dog."
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 2,
+      "text": "They tiptoed in."
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 3,
+      "text": "Then..."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 1,
+      "text": "\"Baa! Snort! Ruff! Meow! HONK! Cock-a-doodle-do!\""
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 2,
+      "text": "\"Monster!\" yelled the thief, and he ran out the barn."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 1,
+      "text": "But outside, all was quiet."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 2,
+      "text": "\"Hmph. Must've been a dream,\" he said."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 3,
+      "text": "So he walked back into the barn."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 4,
+      "text": "The animals waited."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 5,
+      "text": "Then..."
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 1,
+      "text": "Something bit his behind!"
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 2,
+      "text": "Something scratched his hand!"
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 3,
+      "text": "Something hissed in his ear!"
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 4,
+      "text": "Something clawed his face!"
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 5,
+      "text": "Something kicked him right out the door!"
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 1,
+      "text": "And out he flew."
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 2,
+      "text": "landing with a THUMP."
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 3,
+      "text": "\"Monster!\" Monster! he yelled."
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 4,
+      "text": "and jumped up."
+    },
+    {
+      "pageNum": 27,
+      "sentenceNum": 5,
+      "text": "Then from that yard, from where he stood, he ran away as fast as he could."
+    },
+    {
+      "pageNum": 28,
+      "sentenceNum": 1,
+      "text": "It's our barn! said the lamb."
+    },
+    {
+      "pageNum": 28,
+      "sentenceNum": 2,
+      "text": "The big bull, the brave dog, the young cat, the loud goose, and the crazy rooster \nhad a long laugh."
+    }
+  ],
+  "thumbnail": [
+    {
+      "file": "thumbnail/R5Y_ani.png",
+      "youtube": "https://youtu.be/k7KojkevsTs"
+    },
+    {
+      "file": "thumbnail/R5Y_the_white_lamb.png",
+      "youtube": "https://youtu.be/RFmz4tM0XCU"
+    },
+    {
+      "file": "thumbnail/R5Y_musicvideo_mr.png",
+      "youtube": "https://youtu.be/9e3aNF7udVo"
+    },
+    {
+      "file": "thumbnail/R5Y_music_video.png",
+      "youtube": "https://youtu.be/4aQUcxc5E04"
+    },
+    {
+      "file": "thumbnail/R5Y_barnyard_animals_song.png",
+      "youtube": "https://youtu.be/sKDyXAMCFUM"
+    },
+    {
+      "file": "thumbnail/R5Y_the_thief_song.png",
+      "youtube": "https://youtu.be/77i9Laf6pdA"
+    },
+    {
+      "file": "thumbnail/R5Y_story.png",
+      "youtube": "https://youtu.be/G2uvoMzRXHw"
+    }
+  ]
+}

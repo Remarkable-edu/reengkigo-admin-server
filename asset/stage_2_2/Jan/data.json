@@ -1,0 +1,362 @@
+{
+  "project": "stage_2_2",
+  "month": "Jan",
+  "cover": [
+    "cover/1_A7R.png"
+  ],
+  "title": [
+    "title/1_A7R.png"
+  ],
+  "subtitle": [
+    {
+      "pageNum": 1,
+      "sentenceNum": 1,
+      "text": "The Emperor's Flowers"
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 1,
+      "text": "Long ago, there was an emperor who loved flowers."
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 2,
+      "text": "He spent his days growing water lilies and orchids,"
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 3,
+      "text": "plum blossoms and pink peonies."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 1,
+      "text": "The emperor had no children."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 2,
+      "text": "That winter, he decided to choose a child to become the next emperor."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 3,
+      "text": "\"Whoever grows the most beautiful flower will be the next emperor,\" he proclaimed."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 1,
+      "text": "One of the emperor's servants held out a jar of special seeds."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 2,
+      "text": "\"Plant one of these seeds,\" he said, \"and bring it back in the summer.\""
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 3,
+      "text": "The emperor added, \"No matter what, you must bring it back.\""
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 1,
+      "text": "All the children were very excited when they heard the news,\nand they lined up to take a flower seed."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 1,
+      "text": "Outside the city lived a poor young boy named Ping."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 2,
+      "text": "Like the emperor, Ping loved growing flowers."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 3,
+      "text": "I want to enter the contest, he said."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 4,
+      "text": "I'll take you to the palace, said his mother."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 5,
+      "text": "I'll buy you a flowerpot, said his father."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 1,
+      "text": "His father bought the nicest flowerpot the family could afford, \nand Ping and his mother went to the palace."
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 1,
+      "text": "\"Good luck,\" the servant said as he dropped a single seed into Ping's pot."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 1,
+      "text": "That spring, Ping planted the seed."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 2,
+      "text": "He watered it and cared for it, but nothing happened."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 3,
+      "text": "\"Why isn't it growing?\" he asked."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 4,
+      "text": "\"Give it time,\" said his mother."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 1,
+      "text": "Summer came, and all of Ping's flowers grew big and beautiful."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 2,
+      "text": "But the emperor's seed did not grow."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 3,
+      "text": "\"Why isn't it growing?\" he asked again."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 4,
+      "text": "\"It's okay, Ping,\" said his father."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 5,
+      "text": "\"Don't worry about the contest.\""
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 1,
+      "text": "Finally, the day came to return to the palace."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 2,
+      "text": "Ping looked at his empty flowerpot unhappily, but he remembered what the emperor had\nsaid:"
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 3,
+      "text": "\"No matter what, you must bring it back.\""
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 4,
+      "text": "\"I have to take the flower seed back to the palace,\" Ping said."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 5,
+      "text": "\"Just tell him the truth,\" said his mother."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 6,
+      "text": "\"We love you, no matter what,\" said his father."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 1,
+      "text": "As Ping walked to the palace, other boys and girls laughed at his simple, \nempty flowerpot."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 2,
+      "text": "\"You can't show that to the emperor!\" said a boy."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 3,
+      "text": "\"The emperor will never choose you!\" said a girl."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 4,
+      "text": "But Ping walked on."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 1,
+      "text": "At the palace, all the children waited to meet the emperor."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 2,
+      "text": "They held the most beautiful flowers Ping had ever seen."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 3,
+      "text": "They continued to laugh at Ping's empty pot."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 4,
+      "text": "\"You don't even have a flower,\" said a girl."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 5,
+      "text": "\"Go home!\""
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 6,
+      "text": "\"The emperor should punish you!\" yelled a boy."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 1,
+      "text": "Ping felt silly and sad, but he did not go home."
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 1,
+      "text": "Finally, Ping stood before the great emperor."
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 2,
+      "text": "\"Where is your flower?\" asked the emperor."
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 3,
+      "text": "\"I tried my best,\" said Ping,"
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 4,
+      "text": "\"but this seed didn't grow.\""
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 1,
+      "text": "Suddenly, the emperor smiled."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 2,
+      "text": "Then he said, \"These seeds were boiled.\""
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 3,
+      "text": "\"Boiled?\" asked Ping."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 4,
+      "text": "\"Yes, they're boiled.\""
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 5,
+      "text": "\"Then,\" Ping said slowly, "
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 6,
+      "text": "\"they'll never grow.\""
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 7,
+      "text": "\"That's right,\" said the emperor."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 8,
+      "text": "Ping smiled because he finally understood why his flower had not grown."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 9,
+      "text": "\"All my other flowers are beautiful,\" he said."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 10,
+      "text": "The emperor laughed. \"I'm sure they are,\" he said."
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 1,
+      "text": "And so the great emperor chose Ping to be the next emperor."
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 2,
+      "text": "\"You're an honest boy,\" he said,"
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 3,
+      "text": "\"so you will be a great emperor.\""
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 4,
+      "text": "Ping bowed low."
+    },
+    {
+      "pageNum": 26,
+      "sentenceNum": 5,
+      "text": "\"Thank you, your majesty,\" he said."
+    },
+    {
+      "pageNum": 28,
+      "sentenceNum": 1,
+      "text": "Ping and his parents moved into the palace, and Ping indeed became a great emperor\nknown for his kindness, his honesty, and his beautiful gardens."
+    }
+  ],
+  "thumbnail": [
+    {
+      "file": "thumbnail/A7R_ani.png",
+      "youtube": "https://youtu.be/8_UCQGiedp8"
+    },
+    {
+      "file": "thumbnail/A7R_musicvideo_mr.png",
+      "youtube": "https://youtu.be/Quy1Kopsnyo"
+    },
+    {
+      "file": "thumbnail/A7R_emp_701s.png",
+      "youtube": "https://youtu.be/8_UCQGiedp8"
+    },
+    {
+      "file": "thumbnail/A7R_the_childrens_song.png",
+      "youtube": "https://youtu.be/mfq_lCHba04"
+    },
+    {
+      "file": "thumbnail/A7R_the_emperors_song.png",
+      "youtube": "https://youtu.be/DnjLqtV64hA"
+    },
+    {
+      "file": "thumbnail/A7R_the_pings_song.png",
+      "youtube": "https://youtu.be/DnjLqtV64hA"
+    },
+    {
+      "file": "thumbnail/A7R_story.png",
+      "youtube": "https://youtu.be/bdpgfnEe6mE"
+    }
+  ]
+}

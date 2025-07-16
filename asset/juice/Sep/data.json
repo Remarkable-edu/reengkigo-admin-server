@@ -1,0 +1,209 @@
+{
+  "project": "juice",
+  "month": "Sep",
+  "cover": [
+    "cover/9_U2Y.png"
+  ],
+  "title": [
+    "title/9_U2Y.png"
+  ],
+  "subtitle": [
+    {
+      "pageNum": 1,
+      "sentenceNum": 1,
+      "text": "Special Tubes for Muse"
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 1,
+      "text": "Duke is a mole."
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 2,
+      "text": "He has a kid."
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 1,
+      "text": "She is Muse."
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 2,
+      "text": "Muse is a cute mole."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 1,
+      "text": "It's Muse's birthday soon."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 1,
+      "text": "Duke plans a huge party."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 1,
+      "text": "Duke writes a note."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 1,
+      "text": "Oops! He misspells!"
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 1,
+      "text": "Duke hands a note to Jude."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 1,
+      "text": "Jude is a mule."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 1,
+      "text": "Duke comes back home."
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 1,
+      "text": "His house is full of smoke."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 1,
+      "text": "Oh, no!"
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 2,
+      "text": "Jeez!"
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 3,
+      "text": "What are these, Jude?"
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 4,
+      "text": "A stone and a rope!"
+    },
+    {
+      "pageNum": 13,
+      "sentenceNum": 1,
+      "text": "Duke shouts to the dune."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 1,
+      "text": "A stone becomes a stove."
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 1,
+      "text": "A rope becomes a rose."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 1,
+      "text": "Duke cooks on a stove. "
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 1,
+      "text": "Guests arrive."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 1,
+      "text": "Everyone waits in cone hats."
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 1,
+      "text": "They shout, \"Happy birthday!\""
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 1,
+      "text": "Muse has so many tubes."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 1,
+      "text": "Oh, my! Duke!"
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 2,
+      "text": "He misspelled 'tune.'"
+    }
+  ],
+  "thumbnail": [
+    {
+      "file": "thumbnail/U2Y_Chant_1.png",
+      "youtube": "https://youtu.be/qUGL1iY83b4"
+    },
+    {
+      "file": "thumbnail/U2Y_Chant_2.png",
+      "youtube": "https://youtu.be/jTrAkEhtvbQ"
+    },
+    {
+      "file": "thumbnail/U2Y_Chant_3.png",
+      "youtube": "https://youtu.be/PXcPhAK4zeM"
+    },
+    {
+      "file": "thumbnail/U2Y_Read_1.png",
+      "youtube": "https://youtu.be/6MXVM_yEHnA"
+    },
+    {
+      "file": "thumbnail/U2Y_full_song.png",
+      "youtube": "https://youtu.be/7uNYHKKeCno"
+    },
+    {
+      "file": "thumbnail/U2Y_full_story.png",
+      "youtube": "https://youtu.be/11NNBiZc_58"
+    },
+    {
+      "file": "thumbnail/U2Y_Read_1.png",
+      "youtube": "https://youtu.be/6MXVM_yEHnA"
+    },
+    {
+      "file": "thumbnail/U2Y_Read_2.png",
+      "youtube": "https://youtu.be/SKKkzCwn7aE"
+    },
+    {
+      "file": "thumbnail/U2Y_Read_3.png",
+      "youtube": "https://youtu.be/cCbF0BXHDWk"
+    },
+    {
+      "file": "thumbnail/U2Y_Song_1.png",
+      "youtube": "https://youtu.be/ZUUlHHOt32o"
+    },
+    {
+      "file": "thumbnail/U2Y_Song_2.png",
+      "youtube": "https://youtu.be/6BAnMCSe9ys"
+    },
+    {
+      "file": "thumbnail/U2Y_Song_3.png",
+      "youtube": "https://youtu.be/yX11MKcFZNA"
+    },
+    {
+      "file": "thumbnail/U2Y_Story_1.png",
+      "youtube": "https://youtu.be/2Hk7ka1COXw"
+    },
+    {
+      "file": "thumbnail/U2Y_Story_2.png",
+      "youtube": "https://youtu.be/nDFb-4lrHVk"
+    },
+    {
+      "file": "thumbnail/U2Y_Story_3.png",
+      "youtube": "https://youtu.be/ay4sKcp9Wfs"
+    }
+  ]
+}

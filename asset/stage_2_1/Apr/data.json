@@ -1,0 +1,341 @@
+{
+  "project": "stage_2_1",
+  "month": "Apr",
+  "cover": [
+    "cover/4_R5G.png"
+  ],
+  "title": [
+    "title/4_R5G.png"
+  ],
+  "subtitle": [
+    {
+      "pageNum": 1,
+      "sentenceNum": 1,
+      "text": "The Horse Chase"
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 1,
+      "text": "There once was a fox named Reynard."
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 2,
+      "text": "One day, he said to Bruin the bear, \"I'm stronger than you.\""
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 3,
+      "text": "\"No, you're not,\" said Bruin."
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 4,
+      "text": "\"Yes, I am,\" said Reynard."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 1,
+      "text": "So Bruin asked, \"Can you catch a horse?\""
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 2,
+      "text": "\"Of course I can,\" bragged Reynard."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 3,
+      "text": "A little hare heard him and said, \"Oh, Reynard, don't try that.\""
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 4,
+      "text": "But Reynard didn't listen."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 1,
+      "text": "He went to a field where a horse was sleeping."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 2,
+      "text": "\"I'll bite her leg,\" he said."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 3,
+      "text": "\"She'll run away,\" said Bruin."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 4,
+      "text": "\"Then I'll tie my tail to her tail,\" said Reynard, \"so she can't run away.\""
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 5,
+      "text": "\"Reynard, don't do that,\" said the hare."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 6,
+      "text": "But Reynard didn't listen."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 1,
+      "text": "Reynard snuck up to the horse."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 2,
+      "text": "He tied his tail to the horse's tail."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 3,
+      "text": "\"Reynard, you'll be sorry,\" said Bruin."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 4,
+      "text": "\"Reynard, don't do that,\" said the hare."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 1,
+      "text": "\"Shh!\" said Reynard."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 2,
+      "text": "Then he whispered, \"One, two, three ... CHOMP!\" and bit her leg."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 3,
+      "text": "\"NEIGH!\" cried the horse, and jumped up."
+    },
+    {
+      "pageNum": 13,
+      "sentenceNum": 1,
+      "text": "She bucked, and Reynard flew through the air behind her."
+    },
+    {
+      "pageNum": 13,
+      "sentenceNum": 2,
+      "text": "\"Aha!\" he cried."
+    },
+    {
+      "pageNum": 13,
+      "sentenceNum": 3,
+      "text": "\"You bad little fox!\" yelled the horse."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 1,
+      "text": "The horse started running, pulling the fox along by his tail."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 2,
+      "text": "She galloped along a fence."
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 1,
+      "text": "BAM! WHAM!"
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 2,
+      "text": "Reynard slammed into it."
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 3,
+      "text": "\"Ouch! Stop!\" he yelled."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 1,
+      "text": "Bruin tried to help."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 2,
+      "text": "\"Stop, horse!\" he roared."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 3,
+      "text": "But when she saw Bruin, she ran even faster."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 4,
+      "text": "\"A bear!\" she cried."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 1,
+      "text": "The horse ran and ran."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 2,
+      "text": "BAM! WHAM!"
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 3,
+      "text": "Reynard slammed into trees."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 4,
+      "text": "\"Please stop!\" he yelled."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 1,
+      "text": "\"Stop! You're hurting him!\" yelled the hare."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 2,
+      "text": "The horse stopped and pinned Reynard against a tree with her hoof."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 3,
+      "text": "\"Please let me go!\" cried Reynard."
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 1,
+      "text": "\"What do you say?\" asked the horse."
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 2,
+      "text": "\"I'm sorry,\" said Reynard."
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 3,
+      "text": "\"And?\" asked the horse."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 1,
+      "text": "\"And I'll never chase you again,\" said Reynard."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 2,
+      "text": "\"And?\" asked the horse."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 3,
+      "text": "\"And I'll give you my best snacks,\" said Reynard."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 1,
+      "text": "Then the horse let the fox go."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 2,
+      "text": "Reynard went and got apples and carrots."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 3,
+      "text": "\"Here you are,\" he said."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 4,
+      "text": "\"Mmm, apples are my favorite,\" said the horse."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 5,
+      "text": "\"Mmm, carrots. Yummy,\" said the hare."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 6,
+      "text": "Then the hare and the horse walked away with their snacks."
+    },
+    {
+      "pageNum": 27,
+      "sentenceNum": 1,
+      "text": "After that, Bruin got a honeycomb from a tree."
+    },
+    {
+      "pageNum": 27,
+      "sentenceNum": 2,
+      "text": "He gave some to Reynard."
+    },
+    {
+      "pageNum": 27,
+      "sentenceNum": 3,
+      "text": "\"Thank you,\" said Reynard."
+    },
+    {
+      "pageNum": 27,
+      "sentenceNum": 4,
+      "text": "\"You're welcome,\" said Bruin."
+    },
+    {
+      "pageNum": 27,
+      "sentenceNum": 5,
+      "text": "\"Bruin, you're the strongest,\" said Reynard, and Bruin smiled."
+    },
+    {
+      "pageNum": 28,
+      "sentenceNum": 1,
+      "text": "Then Reynard and Bruin ate the honey together, and since then, \nno fox has ever tried to catch a horse."
+    }
+  ],
+  "thumbnail": [
+    {
+      "file": "thumbnail/R5G_ani.png",
+      "youtube": "https://youtu.be/GaCfqDTowvs"
+    },
+    {
+      "file": "thumbnail/R5G_education_reena.png",
+      "youtube": "https://youtu.be/GaCfqDTowvs"
+    },
+    {
+      "file": "thumbnail/R5G_musicvideo_mr.png",
+      "youtube": "https://youtu.be/zyRwYtJ2sqY"
+    },
+    {
+      "file": "thumbnail/R5G_music_video.png",
+      "youtube": "https://youtu.be/2iopvyxlN7A"
+    },
+    {
+      "file": "thumbnail/R5G_bruins_song.png",
+      "youtube": "https://youtu.be/0a46Irpg6Es"
+    },
+    {
+      "file": "thumbnail/R5G_the_horses_song.png",
+      "youtube": "https://youtu.be/90ZZtc7HxRU"
+    },
+    {
+      "file": "thumbnail/R5G_reynards_song.png",
+      "youtube": "https://youtu.be/8zVdA9Dw2BY"
+    },
+    {
+      "file": "thumbnail/R5G_story.png",
+      "youtube": "https://youtu.be/wMOGo_EtiEE"
+    }
+  ]
+}

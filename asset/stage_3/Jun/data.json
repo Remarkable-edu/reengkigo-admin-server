@@ -1,0 +1,145 @@
+{
+  "project": "stage_3",
+  "month": "Jun",
+  "cover": [
+    "cover/6_L9P.png"
+  ],
+  "title": [
+    "title/5_L9B.png",
+    "title/6_L9P.png",
+    "title/7_E10R.png"
+  ],
+  "subtitle": [
+    {
+      "pageNum": 1,
+      "sentenceNum": 1,
+      "text": "Little Red Hen is Cooking"
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 1,
+      "text": "Little Red Hen is Cooking."
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 2,
+      "text": "\"What are you cooking?\" ask Cat."
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 1,
+      "text": "\"Soup,\" says Hen."
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 2,
+      "text": "\"Do you like soup?\""
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 3,
+      "text": "\"Yes, I do,\" says Cat."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 1,
+      "text": "\"Help me cook the soup,\" says Hen."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 2,
+      "text": "\"No,\" says Cat."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 1,
+      "text": "\"What are you cooking?\" ask Cat."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 1,
+      "text": "\"Cookies,\" says Hen."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 2,
+      "text": "\"Do you like cookies?\""
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 3,
+      "text": "\"Yes, I do!\" says Cat."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 1,
+      "text": "\"Help me make the cookies,\" says Hen."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 2,
+      "text": "\"No,\" says Cat."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 1,
+      "text": "\"What are you eating or drinking?\" Cat asks."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 1,
+      "text": "\"My food,\" says Hen."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 2,
+      "text": "\"It's good.\""
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 1,
+      "text": "\"May I have soup and cookies, please?\" asks cat."
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 1,
+      "text": "\"I'm sorry,\" says Hen."
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 2,
+      "text": "\"You didn't help me dook."
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 3,
+      "text": "You can't help me eat!\""
+    }
+  ],
+  "thumbnail": [
+    {
+      "file": "thumbnail/L9P_Dictation_1.png",
+      "youtube": "https://youtu.be/2R1jy2ftWgQ"
+    },
+    {
+      "file": "thumbnail/L9P_Dictation_2.png",
+      "youtube": "https://youtu.be/soLnNDaYmNo"
+    },
+    {
+      "file": "thumbnail/L9P_Grammar_1.png",
+      "youtube": "https://youtu.be/J1hoDxKS3Aw"
+    },
+    {
+      "file": "thumbnail/L9P_Grammar_2.png",
+      "youtube": "https://youtu.be/hbOyZDddbh8"
+    },
+    {
+      "file": "thumbnail/L9P_song.png",
+      "youtube": "https://youtu.be/RdBXol6BIjM"
+    },
+    {
+      "file": "thumbnail/L9P_song.png",
+      "youtube": "https://youtu.be/RdBXol6BIjM"
+    }
+  ]
+}

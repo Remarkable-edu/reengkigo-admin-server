@@ -1,0 +1,359 @@
+{
+  "project": "stage_2_1",
+  "month": "Jul",
+  "cover": [
+    "cover/7_K6R.png"
+  ],
+  "title": [
+    "title/6_R5P.png",
+    "title/7_K6R.png",
+    "title/8_K6O.png"
+  ],
+  "subtitle": [
+    {
+      "pageNum": 1,
+      "sentenceNum": 1,
+      "text": "Who's There"
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 1,
+      "text": "There once was a tiny caterpillar who saw a nice cave."
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 1,
+      "text": "\"I just want place to take a nap,\" said caterpillar."
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 2,
+      "text": "He crawled inside and fell asleep."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 1,
+      "text": "But the cave belonged to Jackal."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 1,
+      "text": "Jackal came home and saw Caterpillar sleeping on her bed."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 2,
+      "text": "\"Hey, that's my bed!"
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 3,
+      "text": "Get out!\""
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 4,
+      "text": "growled Jackal, and she swatted him out with her tail."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 1,
+      "text": "Caterpillar was angry."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 2,
+      "text": "\"I'll show her,\" he said."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 3,
+      "text": "Caterpillar waited for Jackal to leave."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 4,
+      "text": "Then he made strange footprints near the cave."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 1,
+      "text": "When Jackal came back home, she saw the footprints and barked, \"Who's there?\""
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 1,
+      "text": "Caterpillar yelled from deep inside the cave, and his voice made a scary echo."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 2,
+      "text": "\"I'm a monster! ... monster! ... monster! "
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 3,
+      "text": "Stronger than a lion! ... lion! ... lion!\""
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 1,
+      "text": "Jackal jumped."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 2,
+      "text": "She was too scared to run away, so she folded her big ears over her eyes."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 1,
+      "text": "After a little while, Jackal's friend Leopard came over to borrow a cup of milk."
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 1,
+      "text": "When Leopard saw her, she cried, \"Jackal! What's wrong?\""
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 2,
+      "text": "Jackal uncovered one eye and said, \"There's a monster in my cave!\""
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 3,
+      "text": "\"A monster?\" asked Leopard."
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 4,
+      "text": "\"A monster stronger than a lion!\" cried Jackal."
+    },
+    {
+      "pageNum": 13,
+      "sentenceNum": 1,
+      "text": "Leopard went to the cave door."
+    },
+    {
+      "pageNum": 13,
+      "sentenceNum": 2,
+      "text": "\"Grr,\" she growled, and put out her claws."
+    },
+    {
+      "pageNum": 13,
+      "sentenceNum": 3,
+      "text": "\"Who's there?\""
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 1,
+      "text": "Caterpillar yelled, \"I'm a monster! ... monster! ... monster! "
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 2,
+      "text": "Meaner than a snake! ... snake! ... snake!\""
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 1,
+      "text": "Leopard was very scared of snakes."
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 2,
+      "text": "\"M...m...meaner than a snake?\" she whispered, and she shook so hard that her spots began to fall off."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 1,
+      "text": "Just then, giant Rhino the Rhinoceros walked by."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 2,
+      "text": "When he saw Jackal and Leopard, he said, \"What's wrong?"
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 3,
+      "text": "What are you scared of?\""
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 1,
+      "text": "\"There's a monster in my cave!\" cried Jackal."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 2,
+      "text": "\"A monster?\" asked Rhino."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 3,
+      "text": "\"A monster meaner than a snake!\" whispered Leopard."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 1,
+      "text": "Rhino went to the door and roared, \"WHO'S THERE?\""
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 1,
+      "text": "Caterpillar yelled, \"I'm a monster! ... monster! ... monster! "
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 2,
+      "text": "Bigger than a rhinoceros! ... rhinoceros! ... rhinoceros!\""
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 1,
+      "text": "\"Bigger than me?\" said Rhino."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 2,
+      "text": "\"It can't be.\""
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 3,
+      "text": "Rhino was so scared that he tried to hide under a branch."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 4,
+      "text": "However, he didn't fool anyone. "
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 5,
+      "text": "He was far too big to hide."
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 1,
+      "text": "Just then, a tree frog on Rhino's branch said, \"Hey! What's wrong?"
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 2,
+      "text": " What are you hiding from?\""
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 3,
+      "text": "\"A monster bigger than me!\" said Rhino."
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 4,
+      "text": "\"And meaner than a snake!\" said Leopard."
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 5,
+      "text": "\"And stronger than a lion!\" said Jackal."
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 6,
+      "text": "Frog said, \"We'll see about that.\""
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 1,
+      "text": "Frog hopped up to the cave door."
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 2,
+      "text": "She filled up her throat and yelled, \"I am the scariest monster!"
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 3,
+      "text": "RIBBIT ... RIBBIT ... RIBBIT ... RIBBIT!\""
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 1,
+      "text": "Caterpillar's legs began to shake."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 2,
+      "text": "\"Oh, no!\" he cried."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 3,
+      "text": "\"I've got to get out of here!\""
+    },
+    {
+      "pageNum": 27,
+      "sentenceNum": 1,
+      "text": "Jackal jumped up on Leopard's back to hide, and Leopard jumped up on Rhino's back."
+    },
+    {
+      "pageNum": 27,
+      "sentenceNum": 2,
+      "text": "Then Caterpillar came crawling out."
+    },
+    {
+      "pageNum": 27,
+      "sentenceNum": 3,
+      "text": "\"It was you?\" they yelled."
+    },
+    {
+      "pageNum": 27,
+      "sentenceNum": 4,
+      "text": "Caterpillar smiled. \"Sorry! I just wanted a place to take a nap!\""
+    },
+    {
+      "pageNum": 28,
+      "sentenceNum": 1,
+      "text": "Then all the animals laughed and laughed."
+    },
+    {
+      "pageNum": 28,
+      "sentenceNum": 2,
+      "text": "And after that, Jackal let Caterpillar live in the cave with her."
+    }
+  ],
+  "thumbnail": [
+    {
+      "file": "thumbnail/K6R_ani.png",
+      "youtube": "https://youtu.be/3x4ATXkXJY4"
+    },
+    {
+      "file": "thumbnail/K6R_og_as.png",
+      "youtube": "https://youtu.be/3x4ATXkXJY4"
+    },
+    {
+      "file": "thumbnail/K6R_music_video.png",
+      "youtube": "https://youtu.be/nY2qbWWuKNY"
+    },
+    {
+      "file": "thumbnail/K6R_caterpillars_song.png",
+      "youtube": "https://youtu.be/9QywHkxWX70"
+    },
+    {
+      "file": "thumbnail/K6R_caterpillars_song.png",
+      "youtube": "https://youtu.be/f_JzJigyNAg"
+    },
+    {
+      "file": "thumbnail/K6R_jackal_leopard_rhinos_song.png",
+      "youtube": "https://youtu.be/6-FpbzyMfpY"
+    },
+    {
+      "file": "thumbnail/K6R_story.png",
+      "youtube": "https://youtu.be/7IDaRJZjsRE"
+    }
+  ]
+}

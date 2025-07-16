@@ -1,0 +1,131 @@
+{
+  "project": "stage_1_1",
+  "month": "Mar",
+  "cover": [
+    "cover/3_R1Y.png"
+  ],
+  "title": [
+    "title/3_R1Y.png"
+  ],
+  "subtitle": [
+    {
+      "pageNum": 1,
+      "sentenceNum": 1,
+      "text": "Go Away!"
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 1,
+      "text": "I like to copy."
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 1,
+      "text": "It's so much fun."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 1,
+      "text": "Bowwow, bowwow ~"
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 1,
+      "text": "You're not a dog."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 2,
+      "text": "Go away!"
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 1,
+      "text": "Oink, oink ~"
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 1,
+      "text": "You're not a pig."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 2,
+      "text": "Go away!"
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 1,
+      "text": "Moo-moo, moo-moo ~"
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 1,
+      "text": "You're not a cow."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 2,
+      "text": "Go away!"
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 1,
+      "text": "Whew ~"
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 2,
+      "text": "I don't like to copy anymore."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 3,
+      "text": "Meow, meow ~"
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 1,
+      "text": "You're a cat."
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 2,
+      "text": "Come in."
+    }
+  ],
+  "thumbnail": [
+    {
+      "file": "thumbnail/R1Y_conversation.png",
+      "youtube": "https://youtu.be/1allbLvh_-k"
+    },
+    {
+      "file": "thumbnail/R1Y_motion.png",
+      "youtube": "https://youtu.be/SahtKzmkYGM"
+    },
+    {
+      "file": "thumbnail/R1Y_motion.png",
+      "youtube": "https://youtu.be/bBMASYgox20"
+    },
+    {
+      "file": "thumbnail/R1Y_phonics_chant.png",
+      "youtube": "https://youtu.be/np14pviio9c"
+    },
+    {
+      "file": "thumbnail/R1Y_situation_chant.png",
+      "youtube": "https://youtu.be/Qh0vD6AiOjs"
+    },
+    {
+      "file": "thumbnail/R1Y_story_animation.png",
+      "youtube": "https://youtu.be/JL10h1qwHp8"
+    },
+    {
+      "file": "thumbnail/R1Y_story_song.png",
+      "youtube": "https://youtu.be/JL10h1qwHp8"
+    },
+    {
+      "file": "thumbnail/R1Y_storytelling.png",
+      "youtube": "https://youtu.be/bBMASYgox20"
+    }
+  ]
+}

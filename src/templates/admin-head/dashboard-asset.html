@@ -1,0 +1,2045 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReengKi 관리자 시스템</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/admin.css" rel="stylesheet">
+    <style>
+        /* Responsive layout adjustments only */
+        .admin-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+        }
+
+        .sidebar {
+            transition: transform 0.3s ease;
+        }
+
+        .content {
+            flex: 1;
+            overflow-x: auto;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+        }
+
+        /* Modal z-index fix */
+        .modal {
+            z-index: 1060 !important;
+        }
+
+        .modal-backdrop {
+            z-index: 1055 !important;
+        }
+
+        /* Mobile responsive adjustments */
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .main-content {
+                position: relative;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                transform: translateX(-100%);
+                z-index: 999;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.show {
+                display: block;
+            }
+
+            .content {
+                width: 100%;
+                padding: 1rem;
+            }
+        }
+
+        /* Small mobile adjustments */
+        @media (max-width: 576px) {
+            .content {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <header class="header">
+            <div class="header-content">
+                <button class="btn-icon mobile-menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="logo">ReengKi</h1>
+                <div class="header-actions">
+                    <button class="btn-icon">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+        <div class="main-content">
+            <nav class="sidebar" id="sidebar">
+                <div class="sidebar-content">
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin_head/assets">
+                                <i class="fas fa-th-large"></i> 에셋 관리
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin_head">
+                                <i class="fas fa-home"></i> 대시보드
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="content">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">에셋 관리</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#createAssetModal">
+                                <i class="fas fa-plus"></i> 에셋 추가
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="refreshAssets()">
+                                <i class="fas fa-sync"></i> 새로고침
+                            </button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#importModal">
+                                <i class="fas fa-upload"></i> JSON 가져오기
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="exportAssets()">
+                                <i class="fas fa-download"></i> JSON 내보내기
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter Section -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form id="filterForm" class="row g-3">
+                            <div class="col-md-3">
+                                <label for="curriculumFilter" class="form-label">커리큘럼</label>
+                                <select class="form-select" id="curriculumFilter" name="curriculum">
+                                    <option value="">모든 커리큘럼</option>
+                                    <!-- Options will be loaded from project_list.yaml -->
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="monthFilter" class="form-label">월</label>
+                                <select class="form-select" id="monthFilter" name="month">
+                                    <option value="">모든 월</option>
+                                    <option value="Jan">1월</option>
+                                    <option value="Feb">2월</option>
+                                    <option value="Mar">3월</option>
+                                    <option value="Apr">4월</option>
+                                    <option value="May">5월</option>
+                                    <option value="Jun">6월</option>
+                                    <option value="Jul">7월</option>
+                                    <option value="Aug">8월</option>
+                                    <option value="Sep">9월</option>
+                                    <option value="Oct">10월</option>
+                                    <option value="Nov">11월</option>
+                                    <option value="Dec">12월</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="bookIdFilter" class="form-label">교재 ID</label>
+                                <input type="text" class="form-control" id="bookIdFilter" name="book_id" placeholder="교재 ID 입력">
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-primary" style="margin-top: 32px;">
+                                    <i class="fas fa-filter"></i> 필터 적용
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="clearFilters()" style="margin-top: 32px;">
+                                    <i class="fas fa-times"></i> 초기화
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Assets Table -->
+                <div class="card shadow">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            에셋 목록 <span id="assetCount" class="badge bg-secondary">0</span>
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="assetsTable">
+                                <thead>
+                                    <tr>
+                                        <th>에셋 ID</th>
+                                        <th>커리큘럼</th>
+                                        <th>월</th>
+                                        <th>교재 ID</th>
+                                        <th>표지 이미지</th>
+                                        <th>자막 데이터</th>
+                                        <th>YouTube 링크</th>
+                                        <th>작업</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="assetsTableBody">
+                                    <!-- Assets will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Create Asset Modal -->
+    <div class="modal fade" id="createAssetModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">새 에셋 생성</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createAssetForm">
+                        <div class="mb-3">
+                            <label for="curriculumId" class="form-label">커리큘럼</label>
+                            <select class="form-select" id="curriculumId" name="curriculum" required onchange="updateBookId()">
+                                <option value="">커리큘럼 선택</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="monthSelect" class="form-label">월</label>
+                            <select class="form-select" id="monthSelect" name="month" required onchange="updateBookId()">
+                                <option value="">월 선택</option>
+                                <option value="Jan">1월</option>
+                                <option value="Feb">2월</option>
+                                <option value="Mar">3월</option>
+                                <option value="Apr">4월</option>
+                                <option value="May">5월</option>
+                                <option value="Jun">6월</option>
+                                <option value="Jul">7월</option>
+                                <option value="Aug">8월</option>
+                                <option value="Sep">9월</option>
+                                <option value="Oct">10월</option>
+                                <option value="Nov">11월</option>
+                                <option value="Dec">12월</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">표지 이미지 업로드</label>
+                            <div class="border rounded p-3">
+                                <input type="file" class="form-control mb-2" id="newAssetCoverFiles" accept="image/*" multiple>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i> 
+                                    여러 개의 이미지를 선택할 수 있습니다. JPG, PNG 형식만 지원됩니다.
+                                </div>
+                                <div id="newAssetCoverPreview" class="mt-2">
+                                    <!-- Cover preview will be shown here -->
+                                </div>
+                                <input type="hidden" id="covers" name="covers" value="[]">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subtitles" class="form-label">자막 데이터</label>
+                            <textarea class="form-control" id="subtitles" name="subtitles" rows="5" placeholder='예: [{"page_num": 1, "sentence_num": 1, "text": "Amazing Animals"}]' required></textarea>
+                            <div class="form-text">JSON 배열 형태로 입력해주세요.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="youtubeLinks" class="form-label">YouTube 링크</label>
+                            <textarea class="form-control" id="youtubeLinks" name="youtube_links" rows="5" placeholder='예: [{"thumbnail_file": "thumbnail/J1R_amazing.png", "youtube_url": "https://youtu.be/v-r7AtCFc-w", "title": "J1R Amazing"}]' required></textarea>
+                            <div class="form-text">JSON 배열 형태로 입력해주세요.</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="submit" class="btn btn-primary" form="createAssetForm">에셋 생성</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div class="modal fade" id="importModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">JSON에서 에셋 가져오기</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="importForm">
+                        <div class="mb-3">
+                            <label for="jsonFile" class="form-label">JSON 파일 선택</label>
+                            <input type="file" class="form-control" id="jsonFile" name="file" accept=".json">
+                        </div>
+                        <div class="mb-3">
+                            <label for="jsonContent" class="form-label">또는 JSON 내용 붙여넣기</label>
+                            <textarea class="form-control" id="jsonContent" name="json_content" rows="10" placeholder="JSON 내용을 여기에 붙여넣으세요..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary" onclick="importAssets()">가져오기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Asset Modal -->
+    <div class="modal fade" id="viewAssetModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">에셋 상세 정보</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="assetDetails">
+                        <!-- Asset details will be loaded here -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Cover Images Modal -->
+    <div class="modal fade" id="editCoverModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">표지 이미지 편집</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editCoverForm">
+                        <input type="hidden" id="editCoverAssetId" name="asset_id">
+                        
+                        <!-- Current covers display -->
+                        <div id="coverPreview" class="mb-3">
+                            <!-- Cover preview images will be shown here -->
+                        </div>
+                        
+                        <!-- File upload section -->
+                        <div class="mb-3">
+                            <label class="form-label">새 표지 이미지 업로드</label>
+                            <div class="border rounded p-3">
+                                <input type="file" class="form-control mb-2" id="coverFileInput" accept="image/*" multiple>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i> 
+                                    여러 개의 이미지를 선택할 수 있습니다. JPG, PNG 형식만 지원됩니다.
+                                </div>
+                                <button type="button" class="btn btn-outline-primary btn-sm mt-2" onclick="uploadCoverFiles()">
+                                    <i class="fas fa-upload"></i> 파일 업로드
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Upload progress -->
+                        <div id="coverUploadProgress" class="mb-3" style="display: none;">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                            </div>
+                            <div class="small text-muted mt-1" id="coverUploadStatus">업로드 중...</div>
+                        </div>
+                        
+                        <!-- Uploaded files list -->
+                        <div id="uploadedCoversList" class="mb-3">
+                            <!-- Uploaded files will be shown here -->
+                        </div>
+                        
+                        <!-- Manual path editing (advanced) -->
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="showAdvancedCoverEdit">
+                                <label class="form-check-label" for="showAdvancedCoverEdit">
+                                    고급: 경로 직접 편집
+                                </label>
+                            </div>
+                            <div id="advancedCoverEdit" style="display: none;" class="mt-2">
+                                <label for="editCovers" class="form-label">표지 이미지 경로들 (JSON)</label>
+                                <textarea class="form-control" id="editCovers" name="covers" rows="5" placeholder='예: ["cover/1_J1R.png", "cover/2_J1R.png"]'></textarea>
+                                <div class="form-text">JSON 배열 형태로 입력해주세요.</div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary" onclick="saveCoverChanges()">저장</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Subtitles Modal -->
+    <div class="modal fade" id="editSubtitlesModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">자막 편집</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editSubtitlesForm">
+                        <input type="hidden" id="editSubtitlesAssetId" name="asset_id">
+                        <div class="mb-3">
+                            <label for="editSubtitles" class="form-label">자막 데이터</label>
+                            <textarea class="form-control" id="editSubtitles" name="subtitles" rows="15" placeholder='예: [{"page_num": 1, "sentence_num": 1, "text": "Amazing Animals"}]' required></textarea>
+                            <div class="form-text">JSON 배열 형태로 입력해주세요. page_num, sentence_num, text 필드가 필요합니다.</div>
+                        </div>
+                        <div class="mb-3">
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="formatSubtitlesJson()">
+                                <i class="fas fa-magic"></i> JSON 포맷팅
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-info" onclick="validateSubtitlesJson()">
+                                <i class="fas fa-check"></i> JSON 검증
+                            </button>
+                        </div>
+                        <div id="subtitlesPreview" class="mb-3">
+                            <!-- Subtitles preview will be shown here -->
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary" onclick="saveSubtitlesChanges()">저장</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit YouTube Links Modal -->
+    <div class="modal fade" id="editYouTubeModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">YouTube 링크 편집</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editYouTubeForm">
+                        <input type="hidden" id="editYouTubeAssetId" name="asset_id">
+                        
+                        <!-- Current YouTube links display will be managed below -->
+                        
+                        <!-- Add new YouTube link section -->
+                        <div class="mb-3">
+                            <h6>새 YouTube 링크 추가</h6>
+                            <div class="border rounded p-3">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label">썸네일 이미지 업로드</label>
+                                        <input type="file" class="form-control mb-2" id="thumbnailFileInput" accept="image/*">
+                                        <div id="thumbnailPreview" class="mb-2">
+                                            <!-- Thumbnail preview will be shown here -->
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="youtubeUrl" class="form-label">YouTube URL</label>
+                                        <input type="url" class="form-control mb-2" id="youtubeUrl" placeholder="https://youtu.be/...">
+                                        
+                                        <label for="youtubeTitle" class="form-label">제목 (선택사항)</label>
+                                        <input type="text" class="form-control mb-2" id="youtubeTitle" placeholder="비디오 제목">
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-outline-success btn-sm" onclick="addYouTubeLink()">
+                                    <i class="fas fa-plus"></i> YouTube 링크 추가
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Current YouTube links management -->
+                        <div class="mb-3">
+                            <h6>현재 YouTube 링크들</h6>
+                            <div id="currentYouTubeLinks">
+                                <!-- Current links will be shown here -->
+                            </div>
+                        </div>
+                        <!-- Upload progress -->
+                        <div id="youtubeUploadProgress" class="mb-3" style="display: none;">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                            </div>
+                            <div class="small text-muted mt-1" id="youtubeUploadStatus">업로드 중...</div>
+                        </div>
+                        
+                        <!-- Manual JSON editing (advanced) -->
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="showAdvancedYouTubeEdit">
+                                <label class="form-check-label" for="showAdvancedYouTubeEdit">
+                                    고급: JSON 직접 편집
+                                </label>
+                            </div>
+                            <div id="advancedYouTubeEdit" style="display: none;" class="mt-2">
+                                <label for="editYouTubeLinks" class="form-label">YouTube 링크 데이터 (JSON)</label>
+                                <textarea class="form-control" id="editYouTubeLinks" name="youtube_links" rows="10" placeholder='예: [{"thumbnail_file": "thumbnail/J1R_amazing.png", "youtube_url": "https://youtu.be/v-r7AtCFc-w", "title": "J1R Amazing"}]'></textarea>
+                                <div class="form-text">JSON 배열 형태로 입력해주세요.</div>
+                                <div class="mt-2">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="formatYouTubeJson()">
+                                        <i class="fas fa-magic"></i> JSON 포맷팅
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-info" onclick="validateYouTubeJson()">
+                                        <i class="fas fa-check"></i> JSON 검증
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary" onclick="saveYouTubeChanges()">저장</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/admin.js"></script>
+    <script>
+        let currentAssets = [];
+
+        // Utility function to get cookie value
+        function getCookie(name) {
+            console.log('Looking for cookie:', name);
+            console.log('Document cookies:', document.cookie);
+            
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) {
+                const cookieValue = parts.pop().split(';').shift();
+                console.log('Found cookie value:', cookieValue);
+                return cookieValue;
+            }
+            console.log('Cookie not found');
+            return null;
+        }
+
+        // Mobile navigation functionality
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
+        }
+
+        // Close sidebar when clicking outside or on window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                closeSidebar();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is authenticated using auth_status cookie
+            const authStatus = getCookie('auth_status');
+            console.log('Auth status:', authStatus);
+            if (authStatus !== 'authenticated') {
+                console.log('Not authenticated, redirecting to login');
+                window.location.href = '/login';
+                return;
+            }
+            
+            // Wait for Bootstrap to be fully loaded
+            if (typeof bootstrap === 'undefined') {
+                console.error('Bootstrap is not loaded');
+                setTimeout(() => {
+                    if (typeof bootstrap === 'undefined') {
+                        alert('Bootstrap이 로드되지 않았습니다. 페이지를 새로고침해주세요.');
+                    }
+                }, 1000);
+                return;
+            }
+            
+            loadAssets();
+            loadCurriculumDataForFilters();
+            
+            // Setup filter form
+            document.getElementById('filterForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                applyFilters();
+            });
+            
+            // Initialize modal event listeners after DOM is ready
+            initializeModalEventListeners();
+            
+            // Setup new asset cover file handling
+            setupNewAssetCoverHandling();
+            
+            // Debug: Log that everything is ready
+            console.log('Admin page fully loaded and ready');
+        });
+
+        function initializeModalEventListeners() {
+            // Clean up any existing event listeners and reinitialize
+            const createButton = document.querySelector('[data-bs-target="#createAssetModal"]');
+            if (createButton) {
+                // Remove existing onclick attribute to prevent conflicts
+                createButton.removeAttribute('onclick');
+                
+                createButton.addEventListener('click', function(e) {
+                    console.log('Create asset button clicked');
+                    // Use Bootstrap's built-in modal trigger instead of manual creation
+                });
+            }
+
+            // Add event listener for modal form submission
+            const createAssetForm = document.getElementById('createAssetForm');
+            if (createAssetForm) {
+                createAssetForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    createAsset();
+                });
+            }
+
+            // Add modal event listeners for proper cleanup
+            const modalElement = document.getElementById('createAssetModal');
+            if (modalElement) {
+                // Clean up on modal hide
+                modalElement.addEventListener('hidden.bs.modal', function() {
+                    console.log('Modal hidden, cleaning up');
+                    
+                    // Reset form and clear any loading states
+                    const form = document.getElementById('createAssetForm');
+                    if (form) {
+                        form.reset();
+                        // Reset book ID field
+                        const bookIdField = document.getElementById('bookId');
+                        if (bookIdField) {
+                            bookIdField.value = '';
+                        }
+                    }
+                    
+                    // Reset submit button
+                    const submitButton = modalElement.querySelector('button[type="submit"]');
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = '에셋 생성';
+                    }
+
+                    // Remove any modal backdrop that might be stuck
+                    const backdrops = document.querySelectorAll('.modal-backdrop');
+                    backdrops.forEach(backdrop => backdrop.remove());
+                    
+                    // Ensure body doesn't have modal-open class
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+                });
+
+                modalElement.addEventListener('show.bs.modal', function() {
+                    console.log('Modal showing');
+                    // Load curriculum data when modal opens
+                    loadCurriculumData();
+                    // Setup cover file handling when modal opens
+                    setupNewAssetCoverHandling();
+                });
+            }
+
+            // Also handle import modal
+            const importModalElement = document.getElementById('importModal');
+            if (importModalElement) {
+                importModalElement.addEventListener('hidden.bs.modal', function() {
+                    console.log('Import modal hidden, cleaning up');
+                    
+                    // Reset import form
+                    const importForm = document.getElementById('importForm');
+                    if (importForm) {
+                        importForm.reset();
+                    }
+
+                    // Clean up any stuck backdrops
+                    const backdrops = document.querySelectorAll('.modal-backdrop');
+                    backdrops.forEach(backdrop => backdrop.remove());
+                    
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+                });
+            }
+        }
+
+        // Project curriculum data
+        let curriculumData = {};
+        
+        // Load curriculum data for filters
+        function loadCurriculumDataForFilters() {
+            fetch('/project_list.yaml')
+                .then(response => response.text())
+                .then(yamlText => {
+                    // Parse YAML manually (simple key-value parsing)
+                    curriculumData = parseProjectListYaml(yamlText);
+                    console.log('Curriculum data loaded for filters:', curriculumData);
+                    
+                    // Update filter curriculum dropdown
+                    updateFilterCurriculumDropdown();
+                })
+                .catch(error => {
+                    console.error('Failed to load curriculum data for filters:', error);
+                });
+        }
+        
+        // Update filter curriculum dropdown options
+        function updateFilterCurriculumDropdown() {
+            const curriculumFilter = document.getElementById('curriculumFilter');
+            if (!curriculumFilter) return;
+
+            // Clear existing options except the first one
+            while (curriculumFilter.children.length > 1) {
+                curriculumFilter.removeChild(curriculumFilter.lastChild);
+            }
+
+            // Add curriculum options
+            Object.keys(curriculumData).forEach(curriculum => {
+                const option = document.createElement('option');
+                option.value = curriculum;
+                option.textContent = curriculum;
+                curriculumFilter.appendChild(option);
+            });
+        }
+
+        // Load curriculum data from project_list.yaml
+        function loadCurriculumData() {
+            fetch('/project_list.yaml')
+                .then(response => response.text())
+                .then(yamlText => {
+                    // Parse YAML manually (simple key-value parsing)
+                    curriculumData = parseProjectListYaml(yamlText);
+                    console.log('Curriculum data loaded:', curriculumData);
+                    
+                    // Update curriculum dropdown
+                    updateCurriculumDropdown();
+                })
+                .catch(error => {
+                    console.error('Failed to load curriculum data:', error);
+                    // Fallback data
+                    curriculumData = {
+                        'Stage-1-1': {},
+                        'Stage-1-2': {},
+                        'Stage-2-1': {},
+                        'Stage-2-2': {},
+                        'Stage-3': {},
+                        'JELLY': {},
+                        'JUICE': {}
+                    };
+                    updateCurriculumDropdown();
+                });
+        }
+
+        // Simple YAML parser for project_list.yaml format
+        function parseProjectListYaml(yamlText) {
+            const lines = yamlText.split('\n');
+            const data = {};
+            let currentCurriculum = null;
+
+            for (const line of lines) {
+                const trimmed = line.trim();
+                if (!trimmed || trimmed.startsWith('#')) continue;
+
+                if (trimmed.endsWith(':') && !trimmed.startsWith(' ')) {
+                    // Curriculum name
+                    currentCurriculum = trimmed.slice(0, -1);
+                    data[currentCurriculum] = {};
+                } else if (currentCurriculum && trimmed.includes(':')) {
+                    // Month mapping
+                    const [month, bookId] = trimmed.split(':').map(s => s.trim());
+                    data[currentCurriculum][month] = bookId;
+                }
+            }
+
+            return data;
+        }
+
+        // Update curriculum dropdown options
+        function updateCurriculumDropdown() {
+            const curriculumSelect = document.getElementById('curriculumId');
+            if (!curriculumSelect) return;
+
+            // Clear existing options except the first one
+            while (curriculumSelect.children.length > 1) {
+                curriculumSelect.removeChild(curriculumSelect.lastChild);
+            }
+
+            // Add curriculum options
+            Object.keys(curriculumData).forEach(curriculum => {
+                const option = document.createElement('option');
+                option.value = curriculum;
+                option.textContent = curriculum;
+                curriculumSelect.appendChild(option);
+            });
+        }
+
+        // Update book ID based on curriculum and month selection
+        function updateBookId() {
+            const curriculumId = document.getElementById('curriculumId').value;
+            const month = document.getElementById('monthSelect').value;
+            
+            console.log(`Selected curriculum: ${curriculumId}, month: ${month}`);
+            
+            if (curriculumId && month && curriculumData[curriculumId]) {
+                const monthNumber = getMonthNumber(month);
+                const monthKey = `month_${monthNumber}`;
+                const bookId = curriculumData[curriculumId][monthKey];
+                
+                console.log(`Looking for ${curriculumId}.${monthKey} -> ${bookId}`);
+                
+                if (bookId) {
+                    console.log(`Found book ID: ${bookId}`);
+                    // Book ID is automatically determined, no need to set a field
+                } else {
+                    console.warn(`No book ID found for ${curriculumId} month ${monthNumber}`);
+                }
+            }
+        }
+
+        // Convert month name to number
+        function getMonthNumber(monthName) {
+            const months = {
+                'Jan': '01', 'Feb': '02', 'Mar': '03',
+                'Apr': '04', 'May': '05', 'Jun': '06',
+                'Jul': '07', 'Aug': '08', 'Sep': '09',
+                'Oct': '10', 'Nov': '11', 'Dec': '12'
+            };
+            return months[monthName] || '01';
+        }
+
+        // Helper function to normalize image URLs
+        function normalizeImageUrl(imagePath) {
+            if (!imagePath) return '';
+            
+            // If it's already a full URL (starts with http), return as is
+            if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+                return imagePath;
+            }
+            
+            // If it starts with /assets, return as is
+            if (imagePath.startsWith('/assets')) {
+                return imagePath;
+            }
+            
+            // If it starts with assets/, add leading slash
+            if (imagePath.startsWith('assets/')) {
+                return '/' + imagePath;
+            }
+            
+            // Otherwise, assume it's a relative path in assets folder
+            return '/assets/' + imagePath;
+        }
+
+        function loadAssets() {
+            API.get('/api/assets')
+                .then(data => {
+                    currentAssets = data.assets || [];
+                    renderAssetsTable(currentAssets);
+                    updateAssetCount(currentAssets.length);
+                })
+                .catch(error => {
+                    console.error('Failed to load assets:', error);
+                    Notification.error('에셋을 불러오는데 실패했습니다: ' + error.message);
+                });
+        }
+
+        function renderAssetsTable(assets) {
+            const tbody = document.getElementById('assetsTableBody');
+            tbody.innerHTML = '';
+
+            if (assets.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td colspan="8" class="text-center text-muted">
+                        <i class="fas fa-inbox fa-2x mb-2"></i><br>
+                        등록된 에셋이 없습니다.
+                    </td>
+                `;
+                tbody.appendChild(row);
+                return;
+            }
+
+            assets.forEach(asset => {
+                const row = document.createElement('tr');
+                const firstCover = asset.covers && asset.covers.length > 0 ? asset.covers[0] : '';
+                row.innerHTML = `
+                    <td>${asset.id}</td>
+                    <td>${asset.curriculum}</td>
+                    <td>${asset.month}</td>
+                    <td>${asset.book_id}</td>
+                    <td>
+                        ${firstCover ? `<img src="/asset/${asset.curriculum}/${asset.month}/${firstCover}" alt="표지" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.style.display='none'">` : ''}
+                        <div style="font-size: 0.8em;">${asset.covers.length}개 표지</div>
+                    </td>
+                    <td>
+                        <div>${asset.subtitles.length}개 자막</div>
+                    </td>
+                    <td>
+                        <div>${asset.youtube_links.length}개 링크</div>
+                        ${asset.youtube_links.slice(0, 2).map(link => `
+                            <div style="font-size: 0.8em;">
+                                <a href="${link.youtube_url}" target="_blank" class="text-decoration-none">
+                                    <i class="fab fa-youtube text-danger"></i> ${link.title || 'YouTube'}
+                                </a>
+                            </div>
+                        `).join('')}
+                        ${asset.youtube_links.length > 2 ? `<div style="font-size: 0.8em;">...외 ${asset.youtube_links.length - 2}개</div>` : ''}
+                    </td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="viewAsset('${asset.id}')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-warning" onclick="editCoverImages('${asset.id}')" title="표지 이미지 변경">
+                                <i class="fas fa-image"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-info" onclick="editSubtitles('${asset.id}')" title="자막 변경">
+                                <i class="fas fa-closed-captioning"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="editYouTubeLinks('${asset.id}')" title="YouTube 링크 변경">
+                                <i class="fab fa-youtube"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteAsset('${asset.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function updateAssetCount(count) {
+            document.getElementById('assetCount').textContent = count;
+        }
+
+        // Modal functions are now handled by Bootstrap data attributes
+
+        // Setup new asset cover file handling
+        function setupNewAssetCoverHandling() {
+            const newAssetCoverFiles = document.getElementById('newAssetCoverFiles');
+            if (newAssetCoverFiles && !newAssetCoverFiles.dataset.initialized) {
+                newAssetCoverFiles.dataset.initialized = 'true';
+                newAssetCoverFiles.onchange = function() {
+                    const files = this.files;
+                    const previewDiv = document.getElementById('newAssetCoverPreview');
+                    
+                    if (files.length === 0) {
+                        previewDiv.innerHTML = '';
+                        return;
+                    }
+                    
+                    let previewHtml = '<div class="mt-2"><h6>선택된 파일들:</h6><div class="d-flex flex-wrap">';
+                    let loadedCount = 0;
+                    
+                    Array.from(files).forEach((file, index) => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            previewHtml += `
+                                <div class="d-inline-block m-1 text-center">
+                                    <img src="${e.target.result}" alt="미리보기" style="width: 80px; height: 80px; object-fit: cover;" class="border rounded">
+                                    <div class="small">${file.name}</div>
+                                </div>
+                            `;
+                            loadedCount++;
+                            if (loadedCount === files.length) {
+                                previewHtml += '</div></div>';
+                                previewDiv.innerHTML = previewHtml;
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                };
+            }
+        }
+
+        function createAsset() {
+            console.log('createAsset function called');
+            const form = document.getElementById('createAssetForm');
+            
+            // Validate form before submitting
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            const formData = new FormData(form);
+            const coverFiles = document.getElementById('newAssetCoverFiles').files;
+            
+            // If there are cover files to upload, upload them first
+            if (coverFiles.length > 0) {
+                uploadNewAssetCovers(coverFiles).then(uploadedPaths => {
+                    proceedWithAssetCreation(formData, uploadedPaths);
+                }).catch(error => {
+                    Notification.error('표지 이미지 업로드 실패: ' + error.message);
+                });
+            } else {
+                // No cover files, proceed with existing covers value
+                try {
+                    const covers = JSON.parse(formData.get('covers') || '[]');
+                    proceedWithAssetCreation(formData, covers);
+                } catch (error) {
+                    Notification.error('JSON 형식이 올바르지 않습니다: ' + error.message);
+                }
+            }
+        }
+        
+        function uploadNewAssetCovers(files) {
+            return new Promise((resolve, reject) => {
+                let uploadedFiles = [];
+                let completedUploads = 0;
+                
+                Array.from(files).forEach((file) => {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    
+                    fetch('/api/upload', {
+                        method: 'POST',
+                        credentials: 'include',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        completedUploads++;
+                        
+                        if (data.success) {
+                            // Store the relative path for cover images
+                            const filename = data.file_path.split('/').pop();
+                            uploadedFiles.push(`cover/${filename}`);
+                        }
+                        
+                        if (completedUploads === files.length) {
+                            resolve(uploadedFiles);
+                        }
+                    })
+                    .catch(error => {
+                        completedUploads++;
+                        console.error('Upload error:', error);
+                        
+                        if (completedUploads === files.length) {
+                            if (uploadedFiles.length > 0) {
+                                resolve(uploadedFiles);
+                            } else {
+                                reject(error);
+                            }
+                        }
+                    });
+                });
+            });
+        }
+        
+        function proceedWithAssetCreation(formData, covers) {
+            try {
+                const assetData = {
+                    curriculum: formData.get('curriculum'),
+                    month: formData.get('month'),
+                    covers: covers,
+                    subtitles: JSON.parse(formData.get('subtitles')),
+                    youtube_links: JSON.parse(formData.get('youtube_links'))
+                };
+            } catch (error) {
+                Notification.error('JSON 형식이 올바르지 않습니다: ' + error.message);
+                return;
+            }
+
+            console.log('Sending asset data:', assetData);
+
+            // Disable submit button to prevent double submission
+            const submitButton = document.querySelector('#createAssetForm button[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>생성 중...';
+            }
+
+            API.post('/api/assets', assetData)
+                .then(data => {
+                    console.log('Asset created successfully:', data);
+                    Notification.success('에셋이 성공적으로 생성되었습니다!');
+                    
+                    // Hide the modal
+                    const modalElement = document.getElementById('createAssetModal');
+                    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    }
+                    
+                    document.getElementById('createAssetForm').reset();
+                    document.getElementById('newAssetCoverPreview').innerHTML = '';
+                    
+                    // Refresh assets list
+                    loadAssets();
+                })
+                .catch(error => {
+                    console.error('Failed to create asset:', error);
+                    Notification.error('에셋 생성에 실패했습니다: ' + error.message);
+                    
+                    // Re-enable submit button on error
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = '에셋 생성';
+                    }
+                });
+        }
+
+        function applyFilters() {
+            const formData = new FormData(document.getElementById('filterForm'));
+            const params = new URLSearchParams();
+            
+            if (formData.get('curriculum')) params.append('curriculum', formData.get('curriculum'));
+            if (formData.get('month')) params.append('month', formData.get('month'));
+            if (formData.get('book_id')) params.append('book_id', formData.get('book_id'));
+            
+            API.get('/api/assets/filter?' + params.toString())
+                .then(data => {
+                    renderAssetsTable(data.assets || []);
+                    updateAssetCount(data.total_found || 0);
+                })
+                .catch(error => {
+                    console.error('Failed to filter assets:', error);
+                    Notification.error('에셋 필터링에 실패했습니다: ' + error.message);
+                });
+        }
+
+        function clearFilters() {
+            document.getElementById('filterForm').reset();
+            renderAssetsTable(currentAssets);
+            updateAssetCount(currentAssets.length);
+        }
+
+        function viewAsset(assetId) {
+            const asset = currentAssets.find(a => a.id === assetId);
+            if (!asset) {
+                Notification.error('에셋을 찾을 수 없습니다');
+                return;
+            }
+
+            const detailsHtml = `
+                <div class="asset-details">
+                    <h6>에셋 ID: ${asset.id}</h6>
+                    <div class="mb-3">
+                        <h6 class="text-primary">커리큘럼: ${asset.curriculum}</h6>
+                        <div class="card mb-2">
+                            <div class="card-body">
+                                <h6 class="card-title">${asset.book_id} - ${asset.month}</h6>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <h6>표지 이미지:</h6>
+                                        ${asset.covers.map(cover => `
+                                            <img src="/asset/${asset.curriculum}/${asset.month}/${cover}" alt="표지" class="img-fluid mb-2" style="max-height: 150px;" onerror="this.style.display='none'">
+                                        `).join('')}
+                                    </div>
+                                    <div class="col-md-8">
+                                        <h6>자막 데이터 (${asset.subtitles.length}개):</h6>
+                                        <div style="max-height: 200px; overflow-y: auto;">
+                                            ${asset.subtitles.slice(0, 5).map(sub => `
+                                                <div class="mb-1 small">
+                                                    페이지 ${sub.page_num}, 문장 ${sub.sentence_num}: ${sub.text}
+                                                </div>
+                                            `).join('')}
+                                            ${asset.subtitles.length > 5 ? `<div class="small text-muted">...외 ${asset.subtitles.length - 5}개</div>` : ''}
+                                        </div>
+                                        <h6 class="mt-3">YouTube 링크:</h6>
+                                        ${asset.youtube_links.map(link => `
+                                            <div class="mb-2">
+                                                ${link.thumbnail_file ? `<img src="/asset/${asset.curriculum}/${asset.month}/${link.thumbnail_file}" alt="썸네일" style="width: 100px; height: 60px; object-fit: cover;" onerror="this.style.display='none'">` : ''}
+                                                <br>
+                                                <a href="${link.youtube_url}" target="_blank" class="btn btn-sm btn-outline-danger">
+                                                    <i class="fab fa-youtube"></i> ${link.title || 'YouTube에서 보기'}
+                                                </a>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('assetDetails').innerHTML = detailsHtml;
+            
+            // Use Bootstrap's built-in modal trigger
+            const modalElement = document.getElementById('viewAssetModal');
+            if (modalElement) {
+                const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+                modal.show();
+            }
+        }
+
+        function deleteAsset(assetId) {
+            // Find the asset to show details in confirmation
+            const asset = currentAssets.find(a => a.id === assetId);
+            const assetInfo = asset ? `에셋 ID: ${asset.id}` : `에셋 ID: ${assetId}`;
+            
+            if (confirm(`정말로 이 에셋을 삭제하시겠습니까?\n${assetInfo}\n\n관련된 모든 파일(이미지, 썸네일)도 함께 삭제됩니다.`)) {
+                // Show loading state
+                const deleteButton = document.querySelector(`button[onclick="deleteAsset('${assetId}')"]`);
+                if (deleteButton) {
+                    deleteButton.disabled = true;
+                    deleteButton.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+                }
+
+                API.delete('/api/assets/' + assetId)
+                    .then(() => {
+                        Notification.success('에셋과 관련 파일들이 성공적으로 삭제되었습니다!');
+                        
+                        // Remove from current assets array for immediate UI update
+                        currentAssets = currentAssets.filter(asset => asset.id !== assetId);
+                        
+                        // Re-render table immediately
+                        renderAssetsTable(currentAssets);
+                        updateAssetCount(currentAssets.length);
+                        
+                        // Also refresh from server for consistency
+                        setTimeout(() => {
+                            loadAssets();
+                        }, 500);
+                    })
+                    .catch(error => {
+                        console.error('Failed to delete asset:', error);
+                        Notification.error('에셋 삭제에 실패했습니다: ' + error.message);
+                        
+                        // Re-enable button on error
+                        if (deleteButton) {
+                            deleteButton.disabled = false;
+                            deleteButton.innerHTML = '<i class="fas fa-trash"></i>';
+                        }
+                    });
+            }
+        }
+
+        function refreshAssets() {
+            // Show loading state for refresh button
+            const refreshButton = document.querySelector('button[onclick="refreshAssets()"]');
+            if (refreshButton) {
+                refreshButton.disabled = true;
+                const originalContent = refreshButton.innerHTML;
+                refreshButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>새로고침';
+                
+                // Re-enable after loading
+                setTimeout(() => {
+                    refreshButton.disabled = false;
+                    refreshButton.innerHTML = originalContent;
+                }, 1000);
+            }
+            
+            loadAssets();
+            Notification.info('에셋 목록을 새로고침했습니다.');
+        }
+
+        // Import modal is now handled by Bootstrap data attributes
+
+        function importAssets() {
+            const fileInput = document.getElementById('jsonFile');
+            const textInput = document.getElementById('jsonContent');
+            
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const jsonData = JSON.parse(e.target.result);
+                        processImportData(jsonData);
+                    } catch (error) {
+                        Notification.error('잘못된 JSON 파일입니다: ' + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            } else if (textInput.value.trim()) {
+                try {
+                    const jsonData = JSON.parse(textInput.value);
+                    processImportData(jsonData);
+                } catch (error) {
+                    Notification.error('잘못된 JSON 내용입니다: ' + error.message);
+                }
+            } else {
+                Notification.warning('파일을 선택하거나 JSON 내용을 입력해주세요');
+            }
+        }
+
+        function processImportData(jsonData) {
+            API.post('/api/assets', jsonData)
+                .then(data => {
+                    Notification.success('에셋이 성공적으로 가져와졌습니다!');
+                    
+                    // Hide the modal
+                    const modalElement = document.getElementById('importModal');
+                    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    }
+                    
+                    document.getElementById('importForm').reset();
+                    loadAssets();
+                })
+                .catch(error => {
+                    console.error('Failed to import assets:', error);
+                    Notification.error('에셋 가져오기에 실패했습니다: ' + error.message);
+                });
+        }
+
+        function exportAssets() {
+            API.get('/api/assets')
+                .then(data => {
+                    const jsonData = JSON.stringify(data, null, 2);
+                    const blob = new Blob([jsonData], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'assets_export_' + new Date().toISOString().split('T')[0] + '.json';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    Notification.success('에셋이 성공적으로 내보내졌습니다!');
+                })
+                .catch(error => {
+                    console.error('Failed to export assets:', error);
+                    Notification.error('에셋 내보내기에 실패했습니다: ' + error.message);
+                });
+        }
+
+        function uploadCoverImage() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    uploadFile(file, 'cover_image', function(response) {
+                        document.getElementById('coverImg').value = response.file_path;
+                        Notification.success('표지 이미지가 성공적으로 업로드되었습니다!');
+                    });
+                }
+            };
+            input.click();
+        }
+
+        function uploadVideoImage() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    uploadFile(file, 'video_image', function(response) {
+                        document.getElementById('videoImg').value = response.file_path;
+                        Notification.success('동영상 썸네일이 성공적으로 업로드되었습니다!');
+                    });
+                }
+            };
+            input.click();
+        }
+
+        function uploadFile(file, type, callback) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('type', type);
+
+            fetch('/api/upload', {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    callback(data);
+                } else {
+                    Notification.error('업로드 실패: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Upload error:', error);
+                Notification.error('업로드 실패: ' + error.message);
+            });
+        }
+
+        // Edit Cover Images Functions
+        function editCoverImages(assetId) {
+            const asset = currentAssets.find(a => a.id === assetId);
+            if (!asset) {
+                Notification.error('에셋을 찾을 수 없습니다');
+                return;
+            }
+
+            document.getElementById('editCoverAssetId').value = assetId;
+            document.getElementById('editCovers').value = JSON.stringify(asset.covers, null, 2);
+            
+            // Show cover preview
+            updateCoverPreview(asset);
+            
+            // Reset upload section
+            document.getElementById('coverFileInput').value = '';
+            document.getElementById('uploadedCoversList').innerHTML = '';
+            
+            // Setup advanced toggle
+            const advancedCheckbox = document.getElementById('showAdvancedCoverEdit');
+            const advancedSection = document.getElementById('advancedCoverEdit');
+            advancedCheckbox.onchange = function() {
+                advancedSection.style.display = this.checked ? 'block' : 'none';
+            };
+
+            const modalElement = document.getElementById('editCoverModal');
+            const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+            modal.show();
+        }
+
+        function updateCoverPreview(asset) {
+            const previewDiv = document.getElementById('coverPreview');
+            if (!asset.covers || asset.covers.length === 0) {
+                previewDiv.innerHTML = '<p class="text-muted">표지 이미지가 없습니다.</p>';
+                return;
+            }
+
+            const previewHtml = asset.covers.map(cover => `
+                <div class="d-inline-block m-2">
+                    <img src="/asset/${asset.curriculum}/${asset.month}/${cover}" 
+                         alt="표지" 
+                         style="width: 100px; height: 100px; object-fit: cover;" 
+                         class="border rounded"
+                         onerror="this.style.display='none'">
+                    <div class="small text-center mt-1">${cover}</div>
+                </div>
+            `).join('');
+
+            previewDiv.innerHTML = `
+                <h6>현재 표지 이미지들:</h6>
+                <div>${previewHtml}</div>
+            `;
+        }
+
+        // Upload cover files function
+        function uploadCoverFiles() {
+            console.log('uploadCoverFiles() called');
+            const fileInput = document.getElementById('coverFileInput');
+            const files = fileInput.files;
+            
+            console.log('Selected files:', files.length);
+            
+            if (files.length === 0) {
+                Notification.warning('업로드할 파일을 선택해주세요');
+                return;
+            }
+
+            const progressDiv = document.getElementById('coverUploadProgress');
+            const progressBar = progressDiv.querySelector('.progress-bar');
+            const statusDiv = document.getElementById('coverUploadStatus');
+            const uploadedList = document.getElementById('uploadedCoversList');
+            
+            progressDiv.style.display = 'block';
+            
+            let uploadedFiles = [];
+            let completedUploads = 0;
+            
+            Array.from(files).forEach((file, index) => {
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                fetch('/api/upload', {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                })
+                .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
+                .then(data => {
+                    completedUploads++;
+                    const progress = (completedUploads / files.length) * 100;
+                    progressBar.style.width = progress + '%';
+                    statusDiv.textContent = `업로드 중... ${completedUploads}/${files.length}`;
+                    
+                    if (data.success) {
+                        console.log('File uploaded successfully:', data.file_path);
+                        uploadedFiles.push(data.file_path);
+                        
+                        // Add to uploaded files list
+                        const fileDiv = document.createElement('div');
+                        fileDiv.className = 'border rounded p-2 mb-2 d-flex align-items-center justify-content-between';
+                        fileDiv.innerHTML = `
+                            <div class="d-flex align-items-center">
+                                <img src="${data.file_path}" alt="업로드된 이미지" style="width: 50px; height: 50px; object-fit: cover;" class="me-2 rounded">
+                                <span>${file.name}</span>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeCoverFile('${data.file_path}', this)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                        uploadedList.appendChild(fileDiv);
+                    } else {
+                        Notification.error(`${file.name} 업로드 실패: ${data.message}`);
+                    }
+                    
+                    if (completedUploads === files.length) {
+                        progressDiv.style.display = 'none';
+                        if (uploadedFiles.length > 0) {
+                            Notification.success(`${uploadedFiles.length}개 파일이 성공적으로 업로드되었습니다`);
+                            
+                            // Get current covers to maintain existing filenames (overwrite mode)
+                            const currentCovers = JSON.parse(document.getElementById('editCovers').value || '[]');
+                            
+                            // Replace files but keep the existing filenames exactly as they are
+                            // The backend will handle moving uploaded files to overwrite existing ones
+                            document.getElementById('editCovers').value = JSON.stringify(currentCovers, null, 2);
+                            
+                            // Show success message indicating files will be replaced
+                            console.log('Files will be replaced:', currentCovers);
+                        }
+                    }
+                })
+                .catch(error => {
+                    completedUploads++;
+                    console.error('Upload error for', file.name, ':', error);
+                    Notification.error(`${file.name} 업로드 실패: ${error.message}`);
+                    
+                    if (completedUploads === files.length) {
+                        progressDiv.style.display = 'none';
+                        console.log('All uploads completed with errors');
+                    }
+                });
+            });
+        }
+        
+        function removeCoverFile(filePath, buttonElement) {
+            // Remove from uploaded list
+            buttonElement.closest('div').remove();
+            
+            // Remove from JSON textarea
+            const currentCovers = JSON.parse(document.getElementById('editCovers').value || '[]');
+            // Extract filename and create cover path
+            const filename = filePath.split('/').pop();
+            const coverPath = `cover/${filename}`;
+            const updatedCovers = currentCovers.filter(cover => cover !== coverPath);
+            document.getElementById('editCovers').value = JSON.stringify(updatedCovers, null, 2);
+            
+            Notification.info('파일이 목록에서 제거되었습니다');
+        }
+
+        function saveCoverChanges() {
+            const assetId = document.getElementById('editCoverAssetId').value;
+            const coversText = document.getElementById('editCovers').value;
+
+            try {
+                const covers = JSON.parse(coversText);
+                if (!Array.isArray(covers)) {
+                    throw new Error('배열 형태가 아닙니다');
+                }
+
+                const updateData = {
+                    covers: covers
+                };
+
+                // Disable save button to prevent double submission
+                const saveButton = document.querySelector('#editCoverModal .btn-primary');
+                saveButton.disabled = true;
+                saveButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>저장 중...';
+
+                API.put(`/api/assets/${assetId}`, updateData)
+                    .then(data => {
+                        Notification.success('표지 이미지가 성공적으로 업데이트되었습니다!');
+                        
+                        // Hide the modal
+                        const modalElement = document.getElementById('editCoverModal');
+                        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                        modalInstance.hide();
+                        
+                        // Refresh the assets list
+                        loadAssets();
+                    })
+                    .catch(error => {
+                        console.error('Failed to update covers:', error);
+                        Notification.error('표지 이미지 업데이트에 실패했습니다: ' + error.message);
+                    })
+                    .finally(() => {
+                        // Re-enable save button
+                        saveButton.disabled = false;
+                        saveButton.innerHTML = '저장';
+                    });
+
+            } catch (error) {
+                Notification.error('잘못된 JSON 형식입니다: ' + error.message);
+            }
+        }
+
+        // Edit Subtitles Functions
+        function editSubtitles(assetId) {
+            const asset = currentAssets.find(a => a.id === assetId);
+            if (!asset) {
+                Notification.error('에셋을 찾을 수 없습니다');
+                return;
+            }
+
+            document.getElementById('editSubtitlesAssetId').value = assetId;
+            document.getElementById('editSubtitles').value = JSON.stringify(asset.subtitles, null, 2);
+            
+            // Show subtitles preview
+            updateSubtitlesPreview(asset.subtitles);
+
+            const modalElement = document.getElementById('editSubtitlesModal');
+            const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+            modal.show();
+        }
+
+        function updateSubtitlesPreview(subtitles) {
+            const previewDiv = document.getElementById('subtitlesPreview');
+            if (!subtitles || subtitles.length === 0) {
+                previewDiv.innerHTML = '<p class="text-muted">자막 데이터가 없습니다.</p>';
+                return;
+            }
+
+            const previewHtml = subtitles.slice(0, 10).map(sub => `
+                <div class="border-bottom py-1">
+                    <small class="text-muted">페이지 ${sub.page_num}, 문장 ${sub.sentence_num}:</small>
+                    <div>${sub.text}</div>
+                </div>
+            `).join('');
+
+            previewDiv.innerHTML = `
+                <h6>자막 미리보기 (처음 10개):</h6>
+                <div style="max-height: 200px; overflow-y: auto;">
+                    ${previewHtml}
+                    ${subtitles.length > 10 ? `<div class="text-muted small mt-2">...외 ${subtitles.length - 10}개</div>` : ''}
+                </div>
+            `;
+        }
+
+        function formatSubtitlesJson() {
+            const textarea = document.getElementById('editSubtitles');
+            try {
+                const parsed = JSON.parse(textarea.value);
+                textarea.value = JSON.stringify(parsed, null, 2);
+                Notification.success('JSON이 포맷팅되었습니다');
+            } catch (error) {
+                Notification.error('잘못된 JSON 형식입니다: ' + error.message);
+            }
+        }
+
+        function validateSubtitlesJson() {
+            const textarea = document.getElementById('editSubtitles');
+            try {
+                const parsed = JSON.parse(textarea.value);
+                if (!Array.isArray(parsed)) {
+                    throw new Error('배열 형태가 아닙니다');
+                }
+                
+                for (let i = 0; i < parsed.length; i++) {
+                    const item = parsed[i];
+                    if (!item.page_num || !item.sentence_num || !item.text) {
+                        throw new Error(`${i + 1}번째 항목에 필수 필드가 없습니다 (page_num, sentence_num, text 필요)`);
+                    }
+                }
+                
+                updateSubtitlesPreview(parsed);
+                Notification.success(`${parsed.length}개 자막 항목이 검증되었습니다`);
+            } catch (error) {
+                Notification.error('검증 실패: ' + error.message);
+            }
+        }
+
+        function saveSubtitlesChanges() {
+            const assetId = document.getElementById('editSubtitlesAssetId').value;
+            const subtitlesText = document.getElementById('editSubtitles').value;
+
+            try {
+                const subtitles = JSON.parse(subtitlesText);
+                if (!Array.isArray(subtitles)) {
+                    throw new Error('배열 형태가 아닙니다');
+                }
+
+                // Validate subtitle structure
+                for (let i = 0; i < subtitles.length; i++) {
+                    const item = subtitles[i];
+                    if (!item.page_num || !item.sentence_num || !item.text) {
+                        throw new Error(`${i + 1}번째 항목에 필수 필드가 없습니다`);
+                    }
+                }
+
+                const updateData = {
+                    subtitles: subtitles
+                };
+
+                // Disable save button to prevent double submission
+                const saveButton = document.querySelector('#editSubtitlesModal .btn-primary');
+                saveButton.disabled = true;
+                saveButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>저장 중...';
+
+                API.put(`/api/assets/${assetId}`, updateData)
+                    .then(data => {
+                        Notification.success('자막이 성공적으로 업데이트되었습니다!');
+                        
+                        // Hide the modal
+                        const modalElement = document.getElementById('editSubtitlesModal');
+                        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                        modalInstance.hide();
+                        
+                        // Refresh the assets list
+                        loadAssets();
+                    })
+                    .catch(error => {
+                        console.error('Failed to update subtitles:', error);
+                        Notification.error('자막 업데이트에 실패했습니다: ' + error.message);
+                    })
+                    .finally(() => {
+                        // Re-enable save button
+                        saveButton.disabled = false;
+                        saveButton.innerHTML = '저장';
+                    });
+
+            } catch (error) {
+                Notification.error('잘못된 JSON 형식입니다: ' + error.message);
+            }
+        }
+
+        // Edit YouTube Links Functions
+        function editYouTubeLinks(assetId) {
+            const asset = currentAssets.find(a => a.id === assetId);
+            if (!asset) {
+                Notification.error('에셋을 찾을 수 없습니다');
+                return;
+            }
+
+            document.getElementById('editYouTubeAssetId').value = assetId;
+            document.getElementById('editYouTubeLinks').value = JSON.stringify(asset.youtube_links, null, 2);
+            
+            // Display current YouTube links for management
+            displayCurrentYouTubeLinks(asset.youtube_links, asset);
+            
+            // Reset form inputs
+            document.getElementById('thumbnailFileInput').value = '';
+            document.getElementById('youtubeUrl').value = '';
+            document.getElementById('youtubeTitle').value = '';
+            document.getElementById('thumbnailPreview').innerHTML = '';
+            
+            // Setup advanced toggle
+            const advancedCheckbox = document.getElementById('showAdvancedYouTubeEdit');
+            const advancedSection = document.getElementById('advancedYouTubeEdit');
+            advancedCheckbox.onchange = function() {
+                advancedSection.style.display = this.checked ? 'block' : 'none';
+            };
+            
+            // Setup thumbnail preview
+            document.getElementById('thumbnailFileInput').onchange = function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('thumbnailPreview').innerHTML = `
+                            <img src="${e.target.result}" alt="썸네일 미리보기" style="width: 100px; height: 60px; object-fit: cover;" class="border rounded">
+                        `;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+
+            const modalElement = document.getElementById('editYouTubeModal');
+            const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+            modal.show();
+        }
+
+        // YouTube preview function removed as requested
+
+        function formatYouTubeJson() {
+            const textarea = document.getElementById('editYouTubeLinks');
+            try {
+                const parsed = JSON.parse(textarea.value);
+                textarea.value = JSON.stringify(parsed, null, 2);
+                Notification.success('JSON이 포맷팅되었습니다');
+            } catch (error) {
+                Notification.error('잘못된 JSON 형식입니다: ' + error.message);
+            }
+        }
+
+        function validateYouTubeJson() {
+            const textarea = document.getElementById('editYouTubeLinks');
+            try {
+                const parsed = JSON.parse(textarea.value);
+                if (!Array.isArray(parsed)) {
+                    throw new Error('배열 형태가 아닙니다');
+                }
+                
+                for (let i = 0; i < parsed.length; i++) {
+                    const item = parsed[i];
+                    if (!item.thumbnail_file || !item.youtube_url) {
+                        throw new Error(`${i + 1}번째 항목에 필수 필드가 없습니다 (thumbnail_file, youtube_url 필요)`);
+                    }
+                    
+                    // Validate YouTube URL format
+                    if (!item.youtube_url.includes('youtu')) {
+                        throw new Error(`${i + 1}번째 항목의 YouTube URL이 유효하지 않습니다`);
+                    }
+                }
+                
+                Notification.success(`${parsed.length}개 YouTube 링크가 검증되었습니다`);
+            } catch (error) {
+                Notification.error('검증 실패: ' + error.message);
+            }
+        }
+
+        // Preview function removed as requested
+
+        // Display current YouTube links with edit/delete options
+        function displayCurrentYouTubeLinks(youtubeLinks, asset) {
+            const linksDiv = document.getElementById('currentYouTubeLinks');
+            if (!youtubeLinks || youtubeLinks.length === 0) {
+                linksDiv.innerHTML = '<p class="text-muted">현재 YouTube 링크가 없습니다.</p>';
+                return;
+            }
+
+            const linksHtml = youtubeLinks.map((link, index) => `
+                <div class="card mb-2" data-index="${index}">
+                    <div class="card-body p-2">
+                        <div class="row align-items-center">
+                            <div class="col-md-2">
+                                ${link.thumbnail_file ? `
+                                    <img src="/asset/${asset.curriculum}/${asset.month}/${link.thumbnail_file}" 
+                                         alt="썸네일" 
+                                         style="width: 80px; height: 48px; object-fit: cover;" 
+                                         class="border rounded"
+                                         onerror="this.style.display='none'">
+                                ` : '<div class="bg-light border rounded" style="width: 80px; height: 48px; display: flex; align-items: center; justify-content: center;"><i class="fas fa-image text-muted"></i></div>'}
+                            </div>
+                            <div class="col-md-8">
+                                <h6 class="mb-1">${link.title || '제목 없음'}</h6>
+                                <small class="text-muted">
+                                    <a href="${link.youtube_url}" target="_blank" class="text-decoration-none">
+                                        <i class="fab fa-youtube text-danger"></i> ${link.youtube_url}
+                                    </a>
+                                </small>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeYouTubeLink(${index})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            linksDiv.innerHTML = linksHtml;
+        }
+        
+        // Add new YouTube link
+        function addYouTubeLink() {
+            const thumbnailFile = document.getElementById('thumbnailFileInput').files[0];
+            const youtubeUrl = document.getElementById('youtubeUrl').value.trim();
+            const youtubeTitle = document.getElementById('youtubeTitle').value.trim();
+            
+            if (!thumbnailFile) {
+                Notification.warning('썸네일 이미지를 선택해주세요');
+                return;
+            }
+            
+            if (!youtubeUrl) {
+                Notification.warning('YouTube URL을 입력해주세요');
+                return;
+            }
+            
+            if (!youtubeUrl.includes('youtu')) {
+                Notification.warning('올바른 YouTube URL을 입력해주세요');
+                return;
+            }
+            
+            // Show upload progress
+            const progressDiv = document.getElementById('youtubeUploadProgress');
+            const statusDiv = document.getElementById('youtubeUploadStatus');
+            progressDiv.style.display = 'block';
+            statusDiv.textContent = '썸네일 업로드 중...';
+            
+            // Upload thumbnail first
+            const formData = new FormData();
+            formData.append('file', thumbnailFile);
+            
+            fetch('/api/upload', {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                progressDiv.style.display = 'none';
+                
+                if (data.success) {
+                    // Add to YouTube links
+                    const currentLinks = JSON.parse(document.getElementById('editYouTubeLinks').value || '[]');
+                    // Convert upload path to thumbnail path relative to curriculum/month folder
+                    const filename = data.file_path.split('/').pop();
+                    const thumbnailPath = `thumbnail/${filename}`;
+                    
+                    const newLink = {
+                        thumbnail_file: thumbnailPath,
+                        youtube_url: youtubeUrl,
+                        title: youtubeTitle || '제목 없음'
+                    };
+                    
+                    currentLinks.push(newLink);
+                    document.getElementById('editYouTubeLinks').value = JSON.stringify(currentLinks, null, 2);
+                    
+                    // Update display
+                    const assetId = document.getElementById('editYouTubeAssetId').value;
+                    const asset = currentAssets.find(a => a.id === assetId);
+                    displayCurrentYouTubeLinks(currentLinks, asset);
+                    
+                    // Reset form
+                    document.getElementById('thumbnailFileInput').value = '';
+                    document.getElementById('youtubeUrl').value = '';
+                    document.getElementById('youtubeTitle').value = '';
+                    document.getElementById('thumbnailPreview').innerHTML = '';
+                    
+                    Notification.success('YouTube 링크가 추가되었습니다');
+                } else {
+                    Notification.error('썸네일 업로드 실패: ' + data.message);
+                }
+            })
+            .catch(error => {
+                progressDiv.style.display = 'none';
+                console.error('Upload error:', error);
+                Notification.error('썸네일 업로드 실패: ' + error.message);
+            });
+        }
+        
+        // Remove YouTube link
+        function removeYouTubeLink(index) {
+            const currentLinks = JSON.parse(document.getElementById('editYouTubeLinks').value || '[]');
+            currentLinks.splice(index, 1);
+            document.getElementById('editYouTubeLinks').value = JSON.stringify(currentLinks, null, 2);
+            
+            // Update display
+            const assetId = document.getElementById('editYouTubeAssetId').value;
+            const asset = currentAssets.find(a => a.id === assetId);
+            displayCurrentYouTubeLinks(currentLinks, asset);
+            
+            Notification.info('YouTube 링크가 제거되었습니다');
+        }
+
+        function saveYouTubeChanges() {
+            const assetId = document.getElementById('editYouTubeAssetId').value;
+            const youtubeText = document.getElementById('editYouTubeLinks').value;
+
+            try {
+                const youtubeLinks = JSON.parse(youtubeText);
+                if (!Array.isArray(youtubeLinks)) {
+                    throw new Error('배열 형태가 아닙니다');
+                }
+
+                // Validate YouTube links structure
+                for (let i = 0; i < youtubeLinks.length; i++) {
+                    const item = youtubeLinks[i];
+                    if (!item.thumbnail_file || !item.youtube_url) {
+                        throw new Error(`${i + 1}번째 항목에 필수 필드가 없습니다`);
+                    }
+                }
+
+                const updateData = {
+                    youtube_links: youtubeLinks
+                };
+
+                // Disable save button to prevent double submission
+                const saveButton = document.querySelector('#editYouTubeModal .btn-primary');
+                saveButton.disabled = true;
+                saveButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>저장 중...';
+
+                API.put(`/api/assets/${assetId}`, updateData)
+                    .then(data => {
+                        Notification.success('YouTube 링크가 성공적으로 업데이트되었습니다!');
+                        
+                        // Hide the modal
+                        const modalElement = document.getElementById('editYouTubeModal');
+                        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                        modalInstance.hide();
+                        
+                        // Refresh the assets list
+                        loadAssets();
+                    })
+                    .catch(error => {
+                        console.error('Failed to update YouTube links:', error);
+                        Notification.error('YouTube 링크 업데이트에 실패했습니다: ' + error.message);
+                    })
+                    .finally(() => {
+                        // Re-enable save button
+                        saveButton.disabled = false;
+                        saveButton.innerHTML = '저장';
+                    });
+
+            } catch (error) {
+                Notification.error('잘못된 JSON 형식입니다: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

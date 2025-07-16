@@ -1,0 +1,107 @@
+[
+  {
+    "pageNum": 1,
+    "sentenceNum": 1,
+    "text": "Little Red Hen is Cooking"
+  },
+  {
+    "pageNum": 2,
+    "sentenceNum": 1,
+    "text": "Little Red Hen is Cooking."
+  },
+  {
+    "pageNum": 2,
+    "sentenceNum": 2,
+    "text": "\"What are you cooking?\" ask Cat."
+  },
+  {
+    "pageNum": 3,
+    "sentenceNum": 1,
+    "text": "\"Soup,\" says Hen."
+  },
+  {
+    "pageNum": 3,
+    "sentenceNum": 2,
+    "text": "\"Do you like soup?\""
+  },
+  {
+    "pageNum": 3,
+    "sentenceNum": 3,
+    "text": "\"Yes, I do,\" says Cat."
+  },
+  {
+    "pageNum": 4,
+    "sentenceNum": 1,
+    "text": "\"Help me cook the soup,\" says Hen."
+  },
+  {
+    "pageNum": 4,
+    "sentenceNum": 2,
+    "text": "\"No,\" says Cat."
+  },
+  {
+    "pageNum": 5,
+    "sentenceNum": 1,
+    "text": "\"What are you cooking?\" ask Cat."
+  },
+  {
+    "pageNum": 6,
+    "sentenceNum": 1,
+    "text": "\"Cookies,\" says Hen."
+  },
+  {
+    "pageNum": 6,
+    "sentenceNum": 2,
+    "text": "\"Do you like cookies?\""
+  },
+  {
+    "pageNum": 6,
+    "sentenceNum": 3,
+    "text": "\"Yes, I do!\" says Cat."
+  },
+  {
+    "pageNum": 7,
+    "sentenceNum": 1,
+    "text": "\"Help me make the cookies,\" says Hen."
+  },
+  {
+    "pageNum": 7,
+    "sentenceNum": 2,
+    "text": "\"No,\" says Cat."
+  },
+  {
+    "pageNum": 8,
+    "sentenceNum": 1,
+    "text": "\"What are you eating or drinking?\" Cat asks."
+  },
+  {
+    "pageNum": 9,
+    "sentenceNum": 1,
+    "text": "\"My food,\" says Hen."
+  },
+  {
+    "pageNum": 9,
+    "sentenceNum": 2,
+    "text": "\"It's good.\""
+  },
+  {
+    "pageNum": 10,
+    "sentenceNum": 1,
+    "text": "\"May I have soup and cookies, please?\" asks cat."
+  },
+  {
+    "pageNum": 11,
+    "sentenceNum": 1,
+    "text": "\"I'm sorry,\" says Hen."
+  },
+  {
+    "pageNum": 11,
+    "sentenceNum": 2,
+    "text": "\"You didn't help me dook."
+  },
+  {
+    "pageNum": 11,
+    "sentenceNum": 3,
+    "text": "You can't help me eat!\""
+  }
+]

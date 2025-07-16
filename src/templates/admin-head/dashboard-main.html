@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReengKi 관리자 시스템</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/admin.css" rel="stylesheet">
+    <style>
+        /* Responsive layout adjustments only */
+        .admin-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+        }
+
+        .sidebar {
+            transition: transform 0.3s ease;
+        }
+
+        .content {
+            flex: 1;
+            overflow-x: auto;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+        }
+
+        /* Mobile responsive adjustments */
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .main-content {
+                position: relative;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                transform: translateX(-100%);
+                z-index: 999;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.show {
+                display: block;
+            }
+
+            .content {
+                width: 100%;
+                padding: 1rem;
+            }
+        }
+
+        /* Small mobile adjustments */
+        @media (max-width: 576px) {
+            .content {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <header class="header">
+            <div class="header-content">
+                <button class="btn-icon mobile-menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="logo">ReengKi</h1>
+                <div class="header-actions">
+                    <button class="btn-icon">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="sidebar-overlay" onclick="closeSidebar()"></div>
+
+        <div class="main-content">
+            <nav class="sidebar" id="sidebar">
+                <div class="sidebar-content">
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin_head">
+                                <i class="fas fa-home"></i> 대시보드
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin_head/assets">
+                                <i class="fas fa-th-large"></i> 에셋 관리
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin_head/api-docs" target="_blank">
+                                <i class="fas fa-code"></i> API 관리
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="content">
+                <!-- Content will be dynamically loaded here -->
+                <div class="page-header">
+                    <h1 class="page-title">관리자 대시보드</h1>
+                    <div class="header-actions">
+                        <span id="currentUser" class="text-muted"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title">메뉴 선택</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="d-grid gap-2">
+                                            <button class="btn btn-primary btn-lg" onclick="viewAssets()">
+                                                <i class="fas fa-th-large"></i> 에셋 관리
+                                            </button>
+                                            <button class="btn btn-info btn-lg" onclick="viewApiDocs()">
+                                                <i class="fas fa-code"></i> API 관리
+                                            </button>
+                                            <button class="btn btn-secondary btn-lg" onclick="generateReport()">
+                                                <i class="fas fa-chart-bar"></i> 리포트 생성
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle"></i>
+                                            <strong>환영합니다!</strong><br>
+                                            ReengKi 관리자 시스템에 오신 것을 환영합니다.<br>
+                                            좌측 메뉴 또는 아래 버튼을 클릭하여 시작하세요.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/admin.js"></script>
+    <script>
+        // Mobile navigation functionality
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
+        }
+
+        // Close sidebar when clicking outside or on window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                closeSidebar();
+            }
+        });
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is authenticated
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            loadUserInfo();
+            loadDashboardData();
+        });
+
+        function loadUserInfo() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            if (user.account) {
+                document.getElementById('currentUser').textContent = `${user.account} (${user.role})`;
+            }
+        }
+
+        function loadDashboardData() {
+            // Load dashboard statistics
+            API.get('/api/assets').then(data => {
+                document.getElementById('totalAssets').textContent = data.length || 0;
+            }).catch(error => {
+                console.error('Failed to load assets:', error);
+            });
+
+            // Simulate active users (replace with real API call)
+            document.getElementById('activeUsers').textContent = '5';
+        }
+
+        function createAsset() {
+            window.location.href = '/admin_head/assets';
+        }
+
+        function viewAssets() {
+            window.location.href = '/admin_head/assets';
+        }
+
+        function viewApiDocs() {
+            window.open('/admin_head/api-docs', '_blank');
+        }
+
+        function generateReport() {
+            if (window.Notification) {
+                window.Notification.info('리포트 생성 기능은 준비 중입니다.');
+            } else {
+                alert('리포트 생성 기능은 준비 중입니다.');
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Toggle sidebar with Ctrl+B
+            if (e.ctrlKey && e.key === 'b') {
+                e.preventDefault();
+                toggleSidebar();
+            }
+            
+            // Close sidebar with Escape
+            if (e.key === 'Escape') {
+                closeSidebar();
+            }
+        });
+    </script>
+</body>
+</html>

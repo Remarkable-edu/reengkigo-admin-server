@@ -1,0 +1,513 @@
+{
+  "project": "jelly",
+  "month": "Aug",
+  "cover": [
+    "cover/8_J2O.png"
+  ],
+  "title": [
+    "title/7_J2R.png",
+    "title/8_J2O.png"
+  ],
+  "subtitle": [
+    {
+      "pageNum": 1,
+      "sentenceNum": 1,
+      "text": "Frozen Wonders"
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 1,
+      "text": "End of the Earth:The North and South Poles"
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 2,
+      "text": "Are you already guessing?"
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 3,
+      "text": "Do you know where the North and South Poles are?"
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 1,
+      "text": "That’s right!"
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 2,
+      "text": "The answer is easy but not simple."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 1,
+      "text": "THE ARCTIC is in the northernmost region of the Earth."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 2,
+      "text": "The North Pole is at the very top of the Earth."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 1,
+      "text": "The North Pole is in the Arctic Ocean."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 2,
+      "text": "It sits in a big, white, and icy ocean."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 1,
+      "text": "ANTARCTICA is the Earth’s southernmost continent."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 2,
+      "text": "The South Pole is at the very bottom of the Earth."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 1,
+      "text": "The South Pole is on ANTARCTICA."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 2,
+      "text": "It sits on a big, white, and icy island."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 1,
+      "text": "Wrap up warm and grab your mittens!"
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 2,
+      "text": "There's no doubt!"
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 3,
+      "text": "We’re off on an icy adventure."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 1,
+      "text": "End of the Earth:The North and South Poles"
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 2,
+      "text": "Do you know where the North and South Poles are?"
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 3,
+      "text": "The answer is easy but not simple."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 4,
+      "text": "The North Pole is at the very top of the Earth."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 5,
+      "text": "It sits in a big, white, and icy ocean."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 6,
+      "text": "The South Pole is at the very bottom of the Earth."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 7,
+      "text": "It sits on a big, white, and icy island."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 8,
+      "text": "Wrap up warm and grab your mittens!"
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 9,
+      "text": "There’s no doubt!"
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 10,
+      "text": "We’re off on an icy adventure."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 11,
+      "text": "Frozen wonders!"
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 1,
+      "text": "Top of the World: Exploring the Arctic"
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 1,
+      "text": "Eight countries are partly in the Arctic."
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 1,
+      "text": "People live at the edges of the Arctic Ocean."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 1,
+      "text": "Some are called ‘Inuit.’"
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 2,
+      "text": "They wear many layers of clothes."
+    },
+    {
+      "pageNum": 12,
+      "sentenceNum": 3,
+      "text": "hey weigh around 4?."
+    },
+    {
+      "pageNum": 13,
+      "sentenceNum": 1,
+      "text": "They often go fishing for salmon."
+    },
+    {
+      "pageNum": 14,
+      "sentenceNum": 1,
+      "text": "Also, many animals live in the Arctic."
+    },
+    {
+      "pageNum": 15,
+      "sentenceNum": 1,
+      "text": "Polar bears, whales, Arctic foxes, walruses, and seals love the cold."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 1,
+      "text": "The official name for the Northern Lights is Aurora Borealis."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 2,
+      "text": "The official name for the Southern Lights is Aurora Australis."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 3,
+      "text": "What a breathtaking sight!"
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 4,
+      "text": "Sometimes at night, the sky is full of dancing curtains."
+    },
+    {
+      "pageNum": 16,
+      "sentenceNum": 5,
+      "text": "These colorful lights are called auroras."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 1,
+      "text": "Top of the World: Exploring the Arctic"
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 2,
+      "text": "Eight countries are partly in the Arctic."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 3,
+      "text": "People live at the edges of the Arctic Ocean."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 4,
+      "text": "Some are called ‘Inuit.’"
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 5,
+      "text": "They wear many layers of clothes."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 6,
+      "text": "hey weigh around 4?."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 7,
+      "text": "They often go fishing for salmon."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 8,
+      "text": "Also, many animals live in the Arctic."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 9,
+      "text": "Polar bears, whales, Arctic foxes, walruses, and seals love the cold."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 10,
+      "text": "Sometimes at night, the sky is full of dancing curtains."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 11,
+      "text": "These colorful lights are called auroras."
+    },
+    {
+      "pageNum": 17,
+      "sentenceNum": 12,
+      "text": "Frozen wonders!"
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 1,
+      "text": "Bottom of the World:Discovering the Antarctic"
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 2,
+      "text": "The South Pole is colder than the North Pole."
+    },
+    {
+      "pageNum": 18,
+      "sentenceNum": 3,
+      "text": "It can get as cold as -89°C. Brrr!"
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 1,
+      "text": "The land of the South Pole is called ‘Antarctica.’"
+    },
+    {
+      "pageNum": 19,
+      "sentenceNum": 2,
+      "text": "Antarctica is the coldest, driest, and highest continent."
+    },
+    {
+      "pageNum": 20,
+      "sentenceNum": 1,
+      "text": "A glistening ice sheet covers nearly all of Antarctica."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 1,
+      "text": "About 2% of Antarctica is ice-free."
+    },
+    {
+      "pageNum": 21,
+      "sentenceNum": 2,
+      "text": "The higher you climb in Antarctica, the colder the air gets."
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 1,
+      "text": "No people live in the Antarctic."
+    },
+    {
+      "pageNum": 22,
+      "sentenceNum": 2,
+      "text": "But scientists stay there to study."
+    },
+    {
+      "pageNum": 23,
+      "sentenceNum": 1,
+      "text": "They watch how Antarctica is changing."
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 1,
+      "text": "And you can find lots of penguins standing upright."
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 2,
+      "text": "They look like handsome gentlemen."
+    },
+    {
+      "pageNum": 24,
+      "sentenceNum": 3,
+      "text": "But penguins comically waddle when they walk."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 1,
+      "text": "Bottom of the World: Discovering the Antarctic"
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 2,
+      "text": "The South Pole is colder than the North Pole."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 3,
+      "text": "It can get as cold as -89°C. Brrr!"
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 4,
+      "text": "The land of the South Pole is called ‘Antarctica.’"
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 5,
+      "text": "Antarctica is the coldest, driest, and highest continent."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 6,
+      "text": "A glistening ice sheet covers nearly all of Antarctica."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 7,
+      "text": "The higher you climb in Antarctica, the colder the air gets."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 8,
+      "text": "No people live in the Antarctic."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 9,
+      "text": "But scientists stay there to study."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 10,
+      "text": "They watch how Antarctica is changing."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 11,
+      "text": "And you can find lots of penguins standing upright."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 12,
+      "text": "They look like handsome gentlemen."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 13,
+      "text": "But penguins comically waddle when they walk."
+    },
+    {
+      "pageNum": 25,
+      "sentenceNum": 14,
+      "text": "Frozen wonders!"
+    }
+  ],
+  "thumbnail": [
+    {
+      "file": "thumbnail/J2O_Chant_1.png",
+      "youtube": "https://youtu.be/zwZm1NTFcrU"
+    },
+    {
+      "file": "thumbnail/J2O_Chant_2.png",
+      "youtube": "https://youtu.be/FYXSgW6w7Ak"
+    },
+    {
+      "file": "thumbnail/J2O_Chant_3.png",
+      "youtube": "https://youtu.be/545gmPbM_Qo"
+    },
+    {
+      "file": "thumbnail/J2O_Chapter_1.png",
+      "youtube": "https://youtu.be/AxyXykVS6bc"
+    },
+    {
+      "file": "thumbnail/J2O_Chapter_2.png",
+      "youtube": "https://youtu.be/sawIIGrqHY0"
+    },
+    {
+      "file": "thumbnail/J2O_Chapter_3.png",
+      "youtube": "https://youtu.be/RHur7PDy-IE"
+    },
+    {
+      "file": "thumbnail/J2O_Chapter_3.png",
+      "youtube": "https://youtu.be/H2plntib3kA"
+    },
+    {
+      "file": "thumbnail/J2O_full_song.png",
+      "youtube": "https://youtu.be/H2plntib3kA"
+    },
+    {
+      "file": "thumbnail/J2O_Read_1.png",
+      "youtube": "https://youtu.be/dh-4Ix-50QQ"
+    },
+    {
+      "file": "thumbnail/J2O_Read_2.png",
+      "youtube": "https://youtu.be/YGX64XN1Fdc"
+    },
+    {
+      "file": "thumbnail/J2O_Read_3.png",
+      "youtube": "https://youtu.be/i_xCAutJoWo"
+    },
+    {
+      "file": "thumbnail/J2O_read_all.png",
+      "youtube": "https://youtu.be/EMgkE3gAfJI"
+    },
+    {
+      "file": "thumbnail/J2O_Song_1.png",
+      "youtube": "https://youtu.be/QqCI_p3ypYw"
+    },
+    {
+      "file": "thumbnail/J2O_Song_2.png",
+      "youtube": "https://youtu.be/-ItTNfuSurE"
+    },
+    {
+      "file": "thumbnail/J2O_Song_3.png",
+      "youtube": "https://youtu.be/7aAlMz4Bhks"
+    },
+    {
+      "file": "thumbnail/J2P_full_song.png",
+      "youtube": "https://youtu.be/Jr_YUIfjdC4"
+    },
+    {
+      "file": "thumbnail/J2P_Read_1.png",
+      "youtube": "https://youtu.be/Jc9rYztE3ig"
+    },
+    {
+      "file": "thumbnail/J2P_Read_2.png",
+      "youtube": "https://youtu.be/CeSrcVZe9to"
+    },
+    {
+      "file": "thumbnail/J2P_Read_3.png",
+      "youtube": "https://youtu.be/QsJk3mdRjVs"
+    },
+    {
+      "file": "thumbnail/J2P_Song_1.png",
+      "youtube": "https://youtu.be/RmVhUB5aNts"
+    },
+    {
+      "file": "thumbnail/J2P_Song_2.png",
+      "youtube": "https://youtu.be/thd3cunNbFQ"
+    },
+    {
+      "file": "thumbnail/J2P_Song_3.png",
+      "youtube": "https://youtu.be/5LWPh2I3dsU"
+    }
+  ]
+}

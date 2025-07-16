@@ -1,0 +1,452 @@
+[
+  {
+    "pageNum": 1,
+    "sentenceNum": 1,
+    "text": "Escape From the Zoo"
+  },
+  {
+    "pageNum": 3,
+    "sentenceNum": 1,
+    "text": "I’m Lion."
+  },
+  {
+    "pageNum": 3,
+    "sentenceNum": 2,
+    "text": "I can play the violin."
+  },
+  {
+    "pageNum": 3,
+    "sentenceNum": 3,
+    "text": "I’m Giraffe."
+  },
+  {
+    "pageNum": 3,
+    "sentenceNum": 4,
+    "text": "I can play the piano."
+  },
+  {
+    "pageNum": 3,
+    "sentenceNum": 5,
+    "text": "I’m Cheetah."
+  },
+  {
+    "pageNum": 3,
+    "sentenceNum": 6,
+    "text": "I can play the guitar."
+  },
+  {
+    "pageNum": 3,
+    "sentenceNum": 7,
+    "text": "I’m Zebra."
+  },
+  {
+    "pageNum": 3,
+    "sentenceNum": 8,
+    "text": "I can sing a song."
+  },
+  {
+    "pageNum": 3,
+    "sentenceNum": 9,
+    "text": "Do, Re, Mi."
+  },
+  {
+    "pageNum": 3,
+    "sentenceNum": 10,
+    "text": "I’m Gorilla."
+  },
+  {
+    "pageNum": 3,
+    "sentenceNum": 11,
+    "text": "I can dance."
+  },
+  {
+    "pageNum": 4,
+    "sentenceNum": 1,
+    "text": "I’m hungry."
+  },
+  {
+    "pageNum": 4,
+    "sentenceNum": 2,
+    "text": "Yummy."
+  },
+  {
+    "pageNum": 4,
+    "sentenceNum": 3,
+    "text": "I like meat."
+  },
+  {
+    "pageNum": 4,
+    "sentenceNum": 4,
+    "text": "Roar, roar!"
+  },
+  {
+    "pageNum": 4,
+    "sentenceNum": 5,
+    "text": "I’m hungry."
+  },
+  {
+    "pageNum": 4,
+    "sentenceNum": 6,
+    "text": "Yummy."
+  },
+  {
+    "pageNum": 4,
+    "sentenceNum": 7,
+    "text": "I like leaves."
+  },
+  {
+    "pageNum": 4,
+    "sentenceNum": 8,
+    "text": "Munch, munch!"
+  },
+  {
+    "pageNum": 5,
+    "sentenceNum": 1,
+    "text": "I’m hungry."
+  },
+  {
+    "pageNum": 5,
+    "sentenceNum": 2,
+    "text": "Yummy."
+  },
+  {
+    "pageNum": 5,
+    "sentenceNum": 3,
+    "text": "I like meat."
+  },
+  {
+    "pageNum": 5,
+    "sentenceNum": 4,
+    "text": "Yeow, yeow!"
+  },
+  {
+    "pageNum": 5,
+    "sentenceNum": 5,
+    "text": "I’m hungry."
+  },
+  {
+    "pageNum": 5,
+    "sentenceNum": 6,
+    "text": "Yummy."
+  },
+  {
+    "pageNum": 5,
+    "sentenceNum": 7,
+    "text": "I like apples."
+  },
+  {
+    "pageNum": 5,
+    "sentenceNum": 8,
+    "text": "Hee, hee!"
+  },
+  {
+    "pageNum": 5,
+    "sentenceNum": 9,
+    "text": "I’m hungry."
+  },
+  {
+    "pageNum": 5,
+    "sentenceNum": 10,
+    "text": "Yummy."
+  },
+  {
+    "pageNum": 5,
+    "sentenceNum": 11,
+    "text": "I like bananas."
+  },
+  {
+    "pageNum": 5,
+    "sentenceNum": 12,
+    "text": "Ooo, ooo, ooo!"
+  },
+  {
+    "pageNum": 7,
+    "sentenceNum": 1,
+    "text": "I don’t like the zoo."
+  },
+  {
+    "pageNum": 7,
+    "sentenceNum": 2,
+    "text": "Let’s escape."
+  },
+  {
+    "pageNum": 7,
+    "sentenceNum": 3,
+    "text": "Are you crazy?"
+  },
+  {
+    "pageNum": 7,
+    "sentenceNum": 4,
+    "text": "Come on!"
+  },
+  {
+    "pageNum": 7,
+    "sentenceNum": 5,
+    "text": "We can do it."
+  },
+  {
+    "pageNum": 7,
+    "sentenceNum": 6,
+    "text": "OK!"
+  },
+  {
+    "pageNum": 7,
+    "sentenceNum": 7,
+    "text": "Where will we go?"
+  },
+  {
+    "pageNum": 7,
+    "sentenceNum": 8,
+    "text": "Let’s go to Africa."
+  },
+  {
+    "pageNum": 8,
+    "sentenceNum": 1,
+    "text": "Are you OK?"
+  },
+  {
+    "pageNum": 8,
+    "sentenceNum": 2,
+    "text": "I’m OK."
+  },
+  {
+    "pageNum": 8,
+    "sentenceNum": 3,
+    "text": "Where’s the zookeeper?"
+  },
+  {
+    "pageNum": 8,
+    "sentenceNum": 4,
+    "text": "I don’t know."
+  },
+  {
+    "pageNum": 9,
+    "sentenceNum": 1,
+    "text": "Get them."
+  },
+  {
+    "pageNum": 9,
+    "sentenceNum": 2,
+    "text": "Ah! Run, run!"
+  },
+  {
+    "pageNum": 9,
+    "sentenceNum": 3,
+    "text": "Stop. Stop!"
+  },
+  {
+    "pageNum": 9,
+    "sentenceNum": 4,
+    "text": "Whoa! Whoa!"
+  },
+  {
+    "pageNum": 10,
+    "sentenceNum": 1,
+    "text": "We did it!"
+  },
+  {
+    "pageNum": 10,
+    "sentenceNum": 2,
+    "text": "I don’t see the zookeepers."
+  },
+  {
+    "pageNum": 10,
+    "sentenceNum": 3,
+    "text": "Is this Africa?"
+  },
+  {
+    "pageNum": 10,
+    "sentenceNum": 4,
+    "text": "No."
+  },
+  {
+    "pageNum": 10,
+    "sentenceNum": 5,
+    "text": "This isn’t Africa."
+  },
+  {
+    "pageNum": 10,
+    "sentenceNum": 6,
+    "text": "I can see the zoo."
+  },
+  {
+    "pageNum": 10,
+    "sentenceNum": 7,
+    "text": "Oh, oh! Yeah."
+  },
+  {
+    "pageNum": 11,
+    "sentenceNum": 1,
+    "text": "Well, where are we?"
+  },
+  {
+    "pageNum": 11,
+    "sentenceNum": 2,
+    "text": "We are in the forest."
+  },
+  {
+    "pageNum": 11,
+    "sentenceNum": 3,
+    "text": "I’m hungry."
+  },
+  {
+    "pageNum": 11,
+    "sentenceNum": 4,
+    "text": "Me, too."
+  },
+  {
+    "pageNum": 11,
+    "sentenceNum": 5,
+    "text": "Oh, no!"
+  },
+  {
+    "pageNum": 12,
+    "sentenceNum": 1,
+    "text": "Who are you?"
+  },
+  {
+    "pageNum": 12,
+    "sentenceNum": 2,
+    "text": "We’re the zoo animals."
+  },
+  {
+    "pageNum": 12,
+    "sentenceNum": 3,
+    "text": "Who are you?"
+  },
+  {
+    "pageNum": 12,
+    "sentenceNum": 4,
+    "text": "I’m Deer."
+  },
+  {
+    "pageNum": 12,
+    "sentenceNum": 5,
+    "text": "I’m Squirrel."
+  },
+  {
+    "pageNum": 12,
+    "sentenceNum": 6,
+    "text": "Be careful of the zookeepers."
+  },
+  {
+    "pageNum": 12,
+    "sentenceNum": 7,
+    "text": "We’re hungry."
+  },
+  {
+    "pageNum": 12,
+    "sentenceNum": 8,
+    "text": "Here are some leaves and berries."
+  },
+  {
+    "pageNum": 12,
+    "sentenceNum": 9,
+    "text": "Here are some nuts and seeds."
+  },
+  {
+    "pageNum": 12,
+    "sentenceNum": 10,
+    "text": "Thank you."
+  },
+  {
+    "pageNum": 12,
+    "sentenceNum": 11,
+    "text": "Thank you."
+  },
+  {
+    "pageNum": 14,
+    "sentenceNum": 1,
+    "text": "Where can we go?"
+  },
+  {
+    "pageNum": 14,
+    "sentenceNum": 2,
+    "text": "Look at this!"
+  },
+  {
+    "pageNum": 14,
+    "sentenceNum": 3,
+    "text": "Welcome! Welcome!"
+  },
+  {
+    "pageNum": 14,
+    "sentenceNum": 4,
+    "text": "Welcome to the circus!"
+  },
+  {
+    "pageNum": 14,
+    "sentenceNum": 5,
+    "text": "I have a big red nose."
+  },
+  {
+    "pageNum": 14,
+    "sentenceNum": 6,
+    "text": "I have big funny ears."
+  },
+  {
+    "pageNum": 14,
+    "sentenceNum": 7,
+    "text": "I have long purple hair."
+  },
+  {
+    "pageNum": 15,
+    "sentenceNum": 1,
+    "text": "I’m big."
+  },
+  {
+    "pageNum": 15,
+    "sentenceNum": 2,
+    "text": "But I can dance ballet."
+  },
+  {
+    "pageNum": 15,
+    "sentenceNum": 3,
+    "text": "She’s amazing!"
+  },
+  {
+    "pageNum": 15,
+    "sentenceNum": 4,
+    "text": "The Jumping Horse!"
+  },
+  {
+    "pageNum": 15,
+    "sentenceNum": 5,
+    "text": "I can jump like a rabbit!"
+  },
+  {
+    "pageNum": 15,
+    "sentenceNum": 6,
+    "text": "Wow. Ooh! Ahh!"
+  },
+  {
+    "pageNum": 16,
+    "sentenceNum": 1,
+    "text": "We want to be in the circus."
+  },
+  {
+    "pageNum": 16,
+    "sentenceNum": 2,
+    "text": "Hmm!"
+  },
+  {
+    "pageNum": 16,
+    "sentenceNum": 3,
+    "text": "You can do it."
+  },
+  {
+    "pageNum": 16,
+    "sentenceNum": 4,
+    "text": "Welcome to the circus!"
+  },
+  {
+    "pageNum": 16,
+    "sentenceNum": 5,
+    "text": "Hooray! Hooray!"
+  },
+  {
+    "pageNum": 16,
+    "sentenceNum": 6,
+    "text": "Is this Africa?"
+  }
+]

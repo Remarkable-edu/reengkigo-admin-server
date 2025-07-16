@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReengKi 이사 시스템</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/static/css/admin.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3">이사 대시보드</h1>
+                    <div>
+                        <span id="currentUser" class="text-muted me-3"></span>
+                        <button class="btn btn-outline-secondary" onclick="logout()">로그아웃</button>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    이사 전용 대시보드입니다. 관리자 기능에 접근하려면 관리자 권한이 필요합니다.
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title">이사 전용 기능</h5>
+                            </div>
+                            <div class="card-body">
+                                <p>이사 권한으로 접근할 수 있는 기능들입니다.</p>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-primary" disabled>
+                                        <i class="fas fa-chart-bar"></i> 전체 보고서 조회
+                                    </button>
+                                    <button class="btn btn-secondary" disabled>
+                                        <i class="fas fa-users"></i> 전체 사용자 관리
+                                    </button>
+                                    <button class="btn btn-info" disabled>
+                                        <i class="fas fa-settings"></i> 시스템 설정
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title">시스템 정보</h5>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>권한:</strong> <span class="badge bg-success">DIRECTOR</span></p>
+                                <p><strong>접근 레벨:</strong> 최고 관리자</p>
+                                <p><strong>마지막 로그인:</strong> <span id="lastLogin">-</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is authenticated
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/login';
+                return;
+            }
+            
+            loadUserInfo();
+        });
+
+        function loadUserInfo() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            if (user.account) {
+                document.getElementById('currentUser').textContent = `${user.account} (${user.role})`;
+            }
+            
+            // Set last login time
+            document.getElementById('lastLogin').textContent = new Date().toLocaleString();
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        }
+    </script>
+</body>
+</html>

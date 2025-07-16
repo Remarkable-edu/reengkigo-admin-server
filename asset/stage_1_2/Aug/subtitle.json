@@ -1,0 +1,67 @@
+[
+  {
+    "pageNum": 1,
+    "sentenceNum": 1,
+    "text": "TV Station"
+  },
+  {
+    "pageNum": 2,
+    "sentenceNum": 1,
+    "text": "I'm a news reporter."
+  },
+  {
+    "pageNum": 2,
+    "sentenceNum": 2,
+    "text": "I report the news."
+  },
+  {
+    "pageNum": 4,
+    "sentenceNum": 1,
+    "text": "I'm an actor."
+  },
+  {
+    "pageNum": 4,
+    "sentenceNum": 2,
+    "text": "I'm an actress."
+  },
+  {
+    "pageNum": 4,
+    "sentenceNum": 3,
+    "text": "We act in the drama."
+  },
+  {
+    "pageNum": 6,
+    "sentenceNum": 1,
+    "text": "I'm a cameraman."
+  },
+  {
+    "pageNum": 7,
+    "sentenceNum": 1,
+    "text": "I make films."
+  },
+  {
+    "pageNum": 8,
+    "sentenceNum": 1,
+    "text": "I'm a singer."
+  },
+  {
+    "pageNum": 8,
+    "sentenceNum": 2,
+    "text": "I sing songs."
+  },
+  {
+    "pageNum": 9,
+    "sentenceNum": 1,
+    "text": "I'm a dancer."
+  },
+  {
+    "pageNum": 9,
+    "sentenceNum": 2,
+    "text": "I dance in the show."
+  },
+  {
+    "pageNum": 10,
+    "sentenceNum": 1,
+    "text": "We work at ABC TV station."
+  }
+]

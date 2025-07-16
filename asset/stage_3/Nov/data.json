@@ -1,0 +1,211 @@
+{
+  "project": "stage_3",
+  "month": "Nov",
+  "cover": [
+    "cover/11_E10B.png"
+  ],
+  "title": [
+    "title/10_E10G.png",
+    "title/11_E10B.png",
+    "title/9_E10Y.png"
+  ],
+  "subtitle": [
+    {
+      "pageNum": 1,
+      "sentenceNum": 1,
+      "text": "The Three Pigs "
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 1,
+      "text": "These are the three pigs."
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 2,
+      "text": "They are brothers."
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 3,
+      "text": "Their names are Pedro, Paco, and Pablo."
+    },
+    {
+      "pageNum": 2,
+      "sentenceNum": 4,
+      "text": "They live next to each other."
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 1,
+      "text": "This is the big, hungry wolf."
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 2,
+      "text": "He wants lunch."
+    },
+    {
+      "pageNum": 3,
+      "sentenceNum": 3,
+      "text": "He wants the three pigs for lunch!"
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 1,
+      "text": "Pedro lives in a straw house."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 2,
+      "text": "Pedro is sitting in his armchair."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 3,
+      "text": "He looks out his window."
+    },
+    {
+      "pageNum": 4,
+      "sentenceNum": 4,
+      "text": "The big, hungry wolf is in front of Pedro’s house!"
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 1,
+      "text": "The wolf blows down Pedro’s house!"
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 2,
+      "text": "Run, Pedro! Run!"
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 3,
+      "text": "Pedro runs out the door."
+    },
+    {
+      "pageNum": 5,
+      "sentenceNum": 4,
+      "text": "He runs to Paco’s house."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 1,
+      "text": "Paco lives in a stick house."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 2,
+      "text": "Paco and Pedro are behind the sofa."
+    },
+    {
+      "pageNum": 6,
+      "sentenceNum": 3,
+      "text": "The wolf is in front of Paco’s house!"
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 1,
+      "text": "The wolf blows down Paco’s house!"
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 2,
+      "text": "Run, Paco!"
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 3,
+      "text": "Run, Pedro!"
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 4,
+      "text": "They run out the door."
+    },
+    {
+      "pageNum": 7,
+      "sentenceNum": 5,
+      "text": "They run to Pablo’s house."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 1,
+      "text": "Pablo lives in a brick house."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 2,
+      "text": "“The wolf can’t get in here,” says Pablo."
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 3,
+      "text": "Oh no!"
+    },
+    {
+      "pageNum": 8,
+      "sentenceNum": 4,
+      "text": "The wolf is above the pigs!"
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 1,
+      "text": "“I can’t blow down this house,” says the wolf."
+    },
+    {
+      "pageNum": 9,
+      "sentenceNum": 2,
+      "text": "“But I can climb into it!”"
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 1,
+      "text": "The wolf climbs into the fireplace."
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 2,
+      "text": "But there is a fire in the fireplace now!"
+    },
+    {
+      "pageNum": 10,
+      "sentenceNum": 3,
+      "text": "Yeow!"
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 1,
+      "text": "The wolf is not hungry anymore!"
+    },
+    {
+      "pageNum": 11,
+      "sentenceNum": 2,
+      "text": "He does not want pigs for lunch now or ever again!"
+    }
+  ],
+  "thumbnail": [
+    {
+      "file": "thumbnail/E10B_Dictation_1.png",
+      "youtube": "https://youtu.be/JlC8_t6Afu4"
+    },
+    {
+      "file": "thumbnail/E10B_Dictation_2.png",
+      "youtube": "https://youtu.be/dt9NmzmDHEc"
+    },
+    {
+      "file": "thumbnail/E10B_Dictation_1.png",
+      "youtube": "https://youtu.be/ddRUnzGqyr0"
+    },
+    {
+      "file": "thumbnail/E10B_3_grammar_2.png",
+      "youtube": "https://youtu.be/ddRUnzGqyr0"
+    },
+    {
+      "file": "thumbnail/E10B_Song.png",
+      "youtube": "https://youtu.be/VR3wiiGbwME"
+    }
+  ]
+}
