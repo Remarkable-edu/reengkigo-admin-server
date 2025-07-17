@@ -917,14 +917,14 @@
 
             assets.forEach(asset => {
                 const row = document.createElement('tr');
-                const firstCover = asset.covers && asset.covers.length > 0 ? asset.covers[0] : '';
+                const firstCover = asset.covers[0];
                 row.innerHTML = `
                     <td>${asset.id}</td>
                     <td>${asset.curriculum}</td>
                     <td>${asset.month}</td>
                     <td>${asset.book_id}</td>
                     <td>
-                        ${firstCover ? `<img src="/asset/${asset.curriculum}/${asset.month}/${firstCover}" alt="표지" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.style.display='none'">` : ''}
+                        ${firstCover ? `<img src="/asset/${asset.curriculum}/${asset.month}/${firstCover}?v=${Date.now()}" alt="표지" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.style.display='none'">` : ''}
                         <div style="font-size: 0.8em;">${asset.covers.length}개 표지</div>
                     </td>
                     <td>
@@ -1186,7 +1186,7 @@
                                     <div class="col-md-4">
                                         <h6>표지 이미지:</h6>
                                         ${asset.covers.map(cover => `
-                                            <img src="/asset/${asset.curriculum}/${asset.month}/${cover}" alt="표지" class="img-fluid mb-2" style="max-height: 150px;" onerror="this.style.display='none'">
+                                            <img src="/asset/${asset.curriculum}/${asset.month}/${cover}?v=${Date.now()}" alt="표지" class="img-fluid mb-2" style="max-height: 150px;" onerror="this.style.display='none'">
                                         `).join('')}
                                     </div>
                                     <div class="col-md-8">
@@ -1202,7 +1202,7 @@
                                         <h6 class="mt-3">YouTube 링크:</h6>
                                         ${asset.youtube_links.map(link => `
                                             <div class="mb-2">
-                                                ${link.thumbnail_file ? `<img src="/asset/${asset.curriculum}/${asset.month}/${link.thumbnail_file}" alt="썸네일" style="width: 100px; height: 60px; object-fit: cover;" onerror="this.style.display='none'">` : ''}
+                                                ${link.thumbnail_file ? `<img src="/asset/${asset.curriculum}/${asset.month}/${link.thumbnail_file}?v=${Date.now()}" alt="썸네일" style="width: 100px; height: 60px; object-fit: cover;" onerror="this.style.display='none'">` : ''}
                                                 <br>
                                                 <a href="${link.youtube_url}" target="_blank" class="btn btn-sm btn-outline-danger">
                                                     <i class="fab fa-youtube"></i> ${link.title || 'YouTube에서 보기'}
@@ -1460,7 +1460,7 @@
 
             const previewHtml = asset.covers.map(cover => `
                 <div class="d-inline-block m-2">
-                    <img src="/asset/${asset.curriculum}/${asset.month}/${cover}" 
+                    <img src="/asset/${asset.curriculum}/${asset.month}/${cover}?v=${Date.now()}" 
                          alt="표지" 
                          style="width: 100px; height: 100px; object-fit: cover;" 
                          class="border rounded"
@@ -1861,7 +1861,7 @@
                         <div class="row align-items-center">
                             <div class="col-md-2">
                                 ${link.thumbnail_file ? `
-                                    <img src="/asset/${asset.curriculum}/${asset.month}/${link.thumbnail_file}" 
+                                    <img src="/asset/${asset.curriculum}/${asset.month}/${link.thumbnail_file}?v=${Date.now()}" 
                                          alt="썸네일" 
                                          style="width: 80px; height: 48px; object-fit: cover;" 
                                          class="border rounded"

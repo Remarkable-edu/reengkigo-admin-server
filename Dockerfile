@@ -12,6 +12,7 @@ COPY --from=builder /app/target/release/reengkigo-admin-app /usr/local/bin/reeng
 COPY --from=builder /app/target/release/migrate_data /usr/local/bin/migrate_data
 COPY static ./static
 COPY asset ./asset
+RUN chmod -R 777 ./asset
 COPY src/templates ./src/templates
 COPY project_list.yaml .
 EXPOSE 3000
