@@ -49,7 +49,7 @@ impl Default for AppConfig {
                 debug: true,
             },
             database: DataBaseConfigs {
-                url: "mongodb://localhost:27017".to_string(),
+                url: "mongodb://mongo:27017".to_string(),
                 name: "admin_system".to_string(),
             },
             server: ServerConfig { 

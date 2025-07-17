@@ -47,11 +47,11 @@ pub async fn login_handler(
                     // Create cookie headers
                     let mut headers = HeaderMap::new();
                     // HttpOnly cookie for actual authentication
-                    let auth_cookie = format!("auth_token={}; HttpOnly; SameSite=Strict; Path=/; Max-Age=86400", token);
+                    let auth_cookie = format!("auth_token={}; HttpOnly; SameSite=Lax; Path=/; Max-Age=86400", token);
                     headers.insert(SET_COOKIE, auth_cookie.parse().unwrap());
                     
                     // Non-HttpOnly cookie for JavaScript to check auth status
-                    let status_cookie = format!("auth_status=authenticated; SameSite=Strict; Path=/; Max-Age=86400");
+                    let status_cookie = format!("auth_status=authenticated; SameSite=Lax; Path=/; Max-Age=86400");
                     headers.append(SET_COOKIE, status_cookie.parse().unwrap());
                     
                     Ok((headers, Json(LoginSuccess {

@@ -19,20 +19,25 @@ impl AuthMiddleware {
         mut request: Request,
         next: Next,
     ) -> Result<Response, StatusCode> {
-        // Extract token from Authorization header
+        // Extract token from headers (Authorization header or Cookie)
         let token = match extract_token_from_headers(&headers) {
             Some(token) => token,
             None => {
-                return Ok(unauthorized_response());
+                tracing::debug!("No auth token found in headers");
+                return Ok(create_unauthorized_response(&request));
             }
         };
 
         // Validate token using AuthService
         let auth_service = AuthService::new();
         let claims = match auth_service.validate_token(&token) {
-            Ok(claims) => claims,
-            Err(_) => {
-                return Ok(unauthorized_response());
+            Ok(claims) => {
+                tracing::debug!("Token validation successful for user: {}", claims.username);
+                claims
+            },
+            Err(e) => {
+                tracing::warn!("Token validation failed: {}", e);
+                return Ok(create_unauthorized_response(&request));
             }
         };
 
@@ -74,7 +79,7 @@ impl AuthMiddleware {
             tracing::debug!("require_admin_role: No AdminUser found in request extensions");
         }
 
-        Ok(forbidden_response())
+        Ok(create_forbidden_response(&request))
     }
 
     pub async fn require_director_role(
@@ -89,7 +94,7 @@ impl AuthMiddleware {
             }
         }
 
-        Ok(forbidden_response())
+        Ok(create_forbidden_response(&request))
     }
 
     pub async fn require_any_role(
@@ -104,7 +109,7 @@ impl AuthMiddleware {
             }
         }
 
-        Ok(forbidden_response())
+        Ok(create_forbidden_response(&request))
     }
 }
 
@@ -113,7 +118,9 @@ fn extract_token_from_headers(headers: &HeaderMap) -> Option<String> {
     if let Some(auth_header) = headers.get(header::AUTHORIZATION) {
         if let Ok(header_str) = auth_header.to_str() {
             if header_str.starts_with("Bearer ") {
-                return Some(header_str[7..].to_string());
+                let token = header_str[7..].to_string();
+                tracing::debug!("Found Bearer token in Authorization header");
+                return Some(token);
             }
         }
     }
@@ -121,42 +128,78 @@ fn extract_token_from_headers(headers: &HeaderMap) -> Option<String> {
     // Try Cookie header as fallback
     if let Some(cookie_header) = headers.get(header::COOKIE) {
         if let Ok(cookie_str) = cookie_header.to_str() {
+            tracing::debug!("Parsing cookies: {}", cookie_str);
             for cookie in cookie_str.split(';') {
                 let cookie = cookie.trim();
                 if cookie.starts_with("auth_token=") {
-                    return Some(cookie[11..].to_string());
+                    let token = cookie[11..].to_string();
+                    tracing::debug!("Found auth_token in cookies");
+                    return Some(token);
                 }
             }
         }
     }
     
+    tracing::debug!("No token found in headers or cookies");
     None
 }
 
-fn unauthorized_response() -> Response {
-    let body = json!({
-        "error": "UNAUTHORIZED",
-        "message": "Authentication required"
-    });
-    
-    Response::builder()
-        .status(StatusCode::UNAUTHORIZED)
-        .header(header::CONTENT_TYPE, "application/json")
-        .body(body.to_string().into())
-        .unwrap()
+fn is_api_request(request: &Request) -> bool {
+    request.uri().path().starts_with("/api/") ||
+    request.headers().get(header::ACCEPT)
+        .and_then(|v| v.to_str().ok())
+        .map(|accept| accept.contains("application/json"))
+        .unwrap_or(false)
 }
 
-fn forbidden_response() -> Response {
-    let body = json!({
-        "error": "FORBIDDEN",
-        "message": "Insufficient permissions"
-    });
-    
-    Response::builder()
-        .status(StatusCode::FORBIDDEN)
-        .header(header::CONTENT_TYPE, "application/json")
-        .body(body.to_string().into())
-        .unwrap()
+fn create_unauthorized_response(request: &Request) -> Response {
+    if is_api_request(request) {
+        // Return JSON response for API requests
+        let body = json!({
+            "error": "UNAUTHORIZED",
+            "message": "Authentication required"
+        });
+        
+        Response::builder()
+            .status(StatusCode::UNAUTHORIZED)
+            .header(header::CONTENT_TYPE, "application/json")
+            .body(body.to_string().into())
+            .unwrap()
+    } else {
+        // Redirect to login page for browser requests
+        Response::builder()
+            .status(StatusCode::FOUND)
+            .header(header::LOCATION, "/login")
+            .header(header::SET_COOKIE, "auth_token=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0")
+            .header(header::SET_COOKIE, "auth_status=; SameSite=Lax; Path=/; Max-Age=0")
+            .body("".into())
+            .unwrap()
+    }
+}
+
+fn create_forbidden_response(request: &Request) -> Response {
+    if is_api_request(request) {
+        // Return JSON response for API requests
+        let body = json!({
+            "error": "FORBIDDEN",
+            "message": "Insufficient permissions"
+        });
+        
+        Response::builder()
+            .status(StatusCode::FORBIDDEN)
+            .header(header::CONTENT_TYPE, "application/json")
+            .body(body.to_string().into())
+            .unwrap()
+    } else {
+        // Redirect to login page for browser requests
+        Response::builder()
+            .status(StatusCode::FOUND)
+            .header(header::LOCATION, "/login")
+            .header(header::SET_COOKIE, "auth_token=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0")
+            .header(header::SET_COOKIE, "auth_status=; SameSite=Lax; Path=/; Max-Age=0")
+            .body("".into())
+            .unwrap()
+    }
 }
 
 // Helper function to get current user from request

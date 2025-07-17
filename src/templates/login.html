@@ -136,17 +136,16 @@
                 
                 if (response.ok) {
                     const result = await response.json();
-                    // Store user info in localStorage for convenience, but auth relies on httpOnly cookie
+                    // Store user info and token in localStorage for convenience, but auth relies on httpOnly cookie
                     localStorage.setItem('user', JSON.stringify(result.user));
+                    localStorage.setItem('token', result.token);
                     
                     // Redirect based on user role
                     if (result.user.role === 'DIRECTOR') {
                         window.location.href = '/director';
                     } else if (result.user.role === 'HEAD_OFFICE' || result.user.role === 'REGIONAL_MANAGER') {
                         window.location.href = '/admin_head';
-                    } else {
-                        window.location.href = '/login';
-                    }
+                    } 
                 } else {
                     const errorDiv = document.getElementById('error');
                     errorDiv.textContent = '잘못된 사용자명 또는 비밀번호입니다.';

@@ -209,8 +209,7 @@
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
             // Check if user is authenticated
-            const token = localStorage.getItem('token');
-            if (!token) {
+            if (!isAuthenticated()) {
                 window.location.href = '/login';
                 return;
             }
@@ -218,6 +217,24 @@
             loadUserInfo();
             loadDashboardData();
         });
+
+        // Helper function to get cookie value
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+            return null;
+        }
+
+        // Check if user is authenticated by checking auth_status cookie or localStorage token
+        function isAuthenticated() {
+            const authStatus = getCookie('auth_status');
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            
+            // Check either auth_status cookie OR localStorage token (both methods work)
+            return (authStatus === 'authenticated' || token) && user;
+        }
 
         function loadUserInfo() {
             const user = JSON.parse(localStorage.getItem('user') || '{}');
