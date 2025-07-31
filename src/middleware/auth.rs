@@ -113,7 +113,7 @@ impl AuthMiddleware {
     }
 }
 
-fn extract_token_from_headers(headers: &HeaderMap) -> Option<String> {
+pub fn extract_token_from_headers(headers: &HeaderMap) -> Option<String> {
     // Try Authorization header first
     if let Some(auth_header) = headers.get(header::AUTHORIZATION) {
         if let Ok(header_str) = auth_header.to_str() {

@@ -1,1 +1,0 @@
-Elephant is bouncing a ball.

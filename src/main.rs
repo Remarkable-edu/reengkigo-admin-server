@@ -10,19 +10,21 @@ mod handlers;
 mod dto;
 mod middleware;
 
-use axum::{Router, routing::{get, post, put}, middleware as axum_middleware};
+use axum::{Router, routing::{get, post, put, delete}};
+use axum::middleware as axum_middleware;
+use axum::extract::DefaultBodyLimit;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 use config::AppConfig;
 use utils::ObservabilityManager;
-use services::database::Database;
+use services::file::FileService;
 use tokio::signal;
 use std::net::SocketAddr;
 use tower_http::services::{ServeDir, ServeFile};
 
-use crate::handlers::admin_head::{self, ApiDoc};
-use crate::handlers::auth;
-use crate::middleware::AuthMiddleware;
+use crate::handlers::{auth, file, dashboard};
+use crate::middleware::auth::AuthMiddleware;
+use server_test::ApiDoc;
 
 /// Graceful shutdown signal handler
 /// 
@@ -58,8 +60,8 @@ async fn shutdown_signal() {
 
 #[derive(Clone)]
 pub struct AppState {
-    /// Database service
-    pub db: Database,
+    /// File service
+    pub file_service: Arc<FileService>,
     /// Application configuration
     pub config: Arc<AppConfig>,
     /// Observability manager
@@ -74,13 +76,13 @@ async fn main() -> Result<()> {
     let config = Arc::new(AppConfig::load()?);
     let observability = Arc::new(ObservabilityManager::new(config.clone()).await?);
 
-    let database = Database::new(
-        &config.database.url,
-        &config.database.name 
-    ).await?;
+    let file_service = Arc::new(FileService::new(
+        config.external_api.base_url.clone(),
+        config.external_api.bucket.clone()
+    ));
 
     let state = AppState {
-        db: database,
+        file_service,
         config: config.clone(),
         observability: observability.clone(),
     };
@@ -103,66 +105,45 @@ async fn main() -> Result<()> {
 
 
 fn create_router(state: AppState) -> Router {
-    // Protected API routes - require authentication and admin role
-    let protected_api_routes = Router::new()
-        .route("/api/assets", post(admin_head::create_asset))
-        .route("/api/assets", get(admin_head::list_asset))
-        .route("/api/assets/filter", get(admin_head::get_filtered_assets))
-        .route("/api/assets/:id", put(admin_head::update_asset))
-        .route("/api/assets/:id", axum::routing::delete(admin_head::delete_asset))
-        .route("/api/upload", post(admin_head::upload_file))
-        .layer(axum_middleware::from_fn(AuthMiddleware::require_admin_role))
-        .layer(axum_middleware::from_fn_with_state(state.clone(), AuthMiddleware::auth_middleware));
+    // File API routes - no authentication for now
+    let file_api_routes = Router::new()
+        .route("/upload", post(file::upload_file))
+        .route("/all-file", get(file::list_files))
+        .route("/delete-file", post(file::delete_file))
+        .layer(DefaultBodyLimit::max(500 * 1024 * 1024)) // 500MB limit for file uploads
+        .with_state(state.file_service.clone());
 
     // Public auth routes - no authentication required
     let auth_routes = Router::new()
-        .route("/", get(|| async { axum::response::Redirect::permanent("/login") }))
+        .route("/", get(auth::root_handler))
         .route("/login", get(auth::login_page))
         .route("/login", post(auth::login_handler));
 
-    // Asset serving routes for file access
-    let asset_routes = Router::new()
-        .nest_service("/asset", ServeDir::new("asset"))
-        .nest_service("/admin_head/asset", ServeDir::new("asset"));
-
-    // Protected admin routes - require authentication and admin role
-    let protected_admin_routes = Router::new()
-        .route("/admin_head", get(admin_head::dashboard_page))
-        .route("/admin_head/assets", get(admin_head::asset_management_page))
-        .layer(axum_middleware::from_fn(AuthMiddleware::require_admin_role))
-        .layer(axum_middleware::from_fn_with_state(state.clone(), AuthMiddleware::auth_middleware));
-
-    // Protected director routes - require authentication and director role
-    let protected_director_routes = Router::new()
-        .route("/director", get(|| async { 
-            axum::response::Html(include_str!("templates/director/base.html"))
-        }))
-        .layer(axum_middleware::from_fn(AuthMiddleware::require_director_role))
-        .layer(axum_middleware::from_fn_with_state(state.clone(), AuthMiddleware::auth_middleware));
+    // Admin dashboard routes - authentication required
+    let admin_dashboard_routes = Router::new()
+        .route("/dashboard", get(dashboard::dashboard_main))
+        .route("/dashboard/assets", get(dashboard::dashboard_asset))
+        .route("/api/assets", get(dashboard::list_assets).post(dashboard::create_asset))
+        .route("/api/assets/filter", get(dashboard::filter_assets))
+        .route("/api/assets/:id", put(dashboard::update_asset).delete(dashboard::delete_asset))
+        .layer(DefaultBodyLimit::max(500 * 1024 * 1024)) // 500MB limit for asset uploads
+        .layer(axum_middleware::from_fn(AuthMiddleware::auth_middleware));
 
     // Static file serving - no authentication required
     let static_routes = Router::new()
+        .route_service("/project_list.yaml", ServeFile::new("project_list.yaml"))
         .nest_service("/static", ServeDir::new("static"))
-        .route_service("/project_list.yaml", ServeFile::new("project_list.yaml"));
+        .nest_service("/asset", ServeDir::new("assets").fallback(ServeFile::new("assets/placeholder.png")));
 
     // API Documentation - Swagger UI
-    let api_docs_routes = Router::new()
-        .merge(SwaggerUi::new("/admin_head/api-docs")
-            .url("/admin_head/api-docs/openapi.json", ApiDoc::openapi()));
-            
-    // API docs route for protected access
-    let protected_api_docs_routes = Router::new()
-        .merge(api_docs_routes)
-        .layer(axum_middleware::from_fn(AuthMiddleware::require_admin_role))
-        .layer(axum_middleware::from_fn_with_state(state.clone(), AuthMiddleware::auth_middleware));
+    let api_docs = SwaggerUi::new("/api-docs")
+        .url("/api-docs/openapi.json", ApiDoc::openapi());
 
     Router::new()
-        .merge(protected_api_routes)
+        .merge(file_api_routes)
         .merge(auth_routes)
-        .merge(asset_routes)
-        .merge(protected_admin_routes)
-        .merge(protected_director_routes)
+        .merge(admin_dashboard_routes)
         .merge(static_routes)
-        .merge(protected_api_docs_routes)
+        .merge(api_docs)
         .with_state(state)
 }

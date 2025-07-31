@@ -1,82 +1,143 @@
-warning: variable `original_filename` is assigned to, but never used
-  --> src/handlers/admin_head.rs:79:13
+warning: unused import: `info`
+  --> src/handlers/file.rs:11:22
    |
-79 |     let mut original_filename: Option<String> = None;
-   |             ^^^^^^^^^^^^^^^^^
+11 | use tracing::{error, info};
+   |                      ^^^^
    |
-   = note: consider using `_original_filename` instead
+   = note: `#[warn(unused_imports)]` on by default
+
+warning: variable `category` is assigned to, but never used
+  --> src/handlers/dashboard.rs:28:13
+   |
+28 |     let mut category = String::new();
+   |             ^^^^^^^^
+   |
+   = note: consider using `_category` instead
    = note: `#[warn(unused_variables)]` on by default
 
-warning: variable `curriculum` is assigned to, but never used
-  --> src/handlers/admin_head.rs:80:13
+warning: variable `subtitles_json` is assigned to, but never used
+  --> src/handlers/dashboard.rs:30:13
    |
-80 |     let mut curriculum: Option<String> = None;
-   |             ^^^^^^^^^^
+30 |     let mut subtitles_json = String::new();
+   |             ^^^^^^^^^^^^^^
    |
-   = note: consider using `_curriculum` instead
+   = note: consider using `_subtitles_json` instead
 
-warning: variable `month` is assigned to, but never used
-  --> src/handlers/admin_head.rs:81:13
+warning: value assigned to `category` is never read
+  --> src/handlers/dashboard.rs:37:27
    |
-81 |     let mut month: Option<String> = None;
-   |             ^^^^^
-   |
-   = note: consider using `_month` instead
-
-warning: value assigned to `original_filename` is never read
-  --> src/handlers/admin_head.rs:92:13
-   |
-92 |             original_filename = Some(filename.clone());
-   |             ^^^^^^^^^^^^^^^^^
+37 |             "category" => category = field.text().await.unwrap_or_default(),
+   |                           ^^^^^^^^
    |
    = help: maybe it is overwritten before being read?
    = note: `#[warn(unused_assignments)]` on by default
 
-warning: value assigned to `curriculum` is never read
-   --> src/handlers/admin_head.rs:125:13
-    |
-125 |             curriculum = Some(text);
-    |             ^^^^^^^^^^
-    |
-    = help: maybe it is overwritten before being read?
+warning: value assigned to `subtitles_json` is never read
+  --> src/handlers/dashboard.rs:38:28
+   |
+38 |             "subtitles" => subtitles_json = field.text().await.unwrap_or_default(),
+   |                            ^^^^^^^^^^^^^^
+   |
+   = help: maybe it is overwritten before being read?
 
-warning: value assigned to `month` is never read
-   --> src/handlers/admin_head.rs:128:13
-    |
-128 |             month = Some(text);
-    |             ^^^^^
-    |
-    = help: maybe it is overwritten before being read?
+warning: `reengkigo-admin-app` (lib) generated 5 warnings (run `cargo fix --lib -p reengkigo-admin-app` to apply 1 suggestion)
+   Compiling reengkigo-admin-app v0.1.0 (/Users/gyujinkim/Desktop/reengkigo/asset-server/reengkigo-admin-server)
+warning: unused import: `auth::AuthMiddleware`
+ --> src/middleware/mod.rs:3:9
+  |
+3 | pub use auth::AuthMiddleware;
+  |         ^^^^^^^^^^^^^^^^^^^^
 
-warning: `reengkigo-admin-app` (lib) generated 6 warnings
-warning: associated function `require_any_role` is never used
-   --> src/middleware/auth.rs:100:18
+warning: unused import: `delete`
+  --> src/main.rs:13:46
+   |
+13 | use axum::{Router, routing::{get, post, put, delete}};
+   |                                              ^^^^^^
+
+warning: struct `DashboardService` is never constructed
+  --> src/services/dashboard.rs:20:12
+   |
+20 | pub struct DashboardService;
+   |            ^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: associated items `new`, `get_dashboard_stats`, and `get_system_health` are never used
+  --> src/services/dashboard.rs:23:12
+   |
+22 | impl DashboardService {
+   | --------------------- associated items in this implementation
+23 |     pub fn new() -> Self {
+   |            ^^^
+...
+27 |     pub async fn get_dashboard_stats(&self) -> Result<DashboardStats> {
+   |                  ^^^^^^^^^^^^^^^^^^^
+...
+47 |     pub async fn get_system_health(&self) -> Result<SystemHealth> {
+   |                  ^^^^^^^^^^^^^^^^^
+
+warning: methods `is_director` and `can_access_director` are never used
+  --> src/models/user.rs:39:12
+   |
+29 | impl AdminUser {
+   | -------------- methods in this implementation
+...
+39 |     pub fn is_director(&self) -> bool {
+   |            ^^^^^^^^^^^
+...
+55 |     pub fn can_access_director(&self) -> bool {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: associated functions `require_admin_role`, `require_director_role`, and `require_any_role` are never used
+   --> src/middleware/auth.rs:65:18
     |
 16  | impl AuthMiddleware {
-    | ------------------- associated function in this implementation
+    | ------------------- associated functions in this implementation
+...
+65  |     pub async fn require_admin_role(
+    |                  ^^^^^^^^^^^^^^^^^^
+...
+85  |     pub async fn require_director_role(
+    |                  ^^^^^^^^^^^^^^^^^^^^^
 ...
 100 |     pub async fn require_any_role(
     |                  ^^^^^^^^^^^^^^^^
-    |
-    = note: `#[warn(dead_code)]` on by default
 
-warning: `reengkigo-admin-app` (bin "reengkigo-admin-app") generated 7 warnings (6 duplicates)
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.13s
+warning: function `create_forbidden_response` is never used
+   --> src/middleware/auth.rs:180:4
+    |
+180 | fn create_forbidden_response(request: &Request) -> Response {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `get_current_user` is never used
+   --> src/middleware/auth.rs:206:8
+    |
+206 | pub fn get_current_user(request: &Request) -> Option<&AdminUser> {
+    |        ^^^^^^^^^^^^^^^^
+
+warning: `reengkigo-admin-app` (bin "reengkigo-admin-app") generated 13 warnings (5 duplicates) (run `cargo fix --bin "reengkigo-admin-app"` to apply 2 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.04s
      Running `target/debug/reengkigo-admin-app`
-[2m2025-07-17T03:03:53.015286Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m65:[0m Loading application configuration...
-[2m2025-07-17T03:03:53.017376Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m76:[0m Configuration loaded successfully
-[2m2025-07-17T03:03:53.017411Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m77:[0m name: "reengkigo"
-[2m2025-07-17T03:03:53.017458Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m78:[0m Database: mongodb://localhost:27017
-[2m2025-07-17T03:03:53.017508Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::database[0m[2m:[0m [2msrc/services/database.rs[0m[2m:[0m[2m39:[0m Connecting to MongoDB: mongodb://localhost:27017
-[2m2025-07-17T03:03:53.028566Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::database[0m[2m:[0m [2msrc/services/database.rs[0m[2m:[0m[2m52:[0m MongoDB connection established successfully
-[2m2025-07-17T03:03:53.031116Z[0m [32m INFO[0m [2mreengkigo_admin_app[0m[2m:[0m [2msrc/main.rs[0m[2m:[0m[2m91:[0m Starting server on 0.0.0.0:3000
-[2m2025-07-17T03:04:08.972428Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::auth[0m[2m:[0m [2msrc/handlers/auth.rs[0m[2m:[0m[2m39:[0m Login attempt for account: admin
-[2m2025-07-17T03:04:21.480327Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::auth[0m[2m:[0m [2msrc/handlers/auth.rs[0m[2m:[0m[2m39:[0m Login attempt for account: admin
-[2m2025-07-17T03:04:28.302436Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzUyODA3ODYxLCJpYXQiOjE3NTI3MjE0NjF9.vJMKtN0k9YP-KfoLmq5jh3dUX7SUoMA3fL9kUOkas9o
-[2m2025-07-17T03:04:28.302513Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
-[2m2025-07-17T03:04:28.302738Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
-[2m2025-07-17T03:04:28.302753Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
-[2m2025-07-17T03:04:28.302777Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
-[2m2025-07-17T03:04:28.302798Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m73:[0m require_admin_role: AdminUser found: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
-[2m2025-07-17T03:04:28.302806Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m74:[0m require_admin_role: can_access_admin: true
-[2m2025-07-17T03:04:34.296431Z[0m [32m INFO[0m [2mreengkigo_admin_app[0m[2m:[0m [2msrc/main.rs[0m[2m:[0m[2m53:[0m Received SIGTERM, shutting down gracefully...
+[2m2025-07-31T06:32:58.866773Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m65:[0m Loading application configuration...
+[2m2025-07-31T06:32:58.869242Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m76:[0m Configuration loaded successfully
+[2m2025-07-31T06:32:58.869259Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m77:[0m name: "reengkigo-admin"
+[2m2025-07-31T06:32:58.869270Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m78:[0m External API: http://localhost:5001
+[2m2025-07-31T06:32:58.869280Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m79:[0m Bucket: reengki-archive
+[2m2025-07-31T06:32:58.876013Z[0m [32m INFO[0m [2mreengkigo_admin_app[0m[2m:[0m [2msrc/main.rs[0m[2m:[0m[2m93:[0m Starting server on 0.0.0.0:3000
+[2m2025-07-31T06:33:18.635667Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0MDI5OTA2LCJpYXQiOjE3NTM5NDM1MDZ9.DyEuVdr0BUTiXq6bY2Yw6qRETTORaDBY0X_a0R8Vomk; auth_status=authenticated
+[2m2025-07-31T06:33:18.635777Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-07-31T06:33:18.636620Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-07-31T06:33:18.636660Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-31T06:33:18.636686Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-07-31T06:33:18.636765Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m176:[0m Listing all assets
+[2m2025-07-31T06:33:33.780795Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0MDI5OTA2LCJpYXQiOjE3NTM5NDM1MDZ9.DyEuVdr0BUTiXq6bY2Yw6qRETTORaDBY0X_a0R8Vomk; auth_status=authenticated
+[2m2025-07-31T06:33:33.780850Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-07-31T06:33:33.780959Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-07-31T06:33:33.780973Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-31T06:33:33.780982Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-07-31T06:33:33.781021Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m189:[0m Filtering assets with params: AssetFilterQuery { book_id: Some("J1R") }
+[2m2025-07-31T06:33:43.785588Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0MDI5OTA2LCJpYXQiOjE3NTM5NDM1MDZ9.DyEuVdr0BUTiXq6bY2Yw6qRETTORaDBY0X_a0R8Vomk; auth_status=authenticated
+[2m2025-07-31T06:33:43.785649Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-07-31T06:33:43.785747Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-07-31T06:33:43.785755Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-07-31T06:33:43.785762Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true

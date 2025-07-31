@@ -123,12 +123,12 @@
                 <div class="sidebar-content">
                     <ul class="nav-menu">
                         <li class="nav-item">
-                            <a class="nav-link" href="/admin_head/assets">
+                            <a class="nav-link" href="/dashboard/assets">
                                 <i class="fas fa-th-large"></i> 에셋 관리
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/admin_head">
+                            <a class="nav-link" href="/dashboard">
                                 <i class="fas fa-home"></i> 대시보드
                             </a>
                         </li>
@@ -163,40 +163,15 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <form id="filterForm" class="row g-3">
-                            <div class="col-md-3">
-                                <label for="curriculumFilter" class="form-label">커리큘럼</label>
-                                <select class="form-select" id="curriculumFilter" name="curriculum">
-                                    <option value="">모든 커리큘럼</option>
-                                    <!-- Options will be loaded from project_list.yaml -->
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="monthFilter" class="form-label">월</label>
-                                <select class="form-select" id="monthFilter" name="month">
-                                    <option value="">모든 월</option>
-                                    <option value="Jan">1월</option>
-                                    <option value="Feb">2월</option>
-                                    <option value="Mar">3월</option>
-                                    <option value="Apr">4월</option>
-                                    <option value="May">5월</option>
-                                    <option value="Jun">6월</option>
-                                    <option value="Jul">7월</option>
-                                    <option value="Aug">8월</option>
-                                    <option value="Sep">9월</option>
-                                    <option value="Oct">10월</option>
-                                    <option value="Nov">11월</option>
-                                    <option value="Dec">12월</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
+                            <div class="col-md-6">
                                 <label for="bookIdFilter" class="form-label">교재 ID</label>
                                 <input type="text" class="form-control" id="bookIdFilter" name="book_id" placeholder="교재 ID 입력">
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-6">
                                 <button type="submit" class="btn btn-primary" style="margin-top: 32px;">
                                     <i class="fas fa-filter"></i> 필터 적용
                                 </button>
-                                <button type="button" class="btn btn-secondary" onclick="clearFilters()" style="margin-top: 32px;">
+                                <button type="button" class="btn btn-secondary ms-2" onclick="clearFilters()" style="margin-top: 32px;">
                                     <i class="fas fa-times"></i> 초기화
                                 </button>
                             </div>
@@ -216,14 +191,12 @@
                             <table class="table table-bordered" id="assetsTable">
                                 <thead>
                                     <tr>
-                                        <th>에셋 ID</th>
-                                        <th>커리큘럼</th>
-                                        <th>월</th>
                                         <th>교재 ID</th>
+                                        <th>제목</th>
+                                        <th>카테고리</th>
                                         <th>표지 이미지</th>
+                                        <th>영상 링크</th>
                                         <th>자막 데이터</th>
-                                        <th>YouTube 링크</th>
-                                        <th>작업</th>
                                     </tr>
                                 </thead>
                                 <tbody id="assetsTableBody">
@@ -237,69 +210,85 @@
         </div>
     </div>
 
+
     <!-- Create Asset Modal -->
     <div class="modal fade" id="createAssetModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">새 에셋 생성</h5>
+                    <h5 class="modal-title">새 에셋 추가</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="createAssetForm">
+                        <!-- 교재 ID (필수) -->
                         <div class="mb-3">
-                            <label for="curriculumId" class="form-label">커리큘럼</label>
-                            <select class="form-select" id="curriculumId" name="curriculum" required onchange="updateBookId()">
-                                <option value="">커리큘럼 선택</option>
-                            </select>
+                            <label for="bookId" class="form-label">교재 ID <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="bookId" name="book_id" required placeholder="예: J1R, J2O, J1G">
                         </div>
+
+                        <!-- 제목 (필수, 기본값은 파일명) -->
                         <div class="mb-3">
-                            <label for="monthSelect" class="form-label">월</label>
-                            <select class="form-select" id="monthSelect" name="month" required onchange="updateBookId()">
-                                <option value="">월 선택</option>
-                                <option value="Jan">1월</option>
-                                <option value="Feb">2월</option>
-                                <option value="Mar">3월</option>
-                                <option value="Apr">4월</option>
-                                <option value="May">5월</option>
-                                <option value="Jun">6월</option>
-                                <option value="Jul">7월</option>
-                                <option value="Aug">8월</option>
-                                <option value="Sep">9월</option>
-                                <option value="Oct">10월</option>
-                                <option value="Nov">11월</option>
-                                <option value="Dec">12월</option>
-                            </select>
+                            <label for="assetTitle" class="form-label">제목 <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="assetTitle" name="title" required placeholder="제목을 입력하세요">
                         </div>
+
+                        <!-- 카테고리 (옵션) -->
                         <div class="mb-3">
-                            <label class="form-label">표지 이미지 업로드</label>
+                            <label for="assetCategory" class="form-label">카테고리</label>
+                            <input type="text" class="form-control" id="assetCategory" name="category" placeholder="예: 영어, 과학, 수학">
+                        </div>
+
+                        <!-- 표지 이미지 (필수) -->
+                        <div class="mb-3">
+                            <label class="form-label">표지 이미지 <span class="text-danger">*</span></label>
                             <div class="border rounded p-3">
-                                <input type="file" class="form-control mb-2" id="newAssetCoverFiles" accept="image/*" multiple>
+                                <input type="file" class="form-control mb-2" id="coverImageFile" accept="image/*" required onchange="handleCoverImageChange()">
                                 <div class="form-text">
                                     <i class="fas fa-info-circle"></i> 
-                                    여러 개의 이미지를 선택할 수 있습니다. JPG, PNG 형식만 지원됩니다.
+                                    JPG, PNG 형식만 지원됩니다.
                                 </div>
-                                <div id="newAssetCoverPreview" class="mt-2">
-                                    <!-- Cover preview will be shown here -->
+                                <div id="coverImagePreview" class="mt-2">
+                                    <!-- Preview will be shown here -->
                                 </div>
-                                <input type="hidden" id="covers" name="covers" value="[]">
                             </div>
                         </div>
+
+                        <!-- 비디오 영상 (필수) -->
                         <div class="mb-3">
-                            <label for="subtitles" class="form-label">자막 데이터</label>
-                            <textarea class="form-control" id="subtitles" name="subtitles" rows="5" placeholder='예: [{"page_num": 1, "sentence_num": 1, "text": "Amazing Animals"}]' required></textarea>
-                            <div class="form-text">JSON 배열 형태로 입력해주세요.</div>
+                            <label class="form-label">비디오 영상 <span class="text-danger">*</span></label>
+                            <div class="border rounded p-3">
+                                <input type="file" class="form-control mb-2" id="videoFile" accept="video/*" required onchange="handleVideoFileChange()">
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle"></i> 
+                                    MP4, AVI, MOV 등의 비디오 파일을 지원합니다.
+                                </div>
+                                <div id="videoPreview" class="mt-2">
+                                    <!-- Video preview will be shown here -->
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- 자막 데이터 (옵션) -->
                         <div class="mb-3">
-                            <label for="youtubeLinks" class="form-label">YouTube 링크</label>
-                            <textarea class="form-control" id="youtubeLinks" name="youtube_links" rows="5" placeholder='예: [{"thumbnail_file": "thumbnail/J1R_amazing.png", "youtube_url": "https://youtu.be/v-r7AtCFc-w", "title": "J1R Amazing"}]' required></textarea>
-                            <div class="form-text">JSON 배열 형태로 입력해주세요.</div>
+                            <label class="form-label">자막 데이터</label>
+                            <div class="border rounded p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <small class="text-muted">페이지별 문장을 추가하세요</small>
+                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="addSubtitleRow()">
+                                        <i class="fas fa-plus"></i> 자막 추가
+                                    </button>
+                                </div>
+                                <div id="subtitleContainer">
+                                    <!-- Subtitle rows will be added here -->
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                    <button type="submit" class="btn btn-primary" form="createAssetForm">에셋 생성</button>
+                    <button type="submit" class="btn btn-primary" form="createAssetForm">에셋 추가</button>
                 </div>
             </div>
         </div>
@@ -612,7 +601,6 @@
             }
             
             loadAssets();
-            loadCurriculumDataForFilters();
             
             // Setup filter form
             document.getElementById('filterForm').addEventListener('submit', function(e) {
@@ -623,27 +611,12 @@
             // Initialize modal event listeners after DOM is ready
             initializeModalEventListeners();
             
-            // Setup new asset cover file handling
-            setupNewAssetCoverHandling();
-            
             // Debug: Log that everything is ready
             console.log('Admin page fully loaded and ready');
         });
 
         function initializeModalEventListeners() {
-            // Clean up any existing event listeners and reinitialize
-            const createButton = document.querySelector('[data-bs-target="#createAssetModal"]');
-            if (createButton) {
-                // Remove existing onclick attribute to prevent conflicts
-                createButton.removeAttribute('onclick');
-                
-                createButton.addEventListener('click', function(e) {
-                    console.log('Create asset button clicked');
-                    // Use Bootstrap's built-in modal trigger instead of manual creation
-                });
-            }
-
-            // Add event listener for modal form submission
+            // Handle create asset modal
             const createAssetForm = document.getElementById('createAssetForm');
             if (createAssetForm) {
                 createAssetForm.addEventListener('submit', function(e) {
@@ -652,47 +625,23 @@
                 });
             }
 
-            // Add modal event listeners for proper cleanup
-            const modalElement = document.getElementById('createAssetModal');
-            if (modalElement) {
-                // Clean up on modal hide
-                modalElement.addEventListener('hidden.bs.modal', function() {
-                    console.log('Modal hidden, cleaning up');
-                    
-                    // Reset form and clear any loading states
-                    const form = document.getElementById('createAssetForm');
-                    if (form) {
-                        form.reset();
-                        // Reset book ID field
-                        const bookIdField = document.getElementById('bookId');
-                        if (bookIdField) {
-                            bookIdField.value = '';
-                        }
-                    }
-                    
+            // Handle create asset modal cleanup
+            const createModalElement = document.getElementById('createAssetModal');
+            if (createModalElement) {
+                createModalElement.addEventListener('hidden.bs.modal', function() {
+                    // Reset form
+                    document.getElementById('createAssetForm').reset();
+                    // Clear previews
+                    document.getElementById('coverImagePreview').innerHTML = '';
+                    document.getElementById('videoPreview').innerHTML = '';
+                    // Clear subtitle container
+                    document.getElementById('subtitleContainer').innerHTML = '';
                     // Reset submit button
-                    const submitButton = modalElement.querySelector('button[type="submit"]');
+                    const submitButton = createModalElement.querySelector('button[type="submit"]');
                     if (submitButton) {
                         submitButton.disabled = false;
-                        submitButton.innerHTML = '에셋 생성';
+                        submitButton.innerHTML = '에셋 추가';
                     }
-
-                    // Remove any modal backdrop that might be stuck
-                    const backdrops = document.querySelectorAll('.modal-backdrop');
-                    backdrops.forEach(backdrop => backdrop.remove());
-                    
-                    // Ensure body doesn't have modal-open class
-                    document.body.classList.remove('modal-open');
-                    document.body.style.overflow = '';
-                    document.body.style.paddingRight = '';
-                });
-
-                modalElement.addEventListener('show.bs.modal', function() {
-                    console.log('Modal showing');
-                    // Load curriculum data when modal opens
-                    loadCurriculumData();
-                    // Setup cover file handling when modal opens
-                    setupNewAssetCoverHandling();
                 });
             }
 
@@ -719,149 +668,7 @@
             }
         }
 
-        // Project curriculum data
-        let curriculumData = {};
-        
-        // Load curriculum data for filters
-        function loadCurriculumDataForFilters() {
-            fetch('/project_list.yaml')
-                .then(response => response.text())
-                .then(yamlText => {
-                    // Parse YAML manually (simple key-value parsing)
-                    curriculumData = parseProjectListYaml(yamlText);
-                    console.log('Curriculum data loaded for filters:', curriculumData);
-                    
-                    // Update filter curriculum dropdown
-                    updateFilterCurriculumDropdown();
-                })
-                .catch(error => {
-                    console.error('Failed to load curriculum data for filters:', error);
-                });
-        }
-        
-        // Update filter curriculum dropdown options
-        function updateFilterCurriculumDropdown() {
-            const curriculumFilter = document.getElementById('curriculumFilter');
-            if (!curriculumFilter) return;
 
-            // Clear existing options except the first one
-            while (curriculumFilter.children.length > 1) {
-                curriculumFilter.removeChild(curriculumFilter.lastChild);
-            }
-
-            // Add curriculum options
-            Object.keys(curriculumData).forEach(curriculum => {
-                const option = document.createElement('option');
-                option.value = curriculum;
-                option.textContent = curriculum;
-                curriculumFilter.appendChild(option);
-            });
-        }
-
-        // Load curriculum data from project_list.yaml
-        function loadCurriculumData() {
-            fetch('/project_list.yaml')
-                .then(response => response.text())
-                .then(yamlText => {
-                    // Parse YAML manually (simple key-value parsing)
-                    curriculumData = parseProjectListYaml(yamlText);
-                    console.log('Curriculum data loaded:', curriculumData);
-                    
-                    // Update curriculum dropdown
-                    updateCurriculumDropdown();
-                })
-                .catch(error => {
-                    console.error('Failed to load curriculum data:', error);
-                    // Fallback data
-                    curriculumData = {
-                        'Stage-1-1': {},
-                        'Stage-1-2': {},
-                        'Stage-2-1': {},
-                        'Stage-2-2': {},
-                        'Stage-3': {},
-                        'JELLY': {},
-                        'JUICE': {}
-                    };
-                    updateCurriculumDropdown();
-                });
-        }
-
-        // Simple YAML parser for project_list.yaml format
-        function parseProjectListYaml(yamlText) {
-            const lines = yamlText.split('\n');
-            const data = {};
-            let currentCurriculum = null;
-
-            for (const line of lines) {
-                const trimmed = line.trim();
-                if (!trimmed || trimmed.startsWith('#')) continue;
-
-                if (trimmed.endsWith(':') && !trimmed.startsWith(' ')) {
-                    // Curriculum name
-                    currentCurriculum = trimmed.slice(0, -1);
-                    data[currentCurriculum] = {};
-                } else if (currentCurriculum && trimmed.includes(':')) {
-                    // Month mapping
-                    const [month, bookId] = trimmed.split(':').map(s => s.trim());
-                    data[currentCurriculum][month] = bookId;
-                }
-            }
-
-            return data;
-        }
-
-        // Update curriculum dropdown options
-        function updateCurriculumDropdown() {
-            const curriculumSelect = document.getElementById('curriculumId');
-            if (!curriculumSelect) return;
-
-            // Clear existing options except the first one
-            while (curriculumSelect.children.length > 1) {
-                curriculumSelect.removeChild(curriculumSelect.lastChild);
-            }
-
-            // Add curriculum options
-            Object.keys(curriculumData).forEach(curriculum => {
-                const option = document.createElement('option');
-                option.value = curriculum;
-                option.textContent = curriculum;
-                curriculumSelect.appendChild(option);
-            });
-        }
-
-        // Update book ID based on curriculum and month selection
-        function updateBookId() {
-            const curriculumId = document.getElementById('curriculumId').value;
-            const month = document.getElementById('monthSelect').value;
-            
-            console.log(`Selected curriculum: ${curriculumId}, month: ${month}`);
-            
-            if (curriculumId && month && curriculumData[curriculumId]) {
-                const monthNumber = getMonthNumber(month);
-                const monthKey = `month_${monthNumber}`;
-                const bookId = curriculumData[curriculumId][monthKey];
-                
-                console.log(`Looking for ${curriculumId}.${monthKey} -> ${bookId}`);
-                
-                if (bookId) {
-                    console.log(`Found book ID: ${bookId}`);
-                    // Book ID is automatically determined, no need to set a field
-                } else {
-                    console.warn(`No book ID found for ${curriculumId} month ${monthNumber}`);
-                }
-            }
-        }
-
-        // Convert month name to number
-        function getMonthNumber(monthName) {
-            const months = {
-                'Jan': '01', 'Feb': '02', 'Mar': '03',
-                'Apr': '04', 'May': '05', 'Jun': '06',
-                'Jul': '07', 'Aug': '08', 'Sep': '09',
-                'Oct': '10', 'Nov': '11', 'Dec': '12'
-            };
-            return months[monthName] || '01';
-        }
 
         // Helper function to normalize image URLs
         function normalizeImageUrl(imagePath) {
@@ -932,6 +739,13 @@
                     </td>
                     <td>
                         <div>${asset.youtube_links.length}개 링크</div>
+                        ${asset.video_url ? `
+                            <div style="font-size: 0.8em; margin-bottom: 5px;">
+                                <a href="${asset.video_url}" target="_blank" class="text-decoration-none">
+                                    <i class="fas fa-video text-primary"></i> 비디오 파일
+                                </a>
+                            </div>
+                        ` : ''}
                         ${asset.youtube_links.slice(0, 2).map(link => `
                             <div style="font-size: 0.8em;">
                                 <a href="${link.youtube_url}" target="_blank" class="text-decoration-none">
@@ -969,185 +783,212 @@
             document.getElementById('assetCount').textContent = count;
         }
 
-        // Modal functions are now handled by Bootstrap data attributes
+        // Asset creation functions
+        let subtitleRowCounter = 0;
 
-        // Setup new asset cover file handling
-        function setupNewAssetCoverHandling() {
-            const newAssetCoverFiles = document.getElementById('newAssetCoverFiles');
-            if (newAssetCoverFiles && !newAssetCoverFiles.dataset.initialized) {
-                newAssetCoverFiles.dataset.initialized = 'true';
-                newAssetCoverFiles.onchange = function() {
-                    const files = this.files;
-                    const previewDiv = document.getElementById('newAssetCoverPreview');
-                    
-                    if (files.length === 0) {
-                        previewDiv.innerHTML = '';
-                        return;
-                    }
-                    
-                    let previewHtml = '<div class="mt-2"><h6>선택된 파일들:</h6><div class="d-flex flex-wrap">';
-                    let loadedCount = 0;
-                    
-                    Array.from(files).forEach((file, index) => {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            previewHtml += `
-                                <div class="d-inline-block m-1 text-center">
-                                    <img src="${e.target.result}" alt="미리보기" style="width: 80px; height: 80px; object-fit: cover;" class="border rounded">
-                                    <div class="small">${file.name}</div>
-                                </div>
-                            `;
-                            loadedCount++;
-                            if (loadedCount === files.length) {
-                                previewHtml += '</div></div>';
-                                previewDiv.innerHTML = previewHtml;
-                            }
-                        };
-                        reader.readAsDataURL(file);
-                    });
+        // Handle cover image file change
+        function handleCoverImageChange() {
+            const fileInput = document.getElementById('coverImageFile');
+            const previewDiv = document.getElementById('coverImagePreview');
+            const titleInput = document.getElementById('assetTitle');
+            
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                
+                // Auto-generate title from filename if title is empty
+                if (!titleInput.value.trim()) {
+                    const filename = file.name;
+                    const nameWithoutExtension = filename.substring(0, filename.lastIndexOf('.')) || filename;
+                    titleInput.value = nameWithoutExtension;
+                }
+                
+                // Show image preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewDiv.innerHTML = `
+                        <div class="text-center">
+                            <img src="${e.target.result}" alt="표지 미리보기" style="max-width: 200px; max-height: 200px; object-fit: cover;" class="border rounded">
+                            <div class="small mt-1">${file.name}</div>
+                        </div>
+                    `;
                 };
+                reader.readAsDataURL(file);
+            } else {
+                previewDiv.innerHTML = '';
             }
         }
 
+        // Handle video file change
+        function handleVideoFileChange() {
+            const fileInput = document.getElementById('videoFile');
+            const previewDiv = document.getElementById('videoPreview');
+            
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                
+                // Show video info and preview
+                const fileSize = (file.size / (1024 * 1024)).toFixed(2); // MB
+                const url = URL.createObjectURL(file);
+                
+                previewDiv.innerHTML = `
+                    <div class="text-center">
+                        <video controls style="max-width: 300px; max-height: 200px;" class="border rounded">
+                            <source src="${url}" type="${file.type}">
+                            브라우저가 비디오를 지원하지 않습니다.
+                        </video>
+                        <div class="small mt-1">${file.name} (${fileSize} MB)</div>
+                    </div>
+                `;
+            } else {
+                previewDiv.innerHTML = '';
+            }
+        }
+
+        // Add subtitle row
+        function addSubtitleRow() {
+            subtitleRowCounter++;
+            const container = document.getElementById('subtitleContainer');
+            
+            const row = document.createElement('div');
+            row.className = 'subtitle-row mb-2 p-2 border rounded';
+            row.id = `subtitle-row-${subtitleRowCounter}`;
+            row.innerHTML = `
+                <div class="row align-items-center">
+                    <div class="col-md-2">
+                        <label class="form-label small">페이지</label>
+                        <input type="number" class="form-control form-control-sm" name="subtitle_page" min="1" placeholder="1" required>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small">문장</label>
+                        <input type="number" class="form-control form-control-sm" name="subtitle_sentence" min="1" placeholder="1" required>
+                    </div>
+                    <div class="col-md-7">
+                        <label class="form-label small">텍스트</label>
+                        <input type="text" class="form-control form-control-sm" name="subtitle_text" placeholder="자막 내용을 입력하세요" required>
+                    </div>
+                    <div class="col-md-1">
+                        <label class="form-label small">&nbsp;</label>
+                        <button type="button" class="btn btn-sm btn-outline-danger d-block" onclick="removeSubtitleRow(${subtitleRowCounter})" title="삭제">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(row);
+        }
+
+        // Remove subtitle row
+        function removeSubtitleRow(rowId) {
+            const row = document.getElementById(`subtitle-row-${rowId}`);
+            if (row) {
+                row.remove();
+            }
+        }
+
+        // Create asset function
         function createAsset() {
-            console.log('createAsset function called');
             const form = document.getElementById('createAssetForm');
             
-            // Validate form before submitting
+            // Validate form
             if (!form.checkValidity()) {
                 form.reportValidity();
                 return;
             }
+
+            // Get form data
+            const bookId = document.getElementById('bookId').value.trim();
+            const title = document.getElementById('assetTitle').value.trim();
+            const category = document.getElementById('assetCategory').value.trim();
+            const coverFile = document.getElementById('coverImageFile').files[0];
+            const videoFile = document.getElementById('videoFile').files[0];
+
+            // Collect subtitle data
+            const subtitleRows = document.querySelectorAll('.subtitle-row');
+            const subtitles = [];
             
-            const formData = new FormData(form);
-            const coverFiles = document.getElementById('newAssetCoverFiles').files;
-            
-            // If there are cover files to upload, upload them first
-            if (coverFiles.length > 0) {
-                uploadNewAssetCovers(coverFiles).then(uploadedPaths => {
-                    proceedWithAssetCreation(formData, uploadedPaths);
-                }).catch(error => {
-                    Notification.error('표지 이미지 업로드 실패: ' + error.message);
-                });
-            } else {
-                // No cover files, proceed with existing covers value
-                try {
-                    const covers = JSON.parse(formData.get('covers') || '[]');
-                    proceedWithAssetCreation(formData, covers);
-                } catch (error) {
-                    Notification.error('JSON 형식이 올바르지 않습니다: ' + error.message);
-                }
-            }
-        }
-        
-        function uploadNewAssetCovers(files) {
-            return new Promise((resolve, reject) => {
-                let uploadedFiles = [];
-                let completedUploads = 0;
+            subtitleRows.forEach(row => {
+                const page = row.querySelector('[name="subtitle_page"]').value;
+                const sentence = row.querySelector('[name="subtitle_sentence"]').value;
+                const text = row.querySelector('[name="subtitle_text"]').value.trim();
                 
-                Array.from(files).forEach((file) => {
-                    const formData = new FormData();
-                    formData.append('file', file);
-                    
-                    fetch('/api/upload', {
-                        method: 'POST',
-                        credentials: 'include',
-                        body: formData
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        completedUploads++;
-                        
-                        if (data.success) {
-                            // Store the relative path for cover images
-                            const filename = data.file_path.split('/').pop();
-                            uploadedFiles.push(`cover/${filename}`);
-                        }
-                        
-                        if (completedUploads === files.length) {
-                            resolve(uploadedFiles);
-                        }
-                    })
-                    .catch(error => {
-                        completedUploads++;
-                        console.error('Upload error:', error);
-                        
-                        if (completedUploads === files.length) {
-                            if (uploadedFiles.length > 0) {
-                                resolve(uploadedFiles);
-                            } else {
-                                reject(error);
-                            }
-                        }
+                if (page && sentence && text) {
+                    subtitles.push({
+                        page_num: parseInt(page),
+                        sentence_num: parseInt(sentence),
+                        text: text
                     });
-                });
+                }
             });
-        }
-        
-        function proceedWithAssetCreation(formData, covers) {
-            try {
-                const assetData = {
-                    curriculum: formData.get('curriculum'),
-                    month: formData.get('month'),
-                    covers: covers,
-                    subtitles: JSON.parse(formData.get('subtitles')),
-                    youtube_links: JSON.parse(formData.get('youtube_links'))
-                };
-            } catch (error) {
-                Notification.error('JSON 형식이 올바르지 않습니다: ' + error.message);
+
+            // Validate required fields
+            if (!bookId || !title || !coverFile || !videoFile) {
+                Notification.error('필수 필드를 모두 입력해주세요. (교재 ID, 제목, 표지 이미지, 비디오 파일)');
                 return;
             }
 
-            console.log('Sending asset data:', assetData);
+            // Disable submit button
+            const submitButton = document.querySelector('#createAssetModal button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>생성 중...';
 
-            // Disable submit button to prevent double submission
-            const submitButton = document.querySelector('#createAssetForm button[type="submit"]');
-            if (submitButton) {
-                submitButton.disabled = true;
-                submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>생성 중...';
-            }
+            // Create FormData for multipart upload
+            const formData = new FormData();
+            formData.append('book_id', bookId);
+            formData.append('title', title);
+            formData.append('category', category);
+            formData.append('cover_image', coverFile);
+            formData.append('video_file', videoFile);
+            formData.append('subtitles', JSON.stringify(subtitles));
 
-            API.post('/api/assets', assetData)
-                .then(data => {
-                    console.log('Asset created successfully:', data);
-                    Notification.success('에셋이 성공적으로 생성되었습니다!');
+            // Submit to create asset endpoint
+            fetch('/api/assets', {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Notification.success('에셋이 성공적으로 추가되었습니다!');
                     
-                    // Hide the modal
+                    // Reset form
+                    form.reset();
+                    document.getElementById('coverImagePreview').innerHTML = '';
+                    document.getElementById('videoPreview').innerHTML = '';
+                    document.getElementById('subtitleContainer').innerHTML = '';
+                    
+                    // Hide modal
                     const modalElement = document.getElementById('createAssetModal');
                     const modalInstance = bootstrap.Modal.getInstance(modalElement);
                     if (modalInstance) {
                         modalInstance.hide();
                     }
                     
-                    document.getElementById('createAssetForm').reset();
-                    document.getElementById('newAssetCoverPreview').innerHTML = '';
-                    
                     // Refresh assets list
                     loadAssets();
-                })
-                .catch(error => {
-                    console.error('Failed to create asset:', error);
-                    Notification.error('에셋 생성에 실패했습니다: ' + error.message);
                     
-                    // Re-enable submit button on error
-                    if (submitButton) {
-                        submitButton.disabled = false;
-                        submitButton.innerHTML = '에셋 생성';
-                    }
-                });
+                    console.log('Asset created successfully');
+                } else {
+                    Notification.error('에셋 추가에 실패했습니다: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Failed to create asset:', error);
+                Notification.error('에셋 추가에 실패했습니다: ' + error.message);
+            })
+            .finally(() => {
+                // Re-enable submit button
+                submitButton.disabled = false;
+                submitButton.innerHTML = '에셋 추가';
+            });
         }
+
 
         function applyFilters() {
             const formData = new FormData(document.getElementById('filterForm'));
             const params = new URLSearchParams();
             
-            if (formData.get('curriculum')) params.append('curriculum', formData.get('curriculum'));
-            if (formData.get('month')) params.append('month', formData.get('month'));
             if (formData.get('book_id')) params.append('book_id', formData.get('book_id'));
             
             API.get('/api/assets/filter?' + params.toString())

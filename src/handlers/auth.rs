@@ -1,13 +1,27 @@
 use axum::{
     extract::State, 
-    response::{Html, Json}, 
+    response::{Html, Json, Redirect}, 
     Form, 
     http::{StatusCode, header::{SET_COOKIE, HeaderMap}},
 };
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
-use crate::{AppState, services::auth::AuthService, models::user::AdminUser};
+use crate::{AppState, services::auth::AuthService, models::user::AdminUser, middleware::auth::extract_token_from_headers};
+
+pub async fn root_handler(headers: HeaderMap) -> Redirect {
+    // Check if user has a valid token
+    if let Some(token) = extract_token_from_headers(&headers) {
+        let auth_service = AuthService::new();
+        if auth_service.validate_token(&token).is_ok() {
+            // Token is valid, redirect to admin dashboard
+            return Redirect::permanent("/dashboard");
+        }
+    }
+    
+    // No valid token, redirect to login
+    Redirect::permanent("/login")
+}
 
 pub async fn login_page() -> Html<&'static str> {
     Html(include_str!("../templates/login.html"))

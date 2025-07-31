@@ -11,24 +11,12 @@ path = "src/lib.rs"
 name = "reengkigo-admin-app"
 path = "src/main.rs"
 
-[[bin]]
-name = "migrate_data"
-path = "src/bin/migrate_data.rs"
-
-[[bin]]
-name = "process_youtube_links"
-path = "src/bin/process_youtube_links.rs"
-
 [dependencies]
 # Web framework
 axum = { version = "0.7", features = ["multipart"] }
 tower = "0.4"
 tower-http = { version = "0.5", features = ["cors", "fs", "trace"] }
 tokio = { version = "1.0", features = ["full"] }
-
-# Database
-mongodb = "2.8"
-
 
 # Serialization
 serde = { version = "1.0", features = ["derive"] }
@@ -64,12 +52,8 @@ signal-hook-tokio = { version = "0.3", features = ["futures-v0_3"] }
 # Time
 chrono = { version = "0.4", features = ["serde"] }
 
-# HTTP client (for validating YouTube URLs)
-reqwest = { version = "0.11", features = ["json"] }
-
-# Template engine for UI
-askama = "0.12"
-askama_axum = "0.4"
+# HTTP client (for external API calls)
+reqwest = { version = "0.11", features = ["json", "multipart"] }
 
 # File upload handling
 multer = "3.0"

@@ -15,9 +15,8 @@ use tracing::info;
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct AppConfig {
     pub app: AppSettings,
-    pub database: DataBaseConfigs,
     pub server: ServerConfig,
-    
+    pub external_api: ExternalApiConfig,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -27,12 +26,6 @@ pub struct AppSettings {
     pub debug: bool,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct DataBaseConfigs {
-    pub url: String,
-    pub name: String,
-}
-
 /// Server configuration
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ServerConfig {
@@ -40,21 +33,28 @@ pub struct ServerConfig {
     pub port: u16,
 }
 
+/// External API configuration
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ExternalApiConfig {
+    pub base_url: String,
+    pub bucket: String,
+}
+
 impl Default for AppConfig {
     fn default() -> Self {
         Self {
             app: AppSettings {
                 name: "reengkigo".to_string(),
-                version: "1.0,0".to_string(),
+                version: "1.0.0".to_string(),
                 debug: true,
-            },
-            database: DataBaseConfigs {
-                url: "mongodb://mongo:27017".to_string(),
-                name: "admin_system".to_string(),
             },
             server: ServerConfig { 
                 host: "0.0.0.0".to_string(),
                 port: 3000,
+            },
+            external_api: ExternalApiConfig {
+                base_url: "https://r2-api.reengki.com".to_string(),
+                bucket: "reengki-archive".to_string(),
             },
         }
     }
@@ -75,7 +75,8 @@ impl AppConfig {
 
         info!("Configuration loaded successfully");
         info!("name: {:?}", config.app.name);
-        info!("Database: {}", config.database.url);
+        info!("External API: {}", config.external_api.base_url);
+        info!("Bucket: {}", config.external_api.bucket);
 
         Ok(config)
     }

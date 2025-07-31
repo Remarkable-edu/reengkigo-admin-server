@@ -1,0 +1,11 @@
+app:
+  name: "reengkigo-admin"
+  version: "1.0.0"
+  debug: true
+
+server:
+  host: "0.0.0.0"
+  port: 3000
+
+external_api:
+  base_url: "https://r2-api.reengki.com"
