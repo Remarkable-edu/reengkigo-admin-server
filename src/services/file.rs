@@ -1,6 +1,7 @@
 use crate::dto::file::{
     DeleteFileRequest, DeleteFileResponse, FileListResponse, FileUploadResponse,
 };
+use serde::{Deserialize, Serialize};
 use anyhow::Result;
 use axum::body::Bytes;
 use reqwest::{multipart, Client};
@@ -105,4 +106,69 @@ impl FileService {
             anyhow::bail!("Failed to delete file: {}", response.status())
         }
     }
+
+    pub async fn get_folder_files(&self, bucket: Option<&str>, key: &str) -> Result<R2FolderFilesResponse> {
+        let url = format!("{}/folder-files", self.base_url);
+        let bucket_name = bucket.unwrap_or(&self.bucket);
+        
+        let response = self.client
+            .get(&url)
+            .query(&[("bucket", bucket_name), ("key", key)])
+            .send()
+            .await?;
+
+        if response.status().is_success() {
+            let result = response.json::<R2FolderFilesResponse>().await?;
+            Ok(result)
+        } else {
+            anyhow::bail!("Failed to get folder files: {}", response.status())
+        }
+    }
+
+    pub async fn get_all_files(&self, bucket: Option<&str>) -> Result<R2AllFilesResponse> {
+        let url = format!("{}/all-file", self.base_url);
+        let bucket_name = bucket.unwrap_or(&self.bucket);
+        
+        let response = self.client
+            .get(&url)
+            .query(&[("bucket", bucket_name)])
+            .send()
+            .await?;
+
+        if response.status().is_success() {
+            let result = response.json::<R2AllFilesResponse>().await?;
+            Ok(result)
+        } else {
+            anyhow::bail!("Failed to get all files: {}", response.status())
+        }
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct R2FileInfo {
+    pub key: String,
+    pub size: u64,
+    pub last_modified: String,
+    pub url: String,
+}
+
+// folder-files API용 구조체 (기존)
+#[derive(Debug, Serialize, Deserialize)]
+pub struct R2FolderFileInfo {
+    pub key: String,
+    pub file: String,
+    pub size: u64,
+    pub created_at: String,
+    pub updated_at: String,
+    pub subtitle: Vec<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct R2FolderFilesResponse {
+    pub files: Vec<R2FolderFileInfo>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct R2AllFilesResponse {
+    pub files: Vec<R2FileInfo>,
 }

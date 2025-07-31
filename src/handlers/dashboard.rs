@@ -150,57 +150,153 @@ pub async fn create_asset(
     }
 }
 
-// Mock data for assets (in a real app, this would come from a database)
-fn get_mock_assets() -> Vec<AssetInfo> {
-    vec![
-        AssetInfo {
-            id: "J1R_Amazing_Animals".to_string(),
-            curriculum: "J1R".to_string(),
-            month: "Amazing Animals".to_string(),
-            book_id: "J1R".to_string(),
-            covers: vec!["cover/1_J1R.png".to_string(), "cover/2_J1R.png".to_string()],
-            subtitles: vec![],
-            youtube_links: vec![
-                YouTubeLink {
-                    thumbnail_file: "thumbnail/J1R_amazing.png".to_string(),
-                    youtube_url: "https://youtu.be/v-r7AtCFc-w".to_string(),
-                    title: Some("J1R Amazing".to_string()),
+async fn get_assets(app_state: &AppState, book_id_filter: Option<&str>) -> Result<Vec<AssetInfo>, String> {
+    use std::collections::HashMap;
+    
+    // 공통 파일 정보 구조체
+    #[derive(Debug)]
+    struct FileInfo {
+        key: String,
+        size: u64,
+    }
+    
+    let files: Vec<FileInfo> = if let Some(book_id) = book_id_filter {
+        // 특정 book_id로 필터링
+        let folder_result = app_state.file_service.get_folder_files(None, book_id).await
+            .map_err(|e| format!("Failed to get folder files: {}", e))?;
+        folder_result.files.into_iter().map(|f| FileInfo {
+            key: f.key,
+            size: f.size,
+        }).collect()
+    } else {
+        // 모든 파일 가져오기
+        let all_files_result = app_state.file_service.get_all_files(None).await
+            .map_err(|e| format!("Failed to get all files: {}", e))?;
+        all_files_result.files.into_iter().map(|f| FileInfo {
+            key: f.key,
+            size: f.size,
+        }).collect()
+    };
+    
+    // {커리큘럼}/{제목}/{파일명} 패턴 필터링 및 그룹화
+    let mut asset_groups: HashMap<String, Vec<FileInfo>> = HashMap::new();
+    
+    for file in files {
+        let path_parts: Vec<&str> = file.key.split('/').collect();
+        
+        // {커리큘럼}/{제목}/{파일명} 패턴 검증
+        if path_parts.len() == 3 {
+            let curriculum = path_parts[0];
+            let title = path_parts[1]; 
+            let filename = path_parts[2];
+            
+            // 파일명이 제목과 일치하는지 확인 (확장자 제외)
+            let filename_without_ext = filename.split('.').next().unwrap_or("");
+            if filename_without_ext == title {
+                let asset_key = format!("{}_{}", curriculum, title);
+                asset_groups.entry(asset_key).or_insert_with(Vec::new).push(file);
+            }
+        }
+    }
+    
+    // AssetInfo로 변환
+    let mut assets = Vec::new();
+    
+    for (asset_key, files) in asset_groups {
+        let parts: Vec<&str> = asset_key.split('_').collect();
+        if parts.len() < 2 { continue; }
+        
+        let curriculum = parts[0].to_string();
+        let title = parts[1..].join("_");
+        
+        let mut covers = Vec::new();
+        let mut video_url = None;
+        
+        for file in &files {
+            let path_parts: Vec<&str> = file.key.split('/').collect();
+            if path_parts.len() == 3 {
+                let filename = path_parts[2];
+                
+                // 이미지 파일 (.png, .jpg, .jpeg)
+                if filename.to_lowercase().ends_with(".png") || 
+                   filename.to_lowercase().ends_with(".jpg") || 
+                   filename.to_lowercase().ends_with(".jpeg") {
+                    covers.push(filename.to_string());
                 }
-            ],
-            video_url: Some("/assets/J1R/Amazing_Animals/Amazing_Animals.mp4".to_string()),
-        },
-    ]
+                
+                // 비디오 파일 (.mp4, .mov, .avi)
+                if filename.to_lowercase().ends_with(".mp4") || 
+                   filename.to_lowercase().ends_with(".mov") || 
+                   filename.to_lowercase().ends_with(".avi") {
+                    video_url = Some(format!("https://r2-api.reengki.com/file?key={}", file.key));
+                }
+            }
+        }
+        
+        // 최소한 이미지와 비디오가 있는 경우만 포함
+        if !covers.is_empty() && video_url.is_some() {
+            assets.push(AssetInfo {
+                id: asset_key,
+                book_id: curriculum.clone(),
+                title: title.clone(),
+                category: None, // 카테고리는 별도로 관리하지 않음
+                covers,
+                subtitles: vec![], // 자막은 별도 API로 관리
+                youtube_links: vec![], // YouTube 링크는 별도로 관리
+                video_url,
+            });
+        }
+    }
+    
+    Ok(assets)
 }
 
-pub async fn list_assets() -> impl IntoResponse {
+pub async fn list_assets(State(app_state): State<AppState>) -> impl IntoResponse {
     info!("Listing all assets");
     
-    let assets = get_mock_assets();
-    
-    (
-        StatusCode::OK,
-        Json(AssetListResponse { assets })
-    ).into_response()
+    match get_assets(&app_state, None).await {
+        Ok(assets) => {
+            (
+                StatusCode::OK,
+                Json(AssetListResponse { assets })
+            ).into_response()
+        }
+        Err(error) => {
+            error!("Failed to list assets: {}", error);
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(serde_json::json!({
+                    "error": format!("Failed to list assets: {}", error)
+                }))
+            ).into_response()
+        }
+    }
 }
 
 pub async fn filter_assets(
+    State(app_state): State<AppState>,
     Query(params): Query<AssetFilterQuery>
 ) -> impl IntoResponse {
     info!("Filtering assets with params: {:?}", params);
     
-    let mut assets = get_mock_assets();
-    
-    // Filter by book_id if provided
-    if let Some(book_id) = params.book_id {
-        assets.retain(|asset| asset.book_id.contains(&book_id));
+    match get_assets(&app_state, params.book_id.as_deref()).await {
+        Ok(assets) => {
+            let total_found = assets.len();
+            (
+                StatusCode::OK,
+                Json(AssetFilterResponse { assets, total_found })
+            ).into_response()
+        }
+        Err(error) => {
+            error!("Failed to filter assets: {}", error);
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(serde_json::json!({
+                    "error": format!("Failed to filter assets: {}", error)
+                }))
+            ).into_response()
+        }
     }
-    
-    let total_found = assets.len();
-    
-    (
-        StatusCode::OK,
-        Json(AssetFilterResponse { assets, total_found })
-    ).into_response()
 }
 
 pub async fn update_asset(

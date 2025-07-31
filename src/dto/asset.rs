@@ -42,9 +42,9 @@ pub struct YouTubeLink {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct AssetInfo {
     pub id: String,
-    pub curriculum: String,
-    pub month: String,
     pub book_id: String,
+    pub title: String,
+    pub category: Option<String>,
     pub covers: Vec<String>,
     pub subtitles: Vec<SubtitleData>,
     pub youtube_links: Vec<YouTubeLink>,
