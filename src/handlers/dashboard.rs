@@ -5,7 +5,7 @@ use axum::{
 };
 use tracing::{error, info};
 use crate::{
-    dto::asset::{CreateAssetResponse, AssetListResponse, AssetInfo, YouTubeLink, AssetFilterQuery, AssetFilterResponse, UpdateAssetRequest},
+    dto::asset::{CreateAssetResponse, AssetListResponse, AssetInfo, AssetFilterQuery, AssetFilterResponse, UpdateAssetRequest},
     AppState,
 };
 
@@ -90,6 +90,12 @@ pub async fn create_asset(
         }
         
         renamed_files.push((new_filename, data));
+    }
+
+    // Add subtitle.json file if subtitles are provided
+    if !subtitles_json.is_empty() {
+        let subtitle_data = subtitles_json.as_bytes().to_vec().into();
+        renamed_files.push(("subtitle.json".to_string(), subtitle_data));
     }
 
     if !has_image || !has_video {

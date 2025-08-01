@@ -8,7 +8,7 @@ use axum::{
     response::{IntoResponse, Json},
 };
 use std::sync::Arc;
-use tracing::{error, info};
+use tracing::error;
 
 #[utoipa::path(
     post,
