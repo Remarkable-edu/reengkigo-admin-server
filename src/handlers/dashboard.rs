@@ -1,13 +1,14 @@
 use axum::{
-    extract::{Multipart, State, Query, Path},
+    extract::{Multipart, State, Path},
     http::StatusCode,
     response::{Html, IntoResponse, Json},
 };
 use tracing::{error, info};
 use crate::{
-    dto::asset::{CreateAssetResponse, AssetListResponse, AssetInfo, AssetFilterQuery, AssetFilterResponse, UpdateAssetRequest},
+    dto::asset::CreateAssetResponse,
     AppState,
 };
+use serde::{Deserialize, Serialize};
 
 pub async fn dashboard_main() -> Html<&'static str> {
     Html(include_str!("../templates/admin-head/dashboard-main.html"))
@@ -15,6 +16,72 @@ pub async fn dashboard_main() -> Html<&'static str> {
 
 pub async fn dashboard_asset() -> Html<&'static str> {
     Html(include_str!("../templates/admin-head/dashboard-asset.html"))
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct FolderItem {
+    pub name: String,
+    pub path: String,
+    pub item_type: String, // "folder" or "file"
+    pub size: Option<u64>,
+    pub file_type: Option<String>, // "image", "video", "other"
+    pub url: Option<String>,
+    pub modified_at: Option<String>,
+    pub children_count: Option<usize>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct FolderContentsResponse {
+    pub current_path: String,
+    pub items: Vec<FolderItem>,
+    pub breadcrumbs: Vec<BreadcrumbItem>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct BreadcrumbItem {
+    pub name: String,
+    pub path: String,
+}
+
+pub async fn get_folder_contents(
+    State(app_state): State<AppState>,
+    Path(folder_path): Path<String>
+) -> impl IntoResponse {
+    info!("Getting folder contents for path: {}", folder_path);
+    
+    match build_folder_structure(&app_state, &folder_path).await {
+        Ok(response) => {
+            (StatusCode::OK, Json(response)).into_response()
+        }
+        Err(error) => {
+            error!("Failed to get folder contents: {}", error);
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(serde_json::json!({
+                    "error": format!("Failed to get folder contents: {}", error)
+                }))
+            ).into_response()
+        }
+    }
+}
+
+pub async fn get_root_folders(State(app_state): State<AppState>) -> impl IntoResponse {
+    info!("Getting root folders");
+    
+    match build_folder_structure(&app_state, "").await {
+        Ok(response) => {
+            (StatusCode::OK, Json(response)).into_response()
+        }
+        Err(error) => {
+            error!("Failed to get root folders: {}", error);
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(serde_json::json!({
+                    "error": format!("Failed to get root folders: {}", error)
+                }))
+            ).into_response()
+        }
+    }
 }
 
 
@@ -25,7 +92,6 @@ pub async fn create_asset(
     let file_service = &app_state.file_service;
     let mut book_id = String::new();
     let mut title = String::new();
-    let mut category = String::new();
     let mut files = Vec::new();
     let mut subtitles_json = String::new();
 
@@ -34,25 +100,47 @@ pub async fn create_asset(
         match field.name().unwrap_or("") {
             "book_id" => book_id = field.text().await.unwrap_or_default(),
             "title" => title = field.text().await.unwrap_or_default(),
-            "category" => category = field.text().await.unwrap_or_default(),
+            "category" => { let _ = field.text().await.unwrap_or_default(); },
             "subtitles" => subtitles_json = field.text().await.unwrap_or_default(),
             "cover_image" | "video_file" => {
                 let filename = field.file_name().unwrap_or("unknown").to_string();
-                if let Ok(data) = field.bytes().await {
-                    // Check file size limit (500MB)
-                    if data.len() > 500 * 1024 * 1024 {
+                let field_name = field.name().unwrap_or("unknown").to_string();
+                info!("Processing {} file: {}", field_name, filename);
+                
+                match field.bytes().await {
+                    Ok(data) => {
+                        let file_size_mb = data.len() as f64 / (1024.0 * 1024.0);
+                        info!("Loaded {} file into memory: {} ({:.2}MB)", field_name, filename, file_size_mb);
+                        
+                        // Check file size limit (2GB)
+                        if data.len() > 2 * 1024 * 1024 * 1024 {
+                            error!("File too large: {} ({:.2}GB)", filename, data.len() as f64 / (1024.0 * 1024.0 * 1024.0));
+                            return (
+                                StatusCode::PAYLOAD_TOO_LARGE,
+                                Json(CreateAssetResponse {
+                                    success: false,
+                                    asset_id: None,
+                                    message: format!("파일이 너무 큽니다: {:.2}GB (최대 2GB)", data.len() as f64 / (1024.0 * 1024.0 * 1024.0)),
+                                    cover_image_url: None,
+                                    video_url: None,
+                                })
+                            ).into_response();
+                        }
+                        files.push((filename, data));
+                    }
+                    Err(e) => {
+                        error!("Failed to read {} file {}: {}", field_name, filename, e);
                         return (
-                            StatusCode::PAYLOAD_TOO_LARGE,
+                            StatusCode::BAD_REQUEST,
                             Json(CreateAssetResponse {
                                 success: false,
                                 asset_id: None,
-                                message: format!("파일이 너무 큽니다: {:.2}MB", data.len() as f64 / (1024.0 * 1024.0)),
+                                message: format!("파일 읽기 실패 ({}): {}", filename, e),
                                 cover_image_url: None,
                                 video_url: None,
                             })
                         ).into_response();
                     }
-                    files.push((filename, data));
                 }
             }
             _ => {}
@@ -113,6 +201,10 @@ pub async fn create_asset(
 
     let full_path = format!("{}/{}/", book_id, title);
     
+    info!("Starting upload to external API: path={}, total_files={}", full_path, renamed_files.len());
+    let total_size_mb: f64 = renamed_files.iter().map(|(_, data)| data.len() as f64 / (1024.0 * 1024.0)).sum();
+    info!("Total upload size: {:.2}MB", total_size_mb);
+    
     match file_service.upload_file(renamed_files, None, &full_path).await {
         Ok(response) => {
             let cover_image_url = response.uploaded.iter()
@@ -156,186 +248,209 @@ pub async fn create_asset(
     }
 }
 
-async fn get_assets(app_state: &AppState, book_id_filter: Option<&str>) -> Result<Vec<AssetInfo>, String> {
-    use std::collections::HashMap;
-    
-    // 공통 파일 정보 구조체
-    #[derive(Debug)]
-    struct FileInfo {
-        key: String,
-        size: u64,
-    }
-    
-    let files: Vec<FileInfo> = if let Some(book_id) = book_id_filter {
-        // 특정 book_id로 필터링
-        let folder_result = app_state.file_service.get_folder_files(None, book_id).await
-            .map_err(|e| format!("Failed to get folder files: {}", e))?;
-        folder_result.files.into_iter().map(|f| FileInfo {
-            key: f.key,
-            size: f.size,
-        }).collect()
+
+async fn build_folder_structure(app_state: &AppState, target_path: &str) -> Result<FolderContentsResponse, String> {
+    // 경로 정규화 (빈 문자열은 루트)
+    let normalized_path = if target_path.is_empty() || target_path == "/" {
+        ""
     } else {
-        // 모든 파일 가져오기
-        let all_files_result = app_state.file_service.get_all_files(None).await
-            .map_err(|e| format!("Failed to get all files: {}", e))?;
-        all_files_result.files.into_iter().map(|f| FileInfo {
-            key: f.key,
-            size: f.size,
-        }).collect()
+        target_path.trim_start_matches('/').trim_end_matches('/')
     };
     
-    // {커리큘럼}/{제목}/{파일명} 패턴 필터링 및 그룹화
-    let mut asset_groups: HashMap<String, Vec<FileInfo>> = HashMap::new();
+    info!("Building folder structure for path: '{}'", normalized_path);
     
-    for file in files {
-        let path_parts: Vec<&str> = file.key.split('/').collect();
+    if normalized_path.is_empty() {
+        // 루트 레벨: 교재ID (첫 번째 레벨) 추출 - 최적화된 방법 사용
+        let folder_names = app_state.file_service.get_folder_structure("").await
+            .map_err(|e| format!("Failed to get folder structure: {}", e))?;
         
-        // {커리큘럼}/{제목}/{파일명} 패턴 검증
-        if path_parts.len() == 3 {
-            let curriculum = path_parts[0];
-            let title = path_parts[1]; 
-            let filename = path_parts[2];
+        let folder_items: Vec<FolderItem> = folder_names.into_iter()
+            .map(|folder_name| {
+                FolderItem {
+                    name: folder_name.clone(),
+                    path: folder_name,
+                    item_type: "folder".to_string(),
+                    size: None,
+                    file_type: None,
+                    url: None,
+                    modified_at: None,
+                    children_count: None, // 정확한 개수는 생략하여 성능 향상
+                }
+            })
+            .collect();
+        
+        // 이미 get_folder_structure에서 정렬됨
+        
+        let breadcrumbs = build_breadcrumbs("");
+        
+        Ok(FolderContentsResponse {
+            current_path: "".to_string(),
+            items: folder_items,
+            breadcrumbs,
+        })
+    } else {
+        // 특정 폴더 내부: path 깊이에 따라 다른 처리
+        let path_parts: Vec<&str> = normalized_path.split('/').collect();
+        
+        if path_parts.len() == 1 {
+            // 교재ID 레벨: 해당 교재의 모든 제목 폴더 표시 - 최적화된 방법 사용
+            let curriculum_id = path_parts[0];
+            let folder_names = app_state.file_service.get_folder_structure(curriculum_id).await
+                .map_err(|e| format!("Failed to get folder structure: {}", e))?;
             
-            // 파일명이 제목과 일치하는지 확인 (확장자 제외)
-            let filename_without_ext = filename.split('.').next().unwrap_or("");
-            if filename_without_ext == title {
-                let asset_key = format!("{}_{}", curriculum, title);
-                asset_groups.entry(asset_key).or_insert_with(Vec::new).push(file);
+            let folder_items: Vec<FolderItem> = folder_names.into_iter()
+                .map(|folder_name| {
+                    FolderItem {
+                        name: folder_name.clone(),
+                        path: format!("{}/{}", normalized_path, folder_name),
+                        item_type: "folder".to_string(),
+                        size: None,
+                        file_type: None,
+                        url: None,
+                        modified_at: None,
+                        children_count: None, // 정확한 개수는 생략하여 성능 향상
+                    }
+                })
+                .collect();
+            
+            // 이미 get_folder_structure에서 정렬됨
+            
+            let breadcrumbs = build_breadcrumbs(normalized_path);
+            
+            Ok(FolderContentsResponse {
+                current_path: normalized_path.to_string(),
+                items: folder_items,
+                breadcrumbs,
+            })
+        } else {
+            // 교재ID/제목 레벨: R2 Worker API 사용하여 파일 목록 가져오기
+            let folder_key = format!("{}/", normalized_path); // key는 trailing slash 필요
+            
+            match app_state.file_service.get_r2_folder_files(&folder_key).await {
+                Ok(folder_result) => {
+                    let mut file_items: Vec<FolderItem> = folder_result.into_iter()
+                        .map(|item| {
+                            let filename = item.value.original_file;
+                            let file_type = get_file_type(&filename);
+                            
+                            FolderItem {
+                                name: filename,
+                                path: item.key.clone(),
+                                item_type: "file".to_string(),
+                                size: Some(item.value.size),
+                                file_type: Some(file_type),
+                                url: Some(format!("https://r2-api.reengki.com/file?key={}", item.key)),
+                                modified_at: Some(item.value.modified_date),
+                                children_count: None,
+                            }
+                        })
+                        .collect();
+                    
+                    file_items.sort_by(|a, b| a.name.cmp(&b.name));
+                    
+                    let breadcrumbs = build_breadcrumbs(normalized_path);
+                    
+                    Ok(FolderContentsResponse {
+                        current_path: normalized_path.to_string(),
+                        items: file_items,
+                        breadcrumbs,
+                    })
+                }
+                Err(e) => {
+                    error!("Failed to get folder files from R2 Worker API: {}", e);
+                    // Fallback: 빈 폴더 반환
+                    Ok(FolderContentsResponse {
+                        current_path: normalized_path.to_string(),
+                        items: vec![],
+                        breadcrumbs: build_breadcrumbs(normalized_path),
+                    })
+                }
             }
         }
     }
+}
+
+fn get_file_type(filename: &str) -> String {
+    let lower_filename = filename.to_lowercase();
     
-    // AssetInfo로 변환
-    let mut assets = Vec::new();
-    
-    for (asset_key, files) in asset_groups {
-        let parts: Vec<&str> = asset_key.split('_').collect();
-        if parts.len() < 2 { continue; }
-        
-        let curriculum = parts[0].to_string();
-        let title = parts[1..].join("_");
-        
-        let mut covers = Vec::new();
-        let mut video_url = None;
-        
-        for file in &files {
-            let path_parts: Vec<&str> = file.key.split('/').collect();
-            if path_parts.len() == 3 {
-                let filename = path_parts[2];
-                
-                // 이미지 파일 (.png, .jpg, .jpeg)
-                if filename.to_lowercase().ends_with(".png") || 
-                   filename.to_lowercase().ends_with(".jpg") || 
-                   filename.to_lowercase().ends_with(".jpeg") {
-                    covers.push(filename.to_string());
-                }
-                
-                // 비디오 파일 (.mp4, .mov, .avi)
-                if filename.to_lowercase().ends_with(".mp4") || 
-                   filename.to_lowercase().ends_with(".mov") || 
-                   filename.to_lowercase().ends_with(".avi") {
-                    video_url = Some(format!("https://r2-api.reengki.com/file?key={}", file.key));
-                }
-            }
+    if lower_filename.ends_with(".png") || lower_filename.ends_with(".jpg") || 
+       lower_filename.ends_with(".jpeg") || lower_filename.ends_with(".gif") ||
+       lower_filename.ends_with(".webp") {
+        "image".to_string()
+    } else if lower_filename.ends_with(".mp4") || lower_filename.ends_with(".mov") ||
+              lower_filename.ends_with(".avi") || lower_filename.ends_with(".mkv") ||
+              lower_filename.ends_with(".webm") {
+        "video".to_string()
+    } else if lower_filename.ends_with(".pdf") {
+        "pdf".to_string()
+    } else if lower_filename.ends_with(".txt") || lower_filename.ends_with(".json") ||
+              lower_filename.ends_with(".xml") || lower_filename.ends_with(".csv") {
+        "text".to_string()
+    } else {
+        "other".to_string()
+    }
+}
+
+fn build_breadcrumbs(path: &str) -> Vec<BreadcrumbItem> {
+    let mut breadcrumbs = vec![
+        BreadcrumbItem {
+            name: "Home".to_string(),
+            path: "".to_string(),
         }
+    ];
+    
+    if !path.is_empty() {
+        let parts: Vec<&str> = path.split('/').collect();
+        let mut current_path = String::new();
         
-        // 최소한 이미지와 비디오가 있는 경우만 포함
-        if !covers.is_empty() && video_url.is_some() {
-            assets.push(AssetInfo {
-                id: asset_key,
-                book_id: curriculum.clone(),
-                title: title.clone(),
-                category: None, // 카테고리는 별도로 관리하지 않음
-                covers,
-                subtitles: vec![], // 자막은 별도 API로 관리
-                youtube_links: vec![], // YouTube 링크는 별도로 관리
-                video_url,
+        for (i, part) in parts.iter().enumerate() {
+            if i > 0 {
+                current_path.push('/');
+            }
+            current_path.push_str(part);
+            
+            breadcrumbs.push(BreadcrumbItem {
+                name: part.to_string(),
+                path: current_path.clone(),
             });
         }
     }
     
-    Ok(assets)
+    breadcrumbs
 }
 
-pub async fn list_assets(State(app_state): State<AppState>) -> impl IntoResponse {
-    info!("Listing all assets");
-    
-    match get_assets(&app_state, None).await {
-        Ok(assets) => {
-            (
-                StatusCode::OK,
-                Json(AssetListResponse { assets })
-            ).into_response()
-        }
-        Err(error) => {
-            error!("Failed to list assets: {}", error);
-            (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                Json(serde_json::json!({
-                    "error": format!("Failed to list assets: {}", error)
-                }))
-            ).into_response()
-        }
-    }
+#[derive(Debug, Serialize, Deserialize)]
+pub struct DeleteItemRequest {
+    pub key: String,
 }
 
-pub async fn filter_assets(
+pub async fn delete_item(
     State(app_state): State<AppState>,
-    Query(params): Query<AssetFilterQuery>
+    Json(request): Json<DeleteItemRequest>,
 ) -> impl IntoResponse {
-    info!("Filtering assets with params: {:?}", params);
+    info!("Deleting item with key: {}", request.key);
     
-    match get_assets(&app_state, params.book_id.as_deref()).await {
-        Ok(assets) => {
-            let total_found = assets.len();
+    match app_state.file_service.unlink_file(&request.key).await {
+        Ok(_) => {
+            info!("Successfully deleted item: {}", request.key);
             (
                 StatusCode::OK,
-                Json(AssetFilterResponse { assets, total_found })
+                Json(serde_json::json!({
+                    "success": true,
+                    "message": "Item deleted successfully"
+                }))
             ).into_response()
         }
         Err(error) => {
-            error!("Failed to filter assets: {}", error);
+            error!("Failed to delete item {}: {}", request.key, error);
             (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 Json(serde_json::json!({
-                    "error": format!("Failed to filter assets: {}", error)
+                    "success": false,
+                    "error": format!("Failed to delete item: {}", error)
                 }))
             ).into_response()
         }
     }
 }
 
-pub async fn update_asset(
-    Path(asset_id): Path<String>,
-    Json(update_request): Json<UpdateAssetRequest>
-) -> impl IntoResponse {
-    info!("Updating asset: {} with request: {:?}", asset_id, update_request);
-    
-    // In a real app, this would update the asset in the database
-    // For now, just return success
-    
-    (
-        StatusCode::OK,
-        Json(serde_json::json!({
-            "success": true,
-            "message": "Asset updated successfully"
-        }))
-    ).into_response()
-}
-
-pub async fn delete_asset(
-    Path(asset_id): Path<String>
-) -> impl IntoResponse {
-    info!("Deleting asset: {}", asset_id);
-    
-    // In a real app, this would delete the asset from the database
-    // For now, just return success
-    
-    (
-        StatusCode::OK,
-        Json(serde_json::json!({
-            "success": true,
-            "message": "Asset deleted successfully"
-        }))
-    ).into_response()
-}

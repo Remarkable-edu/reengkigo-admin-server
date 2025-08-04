@@ -10,7 +10,7 @@ mod handlers;
 mod dto;
 mod middleware;
 
-use axum::{Router, routing::{get, post, put, delete}};
+use axum::{Router, routing::{get, post}};
 use axum::middleware as axum_middleware;
 use axum::extract::DefaultBodyLimit;
 use utoipa::OpenApi;
@@ -110,7 +110,7 @@ fn create_router(state: AppState) -> Router {
         .route("/upload", post(file::upload_file))
         .route("/all-file", get(file::list_files))
         .route("/delete-file", post(file::delete_file))
-        .layer(DefaultBodyLimit::max(500 * 1024 * 1024)) // 500MB limit for file uploads
+        .layer(DefaultBodyLimit::max(2 * 1024 * 1024 * 1024)) // 2GB limit for file uploads
         .with_state(state.file_service.clone());
 
     // Public auth routes - no authentication required
@@ -123,10 +123,11 @@ fn create_router(state: AppState) -> Router {
     let admin_dashboard_routes = Router::new()
         .route("/dashboard", get(dashboard::dashboard_main))
         .route("/dashboard/assets", get(dashboard::dashboard_asset))
-        .route("/api/assets", get(dashboard::list_assets).post(dashboard::create_asset))
-        .route("/api/assets/filter", get(dashboard::filter_assets))
-        .route("/api/assets/:id", put(dashboard::update_asset).delete(dashboard::delete_asset))
-        .layer(DefaultBodyLimit::max(500 * 1024 * 1024)) // 500MB limit for asset uploads
+        .route("/api/assets", post(dashboard::create_asset))
+        .route("/api/folders", get(dashboard::get_root_folders))
+        .route("/api/folders/*path", get(dashboard::get_folder_contents))
+        .route("/api/delete-item", post(dashboard::delete_item))
+        .layer(DefaultBodyLimit::max(2 * 1024 * 1024 * 1024)) // 2GB limit for asset uploads
         .layer(axum_middleware::from_fn(AuthMiddleware::auth_middleware));
 
     // Static file serving - no authentication required

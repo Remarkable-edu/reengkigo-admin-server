@@ -98,6 +98,180 @@
                 padding: 0.75rem;
             }
         }
+        
+        /* Upload progress styling */
+        #uploadProgressSection {
+            background-color: #f8f9fa;
+            border-radius: 0.5rem;
+        }
+        
+        #uploadProgressBar {
+            background-color: #28a745;
+            transition: width 0.3s ease;
+        }
+        
+        #uploadProgressText {
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .progress {
+            background-color: #e9ecef;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
+        }
+        
+        /* Folder View Styles */
+        .folder-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 10px;
+            padding: 15px;
+            min-height: 300px;
+        }
+        
+        .folder-item, .file-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 5px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+            background: white;
+            border: 1px solid transparent;
+        }
+        
+        .folder-item:hover, .file-item:hover {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .folder-item.selected, .file-item.selected {
+            background-color: #e3f2fd;
+            border-color: #2196f3;
+        }
+        
+        .item-icon {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+            color: #6c757d;
+            pointer-events: none; /* 아이콘 클릭 방지 */
+            user-select: none; /* 텍스트 선택 방지 */
+        }
+        
+        .folder-icon {
+            color: #ffc107;
+        }
+        
+        .image-icon {
+            color: #28a745;
+        }
+        
+        .video-icon {
+            color: #dc3545;
+        }
+        
+        .pdf-icon {
+            color: #fd7e14;
+        }
+        
+        .text-icon {
+            color: #6f42c1;
+        }
+        
+        .item-name {
+            font-size: 0.75rem;
+            text-align: center;
+            word-break: break-word;
+            line-height: 1.2;
+            max-height: 2.4em;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+        
+        .item-details {
+            font-size: 0.65rem;
+            color: #6c757d;
+            margin-top: 3px;
+        }
+        
+        .breadcrumb-item a {
+            color: #0d6efd;
+            text-decoration: none;
+        }
+        
+        .breadcrumb-item a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Context Menu */
+        .context-menu {
+            position: absolute;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            min-width: 150px;
+        }
+        
+        .context-menu-item {
+            padding: 8px 16px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .context-menu-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .context-menu-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .folder-grid {
+                grid-template-columns: repeat(8, 1fr);
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .folder-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .folder-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+                padding: 10px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .folder-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .item-icon {
+                font-size: 2.5rem;
+            }
+            
+            .item-name {
+                font-size: 0.8rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -159,55 +333,63 @@
                     </div>
                 </div>
 
-                <!-- Filter Section -->
+                <!-- Search Bar -->
                 <div class="card mb-4">
                     <div class="card-body">
-                        <form id="filterForm" class="row g-3">
-                            <div class="col-md-6">
-                                <label for="bookIdFilter" class="form-label">교재 ID</label>
-                                <input type="text" class="form-control" id="bookIdFilter" name="book_id" placeholder="교재 ID 입력">
+                        <div class="row align-items-center">
+                            <div class="col-12">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="searchInput" placeholder="파일 및 폴더 검색...">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="searchFiles()">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <button type="submit" class="btn btn-primary" style="margin-top: 32px;">
-                                    <i class="fas fa-filter"></i> 필터 적용
-                                </button>
-                                <button type="button" class="btn btn-secondary ms-2" onclick="clearFilters()" style="margin-top: 32px;">
-                                    <i class="fas fa-times"></i> 초기화
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- Assets Table -->
-                <div class="card shadow">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">
-                            에셋 목록 <span id="assetCount" class="badge bg-secondary">0</span>
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="assetsTable">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>교재 ID</th>
-                                        <th>제목</th>
-                                        <th>카테고리</th>
-                                        <th>표지 이미지</th>
-                                        <th>자막 데이터</th>
-                                        <th>영상 링크</th>
-                                        <th>액션</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="assetsTableBody">
-                                    <!-- Assets will be loaded here -->
-                                </tbody>
-                            </table>
                         </div>
                     </div>
                 </div>
+
+                <!-- Folder View -->
+                <div class="card shadow" id="folderView">
+                    <div class="card-header py-3">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <!-- Breadcrumb Navigation -->
+                                <nav aria-label="breadcrumb">
+                                    <ol class="breadcrumb mb-0" id="breadcrumbNav">
+                                        <li class="breadcrumb-item active">Home</li>
+                                    </ol>
+                                </nav>
+                            </div>
+                            <div class="col-auto">
+                                <span id="itemCount" class="badge bg-secondary">0 items</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <!-- Loading Indicator -->
+                        <div id="loadingIndicator" class="text-center p-5" style="display: none;">
+                            <div class="spinner-border text-primary mb-3" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <h5 class="text-muted">폴더 구조를 로딩 중...</h5>
+                            <p class="text-muted">잠시만 기다려 주세요.</p>
+                        </div>
+                        
+                        <!-- Folder Contents -->
+                        <div id="folderContents" class="folder-grid">
+                            <!-- Folder and file items will be loaded here -->
+                        </div>
+                        
+                        <!-- Empty State -->
+                        <div id="emptyState" class="text-center p-5" style="display: none;">
+                            <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">폴더가 비어있습니다</h5>
+                            <p class="text-muted">파일을 업로드하거나 새 폴더를 만들어보세요.</p>
+                        </div>
+                    </div>
+                </div>
+
             </main>
         </div>
     </div>
@@ -283,6 +465,26 @@
                                 </div>
                                 <div id="subtitleContainer">
                                     <!-- Subtitle rows will be added here -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Upload Progress Indicator -->
+                        <div id="uploadProgressSection" style="display: none;">
+                            <div class="border rounded p-3 mb-3">
+                                <h6 class="mb-3">업로드 진행 상황</h6>
+                                <div class="progress mb-2" style="height: 25px;">
+                                    <div id="uploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">
+                                        <span id="uploadProgressText">0%</span>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <small id="uploadStatus" class="text-muted">업로드 준비 중...</small>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-info-circle"></i> 업로드 속도: <span id="uploadSpeed">계산 중...</span>
+                                    </small>
                                 </div>
                             </div>
                         </div>
@@ -539,7 +741,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/static/js/admin.js"></script>
     <script>
-        let currentAssets = [];
+        let currentPath = '';
+        let selectedItem = null;
 
         // Utility function to get cookie value
         function getCookie(name) {
@@ -602,20 +805,23 @@
                 return;
             }
             
-            loadAssets();
+            // 폴더 뷰 초기화
+            loadFolderContents(currentPath);
             
-            // Setup filter form
-            document.getElementById('filterForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                applyFilters();
-            });
+            // Setup filter form (only if it exists)
+            const filterForm = document.getElementById('filterForm');
+            if (filterForm) {
+                filterForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    applyFilters();
+                });
+            }
             
-            // Initialize modal event listeners after DOM is ready
+            // Initialize modal event listeners
             initializeModalEventListeners();
             
-            // Debug: Log that everything is ready
-            console.log('Admin page fully loaded and ready');
         });
+
 
         function initializeModalEventListeners() {
             // Handle create asset modal
@@ -623,7 +829,20 @@
             if (createAssetForm) {
                 createAssetForm.addEventListener('submit', function(e) {
                     e.preventDefault();
-                    createAsset();
+                    if (typeof createAsset === 'function') {
+                        createAsset();
+                    }
+                });
+            }
+
+            // Also add click listener to submit button as fallback
+            const submitButton = document.querySelector('button[form="createAssetForm"]');
+            if (submitButton) {
+                submitButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (typeof createAsset === 'function') {
+                        createAsset();
+                    }
                 });
             }
 
@@ -638,6 +857,14 @@
                     document.getElementById('videoPreview').innerHTML = '';
                     // Clear subtitle container
                     document.getElementById('subtitleContainer').innerHTML = '';
+                    // Hide progress section
+                    document.getElementById('uploadProgressSection').style.display = 'none';
+                    // Reset progress bar
+                    document.getElementById('uploadProgressBar').style.width = '0%';
+                    document.getElementById('uploadProgressText').textContent = '0%';
+                    // Reset form opacity
+                    document.getElementById('createAssetForm').style.opacity = '1';
+                    document.getElementById('createAssetForm').style.pointerEvents = 'auto';
                     // Reset submit button
                     const submitButton = createModalElement.querySelector('button[type="submit"]');
                     if (submitButton) {
@@ -696,94 +923,339 @@
         }
 
         function loadAssets() {
-            API.get('/api/assets')
-                .then(data => {
-                    currentAssets = data.assets || [];
-                    renderAssetsTable(currentAssets);
-                    updateAssetCount(currentAssets.length);
-                })
-                .catch(error => {
-                    console.error('Failed to load assets:', error);
-                    Notification.error('에셋을 불러오는데 실패했습니다: ' + error.message);
-                });
+            loadFolderContents(currentPath);
         }
 
-        function renderAssetsTable(assets) {
-            const tbody = document.getElementById('assetsTableBody');
-            tbody.innerHTML = '';
+        function loadFolderContents(path = '') {
+            const apiUrl = path ? `/api/folders/${encodeURIComponent(path)}` : '/api/folders';
+            
+            // 로딩 상태 표시
+            showLoadingState();
+            
+            API.get(apiUrl)
+                .then(data => {
+                    hideLoadingState();
+                    renderFolderView(data);
+                    updateBreadcrumbs(data.breadcrumbs);
+                    updateItemCount(data.items.length);
+                })
+                .catch(error => {
+                    hideLoadingState();
+                    console.error('Failed to load folder contents:', error);
+                    Notification.error('폴더 내용을 불러오는데 실패했습니다: ' + error.message);
+                });
+        }
+        
+        function showLoadingState() {
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('folderContents').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'none';
+        }
+        
+        function hideLoadingState() {
+            document.getElementById('loadingIndicator').style.display = 'none';
+            document.getElementById('folderContents').style.display = 'grid';
+        }
 
-            if (assets.length === 0) {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td colspan="8" class="text-center text-muted">
-                        <i class="fas fa-inbox fa-2x mb-2"></i><br>
-                        등록된 에셋이 없습니다.
-                    </td>
-                `;
-                tbody.appendChild(row);
+        function renderFolderView(data) {
+            const folderContents = document.getElementById('folderContents');
+            const emptyState = document.getElementById('emptyState');
+            
+            if (!data.items || data.items.length === 0) {
+                folderContents.innerHTML = '';
+                emptyState.style.display = 'block';
                 return;
             }
-
-            assets.forEach(asset => {
-                const row = document.createElement('tr');
-                const firstCover = asset.covers[0];
-                row.innerHTML = `
-                    <td>${asset.id}</td>
-                    <td>${asset.book_id}</td>
-                    <td>${asset.title}</td>
-                    <td>${asset.category || '미분류'}</td>
-                    <td>
-                        ${firstCover ? `<img src="https://r2-api.reengki.com/file?key=${asset.book_id}/${asset.title}/${firstCover}" alt="표지" style="width: 50px; height: 50px; object-fit: cover;" onerror="this.style.display='none'">` : ''}
-                        <div style="font-size: 0.8em;">${asset.covers.length}개 표지</div>
-                    </td>
-                    <td>
-                        <div>${asset.subtitles.length}개 자막</div>
-                    </td>
-                    <td>
-                        <div>${asset.youtube_links.length}개 링크</div>
-                        ${asset.video_url ? `
-                            <div style="font-size: 0.8em; margin-bottom: 5px;">
-                                <a href="${asset.video_url}" target="_blank" class="text-decoration-none">
-                                    <i class="fas fa-video text-primary"></i> 비디오 파일
-                                </a>
-                            </div>
-                        ` : ''}
-                        ${asset.youtube_links.slice(0, 2).map(link => `
-                            <div style="font-size: 0.8em;">
-                                <a href="${link.youtube_url}" target="_blank" class="text-decoration-none">
-                                    <i class="fab fa-youtube text-danger"></i> ${link.title || 'YouTube'}
-                                </a>
-                            </div>
-                        `).join('')}
-                        ${asset.youtube_links.length > 2 ? `<div style="font-size: 0.8em;">...외 ${asset.youtube_links.length - 2}개</div>` : ''}
-                    </td>
-                    <td>
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="viewAsset('${asset.id}')">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-warning" onclick="editCoverImages('${asset.id}')" title="표지 이미지 변경">
-                                <i class="fas fa-image"></i>
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-info" onclick="editSubtitles('${asset.id}')" title="자막 변경">
-                                <i class="fas fa-closed-captioning"></i>
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="editYouTubeLinks('${asset.id}')" title="YouTube 링크 변경">
-                                <i class="fab fa-youtube"></i>
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteAsset('${asset.id}')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    </td>
-                `;
-                tbody.appendChild(row);
+            
+            emptyState.style.display = 'none';
+            folderContents.innerHTML = '';
+            
+            data.items.forEach(item => {
+                const itemElement = createItemElement(item);
+                folderContents.appendChild(itemElement);
             });
         }
 
-        function updateAssetCount(count) {
-            document.getElementById('assetCount').textContent = count;
+        function createItemElement(item) {
+            const div = document.createElement('div');
+            div.className = item.item_type === 'folder' ? 'folder-item' : 'file-item';
+            div.dataset.path = item.path;
+            div.dataset.type = item.item_type;
+            
+            const icon = getItemIcon(item);
+            const details = getItemDetails(item);
+            
+            div.innerHTML = `
+                <div class="item-icon ${getIconClass(item)}">${icon}</div>
+                <div class="item-name" title="${item.name}">${item.name}</div>
+                ${details ? `<div class="item-details">${details}</div>` : ''}
+            `;
+            
+            // 클릭 이벤트 - 이벤트 전파 방지
+            div.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleItemClick(item);
+            });
+            
+            // 더블클릭 이벤트 - 이벤트 전파 방지
+            div.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleItemDoubleClick(item);
+            });
+            
+            // 우클릭 컨텍스트 메뉴 - 이벤트 전파 방지
+            div.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleContextMenu(e, item);
+            });
+            
+            // 아이콘 클릭 시 스크롤 방지
+            const iconElement = div.querySelector('.item-icon');
+            if (iconElement) {
+                iconElement.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+            }
+            
+            return div;
         }
+
+        function getItemIcon(item) {
+            if (item.item_type === 'folder') {
+                return '<i class="fas fa-folder"></i>';
+            }
+            
+            switch (item.file_type) {
+                case 'image':
+                    return '<i class="fas fa-file-image"></i>';
+                case 'video':
+                    return '<i class="fas fa-file-video"></i>';
+                case 'pdf':
+                    return '<i class="fas fa-file-pdf"></i>';
+                case 'text':
+                    return '<i class="fas fa-file-alt"></i>';
+                default:
+                    return '<i class="fas fa-file"></i>';
+            }
+        }
+
+        function getIconClass(item) {
+            if (item.item_type === 'folder') {
+                return 'folder-icon';
+            }
+            
+            switch (item.file_type) {
+                case 'image':
+                    return 'image-icon';
+                case 'video':
+                    return 'video-icon';
+                case 'pdf':
+                    return 'pdf-icon';
+                case 'text':
+                    return 'text-icon';
+                default:
+                    return '';
+            }
+        }
+
+        function getItemDetails(item) {
+            if (item.item_type === 'folder') {
+                return item.children_count ? `${item.children_count} items` : '';
+            }
+            
+            if (item.size) {
+                return formatFileSize(item.size);
+            }
+            
+            return '';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        function handleItemClick(item) {
+            // 이전 선택 제거
+            const previouslySelected = document.querySelector('.folder-item.selected, .file-item.selected');
+            if (previouslySelected) {
+                previouslySelected.classList.remove('selected');
+            }
+            
+            // 현재 아이템 선택
+            const element = document.querySelector(`[data-path="${item.path}"]`);
+            if (selectedItem && selectedItem.path === item.path) {
+                // 이미 선택된 아이템을 다시 클릭하면 선택 해제
+                selectedItem = null;
+            } else {
+                // 새 아이템 선택
+                element.classList.add('selected');
+                selectedItem = item;
+            }
+        }
+
+        function handleItemDoubleClick(item) {
+            if (item.item_type === 'folder') {
+                navigateToFolder(item.path);
+            } else if (item.url) {
+                window.open(item.url, '_blank');
+            }
+        }
+
+        function navigateToFolder(path) {
+            currentPath = path;
+            loadFolderContents(path);
+        }
+
+        function updateBreadcrumbs(breadcrumbs) {
+            const breadcrumbNav = document.getElementById('breadcrumbNav');
+            breadcrumbNav.innerHTML = '';
+            
+            breadcrumbs.forEach((crumb, index) => {
+                const li = document.createElement('li');
+                li.className = 'breadcrumb-item';
+                
+                if (index === breadcrumbs.length - 1) {
+                    li.classList.add('active');
+                    li.textContent = crumb.name;
+                } else {
+                    const a = document.createElement('a');
+                    a.href = '#';
+                    a.textContent = crumb.name;
+                    a.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        navigateToFolder(crumb.path);
+                    });
+                    li.appendChild(a);
+                }
+                
+                breadcrumbNav.appendChild(li);
+            });
+        }
+
+        function updateItemCount(count) {
+            const itemCount = document.getElementById('itemCount');
+            itemCount.textContent = `${count} items`;
+        }
+
+
+        function refreshAssets() {
+            // Show loading state for refresh button
+            const refreshButton = document.querySelector('button[onclick="refreshAssets()"]');
+            if (refreshButton) {
+                refreshButton.disabled = true;
+                const originalContent = refreshButton.innerHTML;
+                refreshButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>새로고침';
+                
+                // loadAssets will show the main loading indicator, so re-enable button after a short delay
+                setTimeout(() => {
+                    refreshButton.disabled = false;
+                    refreshButton.innerHTML = originalContent;
+                }, 1000);
+            }
+            
+            loadAssets();
+        }
+
+        function searchFiles() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            if (!searchTerm) {
+                loadAssets();
+                return;
+            }
+            
+            // 폴더 내에서 검색 수행
+            searchInFolders(searchTerm);
+        }
+
+        function searchInFolders(term) {
+            // 폴더 내 검색 로직 (향후 구현)
+            Notification.info('폴더 내 검색 기능은 곧 추가될 예정입니다.');
+        }
+
+
+        function deleteItemWithConfirm(item) {
+            const itemType = item.item_type === 'folder' ? '폴더' : '파일';
+            const message = item.item_type === 'folder' 
+                ? `'${item.name}' 폴더를 삭제하시겠습니까?\n폴더 내의 모든 파일도 함께 삭제됩니다.`
+                : `'${item.name}' 파일을 삭제하시겠습니까?`;
+            
+            if (confirm(message)) {
+                deleteItem(item);
+            }
+        }
+        
+        async function deleteItem(item) {
+            try {
+                const response = await API.post('/api/delete-item', {
+                    key: item.path
+                });
+                
+                if (response.success) {
+                    // 성공시 UI 업데이트
+                    Notification.success(`${item.name}이(가) 삭제되었습니다.`);
+                    
+                    // 목록 새로고침
+                    loadFolderContents(currentPath);
+                } else {
+                    throw new Error(response.error || '삭제 실패');
+                }
+                
+            } catch (error) {
+                console.error('Delete error:', error);
+                Notification.error(`삭제 중 오류가 발생했습니다: ${error.message}`);
+            }
+        }
+
+        function handleContextMenu(e, item) {
+            e.preventDefault();
+            
+            // 기존 컨텍스트 메뉴 제거
+            const existingMenu = document.querySelector('.context-menu');
+            if (existingMenu) {
+                existingMenu.remove();
+            }
+            
+            // 컨텍스트 메뉴 생성
+            const menu = document.createElement('div');
+            menu.className = 'context-menu';
+            menu.style.left = e.pageX + 'px';
+            menu.style.top = e.pageY + 'px';
+            
+            // 삭제 메뉴 아이템
+            const deleteItem = document.createElement('div');
+            deleteItem.className = 'context-menu-item';
+            deleteItem.innerHTML = '<i class="fas fa-trash text-danger me-2"></i>삭제';
+            deleteItem.onclick = () => {
+                menu.remove();
+                deleteItemWithConfirm(item);
+            };
+            menu.appendChild(deleteItem);
+            
+            // 메뉴를 body에 추가
+            document.body.appendChild(menu);
+            
+            // 다른 곳 클릭시 메뉴 닫기
+            const closeMenu = (event) => {
+                if (!menu.contains(event.target)) {
+                    menu.remove();
+                    document.removeEventListener('click', closeMenu);
+                }
+            };
+            
+            // 약간의 지연 후 이벤트 리스너 추가 (즉시 닫히는 것 방지)
+            setTimeout(() => {
+                document.addEventListener('click', closeMenu);
+            }, 100);
+        }
+
 
         // Asset creation functions
         let subtitleRowCounter = 0;
@@ -888,7 +1360,48 @@
             }
         }
 
-        // Create asset function
+        // Helper functions for upload progress
+        function updateProgressDisplay(percent, speed, status) {
+            const progressBar = document.getElementById('uploadProgressBar');
+            const progressText = document.getElementById('uploadProgressText');
+            const uploadSpeed = document.getElementById('uploadSpeed');
+            const uploadStatus = document.getElementById('uploadStatus');
+            
+            if (progressBar && progressText && uploadSpeed && uploadStatus) {
+                progressBar.style.width = percent + '%';
+                progressText.textContent = percent + '%';
+                uploadSpeed.textContent = speed;
+                uploadStatus.textContent = status;
+            }
+        }
+        
+        function resetUploadUI() {
+            document.getElementById('uploadProgressSection').style.display = 'none';
+            document.getElementById('createAssetForm').style.opacity = '1';
+            document.getElementById('createAssetForm').style.pointerEvents = 'auto';
+            
+            const submitButton = document.querySelector('#createAssetModal button[type=\"submit\"]');
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.innerHTML = '에셋 추가';
+            }
+            
+            // Reset progress values
+            updateProgressDisplay(0, '계산 중...', '업로드 준비 중...');
+        }
+        
+        function handleUploadError(message) {
+            console.error('Upload error:', message);
+            updateProgressDisplay(0, '오류 발생', message);
+            Notification.error(message);
+            
+            // Reset UI after showing error briefly
+            setTimeout(() => {
+                resetUploadUI();
+            }, 2000);
+        }
+
+        // Create asset function with upload progress tracking
         function createAsset() {
             const form = document.getElementById('createAssetForm');
             
@@ -928,11 +1441,29 @@
                 Notification.error('필수 필드를 모두 입력해주세요. (교재 ID, 제목, 표지 이미지, 비디오 파일)');
                 return;
             }
+            
+            // Check individual file size limits before upload
+            const maxFileSize = 2 * 1024 * 1024 * 1024; // 2GB
+            if (videoFile.size > maxFileSize) {
+                Notification.error(`비디오 파일이 너무 큽니다: ${(videoFile.size / (1024 * 1024 * 1024)).toFixed(2)}GB (최대 2GB)`);
+                return;
+            }
+            if (coverFile.size > maxFileSize) {
+                Notification.error(`이미지 파일이 너무 큽니다: ${(coverFile.size / (1024 * 1024 * 1024)).toFixed(2)}GB (최대 2GB)`);
+                return;
+            }
+
+            // Show upload progress section
+            document.getElementById('uploadProgressSection').style.display = 'block';
+            
+            // Hide form to prevent changes during upload
+            document.getElementById('createAssetForm').style.opacity = '0.5';
+            document.getElementById('createAssetForm').style.pointerEvents = 'none';
 
             // Disable submit button
             const submitButton = document.querySelector('#createAssetModal button[type="submit"]');
             submitButton.disabled = true;
-            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>생성 중...';
+            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>업로드 중...';
 
             // Create FormData for multipart upload
             const formData = new FormData();
@@ -943,52 +1474,170 @@
             formData.append('video_file', videoFile);
             formData.append('subtitles', JSON.stringify(subtitles));
 
-            // Submit to create asset endpoint
-            fetch('/api/assets', {
-                method: 'POST',
-                credentials: 'include',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Notification.success('에셋이 성공적으로 추가되었습니다!');
+            // Calculate total file size
+            const totalSize = coverFile.size + videoFile.size;
+            const totalSizeMB = (totalSize / (1024 * 1024)).toFixed(2);
+            document.getElementById('uploadStatus').textContent = `총 ${totalSizeMB}MB 업로드 중...`;
+
+            // Track upload progress
+            const startTime = Date.now();
+            let lastLoaded = 0;
+            let uploadPhase = 'uploading'; // 'uploading', 'processing', 'completed'
+            let maxProgressReached = 0;
+
+            // Create XMLHttpRequest for progress tracking
+            const xhr = new XMLHttpRequest();
+            
+            // Set timeout to 10 minutes for large files
+            xhr.timeout = 600000; // 600 seconds = 10 minutes
+            
+            // Initialize progress display
+            updateProgressDisplay(0, 'upload', '업로드 시작 중...');
+            
+            // Add timeout handler
+            xhr.addEventListener('timeout', function() {
+                console.error('Upload timeout after 10 minutes');
+                handleUploadError('업로드 시간 초과 (10분). 파일이 너무 크거나 네트워크가 느립니다.');
+            });
+
+            // Update progress during upload
+            xhr.upload.addEventListener('progress', function(e) {
+                if (e.lengthComputable && uploadPhase === 'uploading') {
+                    // Upload progress should only go up to 95% to leave room for server processing
+                    const uploadProgress = Math.min(Math.round((e.loaded / e.total) * 95), 95);
+                    maxProgressReached = Math.max(maxProgressReached, uploadProgress);
                     
-                    // Reset form
-                    form.reset();
-                    document.getElementById('coverImagePreview').innerHTML = '';
-                    document.getElementById('videoPreview').innerHTML = '';
-                    document.getElementById('subtitleContainer').innerHTML = '';
+                    // Calculate upload speed
+                    const currentTime = Date.now();
+                    const elapsedTime = (currentTime - startTime) / 1000; // seconds
+                    const bytesPerSecond = e.loaded / elapsedTime;
+                    const speedMBps = (bytesPerSecond / (1024 * 1024)).toFixed(2);
                     
-                    // Hide modal
-                    const modalElement = document.getElementById('createAssetModal');
-                    const modalInstance = bootstrap.Modal.getInstance(modalElement);
-                    if (modalInstance) {
-                        modalInstance.hide();
+                    // Update status text
+                    const uploadedMB = (e.loaded / (1024 * 1024)).toFixed(2);
+                    const remainingTime = Math.round((e.total - e.loaded) / bytesPerSecond);
+                    const remainingMinutes = Math.floor(remainingTime / 60);
+                    const remainingSeconds = remainingTime % 60;
+                    
+                    let statusText = `${uploadedMB}MB / ${totalSizeMB}MB 업로드 중`;
+                    if (remainingTime > 0 && e.loaded < e.total) {
+                        statusText += ` - 남은 시간: ${remainingMinutes}분 ${remainingSeconds}초`;
                     }
                     
-                    // Refresh assets list
-                    loadAssets();
+                    updateProgressDisplay(uploadProgress, speedMBps + ' MB/s', statusText);
                     
-                    console.log('Asset created successfully');
-                } else {
-                    Notification.error('에셋 추가에 실패했습니다: ' + data.message);
+                    console.log(`Upload progress: ${uploadProgress}% (${e.loaded}/${e.total} bytes)`);
                 }
-            })
-            .catch(error => {
-                console.error('Failed to create asset:', error);
-                Notification.error('에셋 추가에 실패했습니다: ' + error.message);
-            })
-            .finally(() => {
-                // Re-enable submit button
-                submitButton.disabled = false;
-                submitButton.innerHTML = '에셋 추가';
             });
+            
+            // Handle upload completion (data sent to server)
+            xhr.upload.addEventListener('load', function() {
+                console.log('Upload completed, waiting for server response...');
+                uploadPhase = 'processing';
+                updateProgressDisplay(96, '처리 중...', '서버에서 파일을 처리하고 있습니다...');
+            });
+
+            // Handle server response
+            xhr.addEventListener('load', function() {
+                console.log('Server response received:', xhr.status, xhr.responseText);
+                
+                if (xhr.status === 200) {
+                    try {
+                        const data = JSON.parse(xhr.responseText);
+                        if (data.success) {
+                            // Show completion
+                            uploadPhase = 'completed';
+                            updateProgressDisplay(100, '완료!', '에셋이 성공적으로 추가되었습니다!');
+                            
+                            // Wait a bit to show completion, then hide
+                            setTimeout(() => {
+                                Notification.success('에셋이 성공적으로 추가되었습니다!');
+                                
+                                // Reset form
+                                form.reset();
+                                document.getElementById('coverImagePreview').innerHTML = '';
+                                document.getElementById('videoPreview').innerHTML = '';
+                                document.getElementById('subtitleContainer').innerHTML = '';
+                                
+                                // Hide modal
+                                const modalElement = document.getElementById('createAssetModal');
+                                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                                if (modalInstance) {
+                                    modalInstance.hide();
+                                }
+                                
+                                // Refresh assets list
+                                loadAssets();
+                                
+                                console.log('Asset created successfully');
+                                resetUploadUI();
+                            }, 1500); // Show success for 1.5 seconds
+                        } else {
+                            handleUploadError('에셋 추가에 실패했습니다: ' + data.message);
+                        }
+                    } catch (error) {
+                        handleUploadError('서버 응답 처리 중 오류 발생');
+                    }
+                } else {
+                    let errorMessage = '업로드 실패: HTTP ' + xhr.status;
+                    if (xhr.status === 413) {
+                        errorMessage = '파일 크기 제한 초과 (최대 2GB)';
+                    } else if (xhr.status === 408) {
+                        errorMessage = '요청 시간 초과. 네트워크 연결을 확인하세요.';
+                    } else if (xhr.status === 0) {
+                        errorMessage = '서버 연결이 끊어졌습니다. 네트워크를 확인하세요.';
+                    }
+                    handleUploadError(errorMessage);
+                }
+            });
+
+            // Handle errors
+            xhr.addEventListener('error', function(event) {
+                console.error('Upload error:', event);
+                console.error('XHR readyState:', xhr.readyState);
+                console.error('XHR status:', xhr.status);
+                console.error('XHR statusText:', xhr.statusText);
+                
+                let errorMessage = '네트워크 오류가 발생했습니다';
+                if (xhr.status === 0) {
+                    errorMessage = '서버 연결 실패. 네트워크 연결을 확인하세요.';
+                } else if (xhr.status === 413) {
+                    errorMessage = '파일이 너무 큽니다. 서버에서 거부되었습니다.';
+                } else if (xhr.status >= 500) {
+                    errorMessage = '서버 오류가 발생했습니다. 잠시 후 다시 시도하세요.';
+                }
+                
+                handleUploadError(errorMessage);
+            });
+
+            // Log upload start
+            console.log('Starting upload:', {
+                totalSize: totalSizeMB + 'MB',
+                coverSize: (coverFile.size / (1024 * 1024)).toFixed(2) + 'MB',
+                videoSize: (videoFile.size / (1024 * 1024)).toFixed(2) + 'MB',
+                timeout: xhr.timeout / 1000 + ' seconds'
+            });
+            
+            // Send request
+            xhr.open('POST', '/api/assets');
+            xhr.withCredentials = true;
+            
+            try {
+                xhr.send(formData);
+            } catch (error) {
+                console.error('Failed to send request:', error);
+                handleUploadError('업로드 요청 실패: ' + error.message);
+            }
         }
 
 
         function applyFilters() {
-            const formData = new FormData(document.getElementById('filterForm'));
+            const filterForm = document.getElementById('filterForm');
+            if (!filterForm) {
+                return;
+            }
+            
+            const formData = new FormData(filterForm);
             const params = new URLSearchParams();
             
             if (formData.get('book_id')) params.append('book_id', formData.get('book_id'));
@@ -1005,7 +1654,10 @@
         }
 
         function clearFilters() {
-            document.getElementById('filterForm').reset();
+            const filterForm = document.getElementById('filterForm');
+            if (filterForm) {
+                filterForm.reset();
+            }
             renderAssetsTable(currentAssets);
             updateAssetCount(currentAssets.length);
         }
@@ -1119,24 +1771,6 @@
             }
         }
 
-        function refreshAssets() {
-            // Show loading state for refresh button
-            const refreshButton = document.querySelector('button[onclick="refreshAssets()"]');
-            if (refreshButton) {
-                refreshButton.disabled = true;
-                const originalContent = refreshButton.innerHTML;
-                refreshButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>새로고침';
-                
-                // Re-enable after loading
-                setTimeout(() => {
-                    refreshButton.disabled = false;
-                    refreshButton.innerHTML = originalContent;
-                }, 1000);
-            }
-            
-            loadAssets();
-            Notification.info('에셋 목록을 새로고침했습니다.');
-        }
 
         // Import modal is now handled by Bootstrap data attributes
 
