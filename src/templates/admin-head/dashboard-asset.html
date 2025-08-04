@@ -787,7 +787,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Check if user is authenticated using auth_status cookie
             const authStatus = getCookie('auth_status');
-            console.log('Auth status:', authStatus);
+            console.log('uf', authStatus);
             if (authStatus !== 'authenticated') {
                 console.log('Not authenticated, redirecting to login');
                 window.location.href = '/login';

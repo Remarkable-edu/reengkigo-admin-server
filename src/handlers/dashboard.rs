@@ -96,7 +96,7 @@ pub async fn create_asset(
     let mut subtitles_json = String::new();
 
     // Parse multipart data
-    while let Some(field) = multipart.next_field().await.unwrap_or(None) {
+    while let Some(mut field) = multipart.next_field().await.unwrap_or(None) {
         match field.name().unwrap_or("") {
             "book_id" => book_id = field.text().await.unwrap_or_default(),
             "title" => title = field.text().await.unwrap_or_default(),
@@ -107,41 +107,36 @@ pub async fn create_asset(
                 let field_name = field.name().unwrap_or("unknown").to_string();
                 info!("Processing {} file: {}", field_name, filename);
                 
-                match field.bytes().await {
-                    Ok(data) => {
-                        let file_size_mb = data.len() as f64 / (1024.0 * 1024.0);
-                        info!("Loaded {} file into memory: {} ({:.2}MB)", field_name, filename, file_size_mb);
-                        
-                        // Check file size limit (2GB)
-                        if data.len() > 2 * 1024 * 1024 * 1024 {
-                            error!("File too large: {} ({:.2}GB)", filename, data.len() as f64 / (1024.0 * 1024.0 * 1024.0));
-                            return (
-                                StatusCode::PAYLOAD_TOO_LARGE,
-                                Json(CreateAssetResponse {
-                                    success: false,
-                                    asset_id: None,
-                                    message: format!("파일이 너무 큽니다: {:.2}GB (최대 2GB)", data.len() as f64 / (1024.0 * 1024.0 * 1024.0)),
-                                    cover_image_url: None,
-                                    video_url: None,
-                                })
-                            ).into_response();
-                        }
-                        files.push((filename, data));
-                    }
-                    Err(e) => {
-                        error!("Failed to read {} file {}: {}", field_name, filename, e);
+                // Stream the file in chunks to handle large files efficiently
+                let mut data = Vec::new();
+                let mut total_size = 0u64;
+                
+                // Process field chunks efficiently to avoid memory issues
+                while let Ok(Some(chunk)) = field.chunk().await {
+                    total_size += chunk.len() as u64;
+                    
+                    // Check file size limit during streaming (2GB)
+                    if total_size > 2 * 1024 * 1024 * 1024 {
+                        error!("File too large during streaming: {} ({:.2}GB)", filename, total_size as f64 / (1024.0 * 1024.0 * 1024.0));
                         return (
-                            StatusCode::BAD_REQUEST,
+                            StatusCode::PAYLOAD_TOO_LARGE,
                             Json(CreateAssetResponse {
                                 success: false,
                                 asset_id: None,
-                                message: format!("파일 읽기 실패 ({}): {}", filename, e),
+                                message: format!("파일이 너무 큽니다: {:.2}GB (최대 2GB)", total_size as f64 / (1024.0 * 1024.0 * 1024.0)),
                                 cover_image_url: None,
                                 video_url: None,
                             })
                         ).into_response();
                     }
+                    
+                    data.extend_from_slice(&chunk);
                 }
+                
+                let file_size_mb = total_size as f64 / (1024.0 * 1024.0);
+                info!("Streamed {} file: {} ({:.2}MB)", field_name, filename, file_size_mb);
+                
+                files.push((filename, data.into()));
             }
             _ => {}
         }
@@ -182,7 +177,7 @@ pub async fn create_asset(
 
     // Add subtitle.json file if subtitles are provided
     if !subtitles_json.is_empty() {
-        let subtitle_data = subtitles_json.as_bytes().to_vec().into();
+        let subtitle_data: axum::body::Bytes = subtitles_json.as_bytes().to_vec().into();
         renamed_files.push(("subtitle.json".to_string(), subtitle_data));
     }
 
