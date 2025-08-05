@@ -238,6 +238,30 @@
             border-bottom: none;
         }
         
+        /* Playable video styles */
+        .playable-video .item-icon {
+            position: relative;
+        }
+        
+        .play-overlay {
+            position: absolute;
+            bottom: -5px;
+            right: -5px;
+            background: white;
+            border-radius: 50%;
+            font-size: 20px;
+            color: #0d6efd;
+            display: none;
+        }
+        
+        .playable-video:hover .play-overlay {
+            display: block;
+        }
+        
+        .playable-video {
+            cursor: pointer;
+        }
+        
         /* Responsive adjustments */
         @media (max-width: 1200px) {
             .folder-grid {
@@ -315,9 +339,6 @@
                     <h1 class="h2">에셋 관리</h1>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group me-2">
-                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#createAssetModal">
-                                <i class="fas fa-plus"></i> 에셋 추가
-                            </button>
                             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="refreshAssets()">
                                 <i class="fas fa-sync"></i> 새로고침
                             </button>
@@ -339,7 +360,10 @@
                         <div class="row align-items-center">
                             <div class="col-12">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" id="searchInput" placeholder="파일 및 폴더 검색...">
+                                    <input type="text" class="form-control" id="searchInput" placeholder="파일 및 폴더 검색..." oninput="filterItems()" onkeydown="handleSearchKeydown(event)">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="clearSearch()" id="clearSearchBtn" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
                                     <button class="btn btn-outline-secondary" type="button" onclick="searchFiles()">
                                         <i class="fas fa-search"></i>
                                     </button>
@@ -817,6 +841,26 @@
                 });
             }
             
+            // Add context menu handler for root and second level
+            const folderContents = document.getElementById('folderContents');
+            if (folderContents) {
+                folderContents.addEventListener('contextmenu', function(e) {
+                    // Check if we clicked on empty space (not on an item)
+                    // Make sure we didn't click on a folder-item or its children
+                    if (!e.target.closest('.folder-item')) {
+                        // Count path depth (empty = root, one slash = second level)
+                        const pathDepth = currentPath ? currentPath.split('/').filter(p => p).length : 0;
+                        
+                        // Show context menu for root level (depth 0) or second level (depth 1)
+                        if (pathDepth === 0 || pathDepth === 1) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleRootContextMenu(e);
+                        }
+                    }
+                });
+            }
+            
             // Initialize modal event listeners
             initializeModalEventListeners();
             
@@ -870,6 +914,12 @@
                     if (submitButton) {
                         submitButton.disabled = false;
                         submitButton.innerHTML = '에셋 추가';
+                    }
+                    // Reset book ID field
+                    const bookIdInput = document.getElementById('bookId');
+                    if (bookIdInput) {
+                        bookIdInput.readOnly = false;
+                        bookIdInput.style.backgroundColor = '';
                     }
                 });
             }
@@ -938,6 +988,12 @@
                     renderFolderView(data);
                     updateBreadcrumbs(data.breadcrumbs);
                     updateItemCount(data.items.length);
+                    
+                    // Apply filter if search term exists
+                    const searchTerm = document.getElementById('searchInput').value.trim();
+                    if (searchTerm) {
+                        filterItems();
+                    }
                 })
                 .catch(error => {
                     hideLoadingState();
@@ -982,11 +1038,21 @@
             div.dataset.path = item.path;
             div.dataset.type = item.item_type;
             
+            // Add special class for MP4 files
+            if (item.item_type === 'file' && item.name && item.name.toLowerCase().endsWith('.mp4')) {
+                div.classList.add('playable-video');
+            }
+            
             const icon = getItemIcon(item);
             const details = getItemDetails(item);
             
+            // Add play icon overlay for MP4 files
+            const playOverlay = (item.item_type === 'file' && item.name && item.name.toLowerCase().endsWith('.mp4')) 
+                ? '<div class="play-overlay"><i class="fas fa-play-circle"></i></div>' 
+                : '';
+            
             div.innerHTML = `
-                <div class="item-icon ${getIconClass(item)}">${icon}</div>
+                <div class="item-icon ${getIconClass(item)}">${icon}${playOverlay}</div>
                 <div class="item-name" title="${item.name}">${item.name}</div>
                 ${details ? `<div class="item-details">${details}</div>` : ''}
             `;
@@ -1104,6 +1170,19 @@
         function handleItemDoubleClick(item) {
             if (item.item_type === 'folder') {
                 navigateToFolder(item.path);
+            } else if (item.item_type === 'file' && item.name && item.name.toLowerCase().endsWith('.mp4')) {
+                // For MP4 files, open the player
+                // Extract book_id from the path (assuming path format: book_id/filename.mp4)
+                const pathParts = item.path.split('/');
+                if (pathParts.length >= 2) {
+                    const bookId = pathParts[0];
+                    // Remove .mp4 extension from filename for the title
+                    const title = item.name.replace(/\.mp4$/i, '');
+                    const playerUrl = `https://reengki-assets-r2-worker.reengkigo.workers.dev/player/${bookId}/${title}/${title}`;
+                    window.open(playerUrl, '_blank');
+                } else {
+                    Notification.warning('MP4 파일의 경로가 올바르지 않습니다.');
+                }
             } else if (item.url) {
                 window.open(item.url, '_blank');
             }
@@ -1164,22 +1243,151 @@
             loadAssets();
         }
 
-        function searchFiles() {
-            const searchTerm = document.getElementById('searchInput').value.trim();
+        function filterItems() {
+            const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
+            const folderItems = document.querySelectorAll('.folder-item');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            let visibleCount = 0;
+            
+            // Show/hide clear button
+            clearBtn.style.display = searchTerm ? '' : 'none';
+            
+            // If no search term, show all items
             if (!searchTerm) {
-                loadAssets();
+                folderItems.forEach(item => {
+                    item.style.display = '';
+                    visibleCount++;
+                });
+                updateItemCount(visibleCount);
                 return;
             }
             
-            // 폴더 내에서 검색 수행
-            searchInFolders(searchTerm);
+            // Filter items based on search term
+            folderItems.forEach(item => {
+                const itemName = item.querySelector('.item-name');
+                if (itemName) {
+                    const name = itemName.textContent.toLowerCase();
+                    if (name.includes(searchTerm)) {
+                        item.style.display = '';
+                        visibleCount++;
+                    } else {
+                        item.style.display = 'none';
+                    }
+                }
+            });
+            
+            // Update item count
+            updateItemCount(visibleCount);
         }
 
-        function searchInFolders(term) {
-            // 폴더 내 검색 로직 (향후 구현)
-            Notification.info('폴더 내 검색 기능은 곧 추가될 예정입니다.');
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            filterItems();
         }
 
+        function handleSearchKeydown(event) {
+            if (event.key === 'Escape') {
+                clearSearch();
+            }
+        }
+
+        function searchFiles() {
+            // This function is kept for the search button
+            filterItems();
+        }
+
+
+        async function exportFolderVideosAsCSV(folder) {
+            try {
+                // Show loading notification
+                Notification.info('비디오 파일 목록을 수집 중입니다...');
+                
+                // Recursively collect all video files
+                const videos = [];
+                await collectVideosRecursively(folder.path, videos);
+                
+                if (videos.length === 0) {
+                    Notification.warning('내보낼 비디오 파일이 없습니다.');
+                    return;
+                }
+                
+                // Create CSV content
+                const csvContent = createVideoCSV(videos);
+                
+                // Download CSV file
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `${folder.name}_videos_${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                Notification.success(`${videos.length}개의 비디오 링크를 내보냈습니다.`);
+            } catch (error) {
+                console.error('Export error:', error);
+                Notification.error('내보내기 중 오류가 발생했습니다: ' + error.message);
+            }
+        }
+        
+        async function collectVideosRecursively(path, videos) {
+            try {
+                const apiUrl = `/api/folders/${encodeURIComponent(path)}`;
+                const response = await API.get(apiUrl);
+                
+                if (response && response.items) {
+                    for (const item of response.items) {
+                        if (item.item_type === 'folder') {
+                            // Recursively collect from subfolders
+                            await collectVideosRecursively(item.path, videos);
+                        } else if (item.item_type === 'file' && item.name && item.name.toLowerCase().endsWith('.mp4')) {
+                            // Extract book_id and title
+                            const pathParts = item.path.split('/');
+                            if (pathParts.length >= 2) {
+                                const bookId = pathParts[0];
+                                const title = item.name.replace(/\.mp4$/i, '');
+                                const videoLink = `https://reengki-assets-r2-worker.reengkigo.workers.dev/player/${bookId}/${title}/${title}`;
+                                
+                                videos.push({
+                                    bookId: bookId,
+                                    title: title,
+                                    videoLink: videoLink
+                                });
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error collecting videos from path:', path, error);
+                throw error;
+            }
+        }
+        
+        function createVideoCSV(videos) {
+            // CSV header
+            let csv = '\uFEFF교재 ID,제목,비디오 링크\n';
+            
+            // Add video data
+            videos.forEach(video => {
+                // Escape commas and quotes in fields
+                const bookId = escapeCSVField(video.bookId);
+                const title = escapeCSVField(video.title);
+                const videoLink = escapeCSVField(video.videoLink);
+                
+                csv += `${bookId},${title},${videoLink}\n`;
+            });
+            
+            return csv;
+        }
+        
+        function escapeCSVField(field) {
+            if (field.includes(',') || field.includes('"') || field.includes('\n')) {
+                return `"${field.replace(/"/g, '""')}"`;
+            }
+            return field;
+        }
 
         function deleteItemWithConfirm(item) {
             const itemType = item.item_type === 'folder' ? '폴더' : '파일';
@@ -1229,6 +1437,18 @@
             menu.style.left = e.pageX + 'px';
             menu.style.top = e.pageY + 'px';
             
+            // 최상위 폴더인 경우 내보내기 메뉴 추가
+            if (item.item_type === 'folder' && currentPath === '') {
+                const exportItem = document.createElement('div');
+                exportItem.className = 'context-menu-item';
+                exportItem.innerHTML = '<i class="fas fa-file-export text-primary me-2"></i>비디오 링크 내보내기';
+                exportItem.onclick = () => {
+                    menu.remove();
+                    exportFolderVideosAsCSV(item);
+                };
+                menu.appendChild(exportItem);
+            }
+            
             // 삭제 메뉴 아이템
             const deleteItem = document.createElement('div');
             deleteItem.className = 'context-menu-item';
@@ -1238,6 +1458,72 @@
                 deleteItemWithConfirm(item);
             };
             menu.appendChild(deleteItem);
+            
+            // 메뉴를 body에 추가
+            document.body.appendChild(menu);
+            
+            // 다른 곳 클릭시 메뉴 닫기
+            const closeMenu = (event) => {
+                if (!menu.contains(event.target)) {
+                    menu.remove();
+                    document.removeEventListener('click', closeMenu);
+                }
+            };
+            
+            // 약간의 지연 후 이벤트 리스너 추가 (즉시 닫히는 것 방지)
+            setTimeout(() => {
+                document.addEventListener('click', closeMenu);
+            }, 100);
+        }
+
+        function handleRootContextMenu(e) {
+            e.preventDefault();
+            
+            // 기존 컨텍스트 메뉴 제거
+            const existingMenu = document.querySelector('.context-menu');
+            if (existingMenu) {
+                existingMenu.remove();
+            }
+            
+            // 컨텍스트 메뉴 생성
+            const menu = document.createElement('div');
+            menu.className = 'context-menu';
+            menu.style.left = e.pageX + 'px';
+            menu.style.top = e.pageY + 'px';
+            
+            // 에셋 추가 메뉴 아이템
+            const addItem = document.createElement('div');
+            addItem.className = 'context-menu-item';
+            addItem.innerHTML = '<i class="fas fa-plus text-primary me-2"></i>에셋 추가';
+            addItem.onclick = () => {
+                menu.remove();
+                
+                // Get parent folder name if we're in second depth
+                const pathDepth = currentPath ? currentPath.split('/').filter(p => p).length : 0;
+                let bookId = '';
+                
+                if (pathDepth === 1) {
+                    // Extract the parent folder name as book ID
+                    bookId = currentPath.split('/').filter(p => p)[0];
+                }
+                
+                // Show create asset modal
+                const modal = new bootstrap.Modal(document.getElementById('createAssetModal'));
+                modal.show();
+                
+                // Auto-fill book ID if we're in second depth
+                if (bookId) {
+                    setTimeout(() => {
+                        const bookIdInput = document.getElementById('bookId');
+                        if (bookIdInput) {
+                            bookIdInput.value = bookId;
+                            bookIdInput.readOnly = true;
+                            bookIdInput.style.backgroundColor = '#f8f9fa';
+                        }
+                    }, 100);
+                }
+            };
+            menu.appendChild(addItem);
             
             // 메뉴를 body에 추가
             document.body.appendChild(menu);
