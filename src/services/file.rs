@@ -40,53 +40,65 @@ impl FileService {
         &self,
         files: Vec<(String, Bytes)>,
         bucket: Option<&str>,
-        full_path: &str,
+        base_path: &str,
     ) -> Result<FileUploadResponse> {
         let url = format!("{}/upload", self.base_url);
         let bucket_name = bucket.unwrap_or(&self.bucket);
         
         let file_count = files.len();
-        tracing::info!("Starting file upload to {}: {} files", full_path, file_count);
+        tracing::info!("Starting file upload to {}: {} files", base_path, file_count);
         
-        let mut form = multipart::Form::new()
-            .text("bucket", bucket_name.to_string())
-            .text("fullpath", full_path.to_string());
-
+        let mut all_uploaded = Vec::new();
+        
+        // Upload each file individually with complete fullpath
         for (filename, bytes) in files {
-            let part = multipart::Part::bytes(bytes.to_vec()).file_name(filename);
+            let full_path = format!("{}{}", base_path, filename);
+            tracing::info!("Uploading file with fullpath: {}", full_path);
+            
+            let mut form = multipart::Form::new()
+                .text("bucket", bucket_name.to_string())
+                .text("fullpath", full_path.clone());
+
+            let part = multipart::Part::bytes(bytes.to_vec()).file_name(filename.clone());
             form = form.part("file", part);
+            
+            let response = self.client
+                .post(&url)
+                .multipart(form)
+                .send()
+                .await
+                .map_err(|e| {
+                    tracing::error!("Failed to send upload request for {}: {}", filename, e);
+                    anyhow::anyhow!("Upload request failed for {}: {}", filename, e)
+                })?;
+
+            if response.status().is_success() {
+                let mut result = response.json::<FileUploadResponse>().await?;
+                
+                // Map API fields for backward compatibility
+                for uploaded_file in &mut result.uploaded {
+                    uploaded_file.filename = uploaded_file.original_file.clone();
+                    uploaded_file.url = format!("http://localhost:5001/assets/{}", uploaded_file.file);
+                }
+                
+                all_uploaded.extend(result.uploaded);
+                tracing::info!("Successfully uploaded file: {}", filename);
+            } else {
+                let status = response.status();
+                let error_text = response.text().await.unwrap_or_else(|_| "Unknown error".to_string());
+                tracing::error!("Upload failed for {}: {} - {}", filename, status, error_text);
+                anyhow::bail!("Failed to upload file {}: {} - {}", filename, status, error_text);
+            }
         }
         
-        let response = self.client
-            .post(&url)
-            .multipart(form)
-            .send()
-            .await
-            .map_err(|e| {
-                tracing::error!("Failed to send upload request: {}", e);
-                anyhow::anyhow!("Upload request failed: {}", e)
-            })?;
-
-        if response.status().is_success() {
-            let mut result = response.json::<FileUploadResponse>().await?;
-            
-            // Map API fields for backward compatibility
-            for uploaded_file in &mut result.uploaded {
-                uploaded_file.filename = uploaded_file.original_file.clone();
-                uploaded_file.url = format!("http://localhost:5001/assets/{}", uploaded_file.file);
-            }
-            
-            // 캐시 무효화 (파일이 추가되었으므로)
-            self.invalidate_cache().await;
-            
-            tracing::info!("Successfully uploaded {} files to {}", result.uploaded.len(), full_path);
-            Ok(result)
-        } else {
-            let status = response.status();
-            let error_text = response.text().await.unwrap_or_else(|_| "Unknown error".to_string());
-            tracing::error!("Upload failed: {} - {}", status, error_text);
-            anyhow::bail!("Failed to upload file: {} - {}", status, error_text)
-        }
+        // 캐시 무효화 (파일이 추가되었으므로)
+        self.invalidate_cache().await;
+        
+        tracing::info!("Successfully uploaded {} files to {}", all_uploaded.len(), base_path);
+        
+        Ok(FileUploadResponse {
+            uploaded: all_uploaded,
+        })
     }
 
     pub async fn list_files(&self, bucket: Option<&str>) -> Result<FileListResponse> {

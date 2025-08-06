@@ -224,6 +224,53 @@
             min-width: 150px;
         }
         
+        /* Info Sidebar */
+        .info-sidebar {
+            position: fixed;
+            top: 0;
+            right: -500px;
+            width: 500px;
+            height: 100vh;
+            background: white;
+            border-left: 1px solid #dee2e6;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            z-index: 1050;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .info-sidebar.open {
+            right: 0;
+        }
+        
+        .info-sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .info-sidebar-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .info-sidebar-header {
+            padding: 1rem;
+            border-bottom: 1px solid #dee2e6;
+            background: #f8f9fa;
+        }
+        
+        .info-sidebar-content {
+            padding: 1rem;
+        }
+        
         .context-menu-item {
             padding: 8px 16px;
             cursor: pointer;
@@ -1149,7 +1196,34 @@
         }
 
         function handleItemClick(item) {
-            // 이전 선택 제거
+            // 파일인 경우 적절한 URL로 이동
+            if (item.item_type === 'file') {
+                // 경로에서 교재 ID와 제목 추출
+                const pathParts = item.path.split('/');
+                if (pathParts.length >= 3) {
+                    const bookId = pathParts[0];
+                    const title = pathParts[1];
+                    const fileName = item.name;
+                    
+                    // 영상 파일인지 확인
+                    const isVideoFile = item.name.toLowerCase().match(/\.(mp4|mov|avi|mkv|wmv|flv|webm)$/);
+                    
+                    let targetUrl;
+                    if (isVideoFile) {
+                        // 영상 파일은 player 경로 사용
+                        targetUrl = `https://reengki-assets-r2-worker.reengkigo.workers.dev/player/${bookId}/${title}/${fileName}`;
+                    } else {
+                        // 기타 파일은 content 경로 사용
+                        targetUrl = `https://reengki-assets-r2-worker.reengkigo.workers.dev/content/${bookId}/${title}/${fileName}`;
+                    }
+                    
+                    console.log('Opening URL:', targetUrl);
+                    window.open(targetUrl, '_blank');
+                    return;
+                }
+            }
+            
+            // 기존 선택 로직 (폴더나 영상 파일의 경우)
             const previouslySelected = document.querySelector('.folder-item.selected, .file-item.selected');
             if (previouslySelected) {
                 previouslySelected.classList.remove('selected');
@@ -1436,6 +1510,19 @@
             menu.className = 'context-menu';
             menu.style.left = e.pageX + 'px';
             menu.style.top = e.pageY + 'px';
+            
+            // 두번째 뎁스 폴더인 경우 정보 메뉴 추가
+            const pathDepth = currentPath ? currentPath.split('/').filter(p => p).length : 0;
+            if (item.item_type === 'folder' && pathDepth === 1) {
+                const infoItem = document.createElement('div');
+                infoItem.className = 'context-menu-item';
+                infoItem.innerHTML = '<i class="fas fa-info-circle text-info me-2"></i>정보';
+                infoItem.onclick = () => {
+                    menu.remove();
+                    showFolderInfoPanel(item);
+                };
+                menu.appendChild(infoItem);
+            }
             
             // 최상위 폴더인 경우 내보내기 메뉴 추가
             if (item.item_type === 'folder' && currentPath === '') {
@@ -2810,6 +2897,263 @@
                 Notification.error('잘못된 JSON 형식입니다: ' + error.message);
             }
         }
+
+        // Show folder info panel as sidebar
+        function showFolderInfoPanel(item) {
+            console.log('Showing folder info for:', item);
+            
+            // Extract book ID and title from path
+            const pathParts = item.path.split('/').filter(p => p);
+            if (pathParts.length < 2) {
+                Notification.error('폴더 정보를 가져올 수 없습니다.');
+                return;
+            }
+            
+            const bookId = pathParts[0];
+            const title = pathParts[1];
+            
+            // Update sidebar title
+            document.getElementById('infoSidebarTitle').textContent = `폴더 정보 - ${title}`;
+            
+            // Clear all tab contents first
+            document.getElementById('videoContent').innerHTML = '<div class="spinner-border" role="status"><span class="visually-hidden">로딩중...</span></div>';
+            document.getElementById('imageContent').innerHTML = '<div class="spinner-border" role="status"><span class="visually-hidden">로딩중...</span></div>';
+            document.getElementById('subtitleContent').innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">로딩중...</span></div></div>';
+            
+            // Reset tabs to default state (video tab active)
+            document.querySelectorAll('#folderInfoTabs .nav-link').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('show', 'active');
+            });
+            document.getElementById('video-tab').classList.add('active');
+            document.getElementById('video-pane').classList.add('show', 'active');
+            
+            // Show sidebar
+            const sidebar = document.getElementById('infoSidebar');
+            const overlay = document.getElementById('infoSidebarOverlay');
+            
+            sidebar.classList.add('open');
+            overlay.classList.add('show');
+            
+            // Store current bookId and title for tab switching
+            sidebar.dataset.bookId = bookId;
+            sidebar.dataset.title = title;
+            
+            // Load video content (default active tab)
+            loadVideoContent(bookId, title);
+            
+            // Remove existing event listeners and add new ones
+            const videoTab = document.getElementById('video-tab');
+            const imageTab = document.getElementById('image-tab');
+            const subtitleTab = document.getElementById('subtitle-tab');
+            
+            // Clone nodes to remove all event listeners
+            const newVideoTab = videoTab.cloneNode(true);
+            const newImageTab = imageTab.cloneNode(true);
+            const newSubtitleTab = subtitleTab.cloneNode(true);
+            
+            videoTab.parentNode.replaceChild(newVideoTab, videoTab);
+            imageTab.parentNode.replaceChild(newImageTab, imageTab);
+            subtitleTab.parentNode.replaceChild(newSubtitleTab, subtitleTab);
+            
+            // Add fresh event listeners with current bookId and title
+            newVideoTab.addEventListener('click', () => {
+                console.log('Video tab clicked for:', bookId, title);
+                loadVideoContent(bookId, title);
+            });
+            newImageTab.addEventListener('click', () => {
+                console.log('Image tab clicked for:', bookId, title);
+                loadImageContent(bookId, title);
+            });
+            newSubtitleTab.addEventListener('click', () => {
+                console.log('Subtitle tab clicked for:', bookId, title);
+                loadSubtitleContent(bookId, title);
+            });
+            
+            // Add close event listeners
+            document.getElementById('closeInfoSidebar').onclick = closeInfoSidebar;
+            document.getElementById('infoSidebarOverlay').onclick = closeInfoSidebar;
+        }
+        
+        // Close info sidebar
+        function closeInfoSidebar() {
+            const sidebar = document.getElementById('infoSidebar');
+            const overlay = document.getElementById('infoSidebarOverlay');
+            
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
+        }
+
+        // Load video content
+        function loadVideoContent(bookId, title) {
+            const videoContent = document.getElementById('videoContent');
+            videoContent.innerHTML = '<div class="spinner-border" role="status"><span class="visually-hidden">로딩중...</span></div>';
+            
+            // Find video file
+            API.get(`/api/folders/${bookId}/${title}`)
+                .then(response => {
+                    const videoFile = response.items.find(item => 
+                        item.item_type === 'file' && 
+                        item.name.toLowerCase().match(/\.(mp4|mov|avi|mkv|wmv|flv|webm)$/)
+                    );
+                    
+                    if (videoFile) {
+                        const videoUrl = `https://reengki-assets-r2-worker.reengkigo.workers.dev/player/${bookId}/${title}/${videoFile.name}`;
+                        videoContent.innerHTML = `
+                            <div class="ratio ratio-16x9" style="max-width: 800px; margin: 0 auto;">
+                                <iframe src="${videoUrl}" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                        `;
+                    } else {
+                        videoContent.innerHTML = '<div class="alert alert-warning">영상 파일이 없습니다.</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Video content load error:', error);
+                    videoContent.innerHTML = '<div class="alert alert-danger">영상 정보를 불러오는데 실패했습니다.</div>';
+                });
+        }
+
+        // Load image content  
+        function loadImageContent(bookId, title) {
+            const imageContent = document.getElementById('imageContent');
+            imageContent.innerHTML = '<div class="spinner-border" role="status"><span class="visually-hidden">로딩중...</span></div>';
+            
+            // Use internal API to get resized image
+            const imageUrl = `/api/image/${bookId}/${title}`;
+            
+            imageContent.innerHTML = `
+                <div class="text-center">
+                    <img src="${imageUrl}" 
+                         class="img-fluid border rounded" 
+                         style="max-width: 100%; max-height: 400px; object-fit: contain;" 
+                         alt="이미지"
+                         onload="this.style.opacity='1'"
+                         style="opacity: 0; transition: opacity 0.3s ease;">
+                </div>
+            `;
+        }
+
+        // Load subtitle content
+        function loadSubtitleContent(bookId, title) {
+            const subtitleContent = document.getElementById('subtitleContent');
+            subtitleContent.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">로딩중...</span></div></div>';
+            
+            // Use internal API endpoint
+            API.get(`/api/subtitle/${bookId}/${title}`)
+                .then(response => {
+                    console.log('Subtitle API response:', response);
+                    
+                    if (!response.success) {
+                        throw new Error(response.error || '자막 데이터 로드 실패');
+                    }
+                    
+                    const subtitleData = response.data;
+                    
+                    if (!subtitleData || subtitleData.length === 0) {
+                        subtitleContent.innerHTML = '<div class="alert alert-warning">자막 데이터가 없습니다.</div>';
+                        return;
+                    }
+                    
+                    // Display subtitle data in a table with proper headers
+                    const subtitleHtml = `
+                        <div class="table-responsive" style="max-height: 500px;">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-light sticky-top">
+                                    <tr>
+                                        <th style="width: 20%; color: black;">페이지 번호</th>
+                                        <th style="width: 20%; color: black;">문장 번호</th>
+                                        <th style="width: 60%; color: black;">문장</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${subtitleData.map((item, index) => `
+                                        <tr>
+                                            <td class="text-center">
+                                                <span class="badge bg-primary fs-6">${item.page_num || 'N/A'}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-secondary fs-6">${item.sentence_num || 'N/A'}</span>
+                                            </td>
+                                            <td class="text-start">${item.text || ''}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                            <div class="text-muted small mt-2">
+                                총 ${subtitleData.length}개의 자막 항목
+                            </div>
+                        </div>
+                    `;
+                    
+                    subtitleContent.innerHTML = subtitleHtml;
+                })
+                .catch(error => {
+                    console.error('Subtitle load error:', error);
+                    subtitleContent.innerHTML = '<div class="alert alert-warning">자막 데이터가 없습니다.</div>';
+                });
+        }
     </script>
+    <!-- Info Sidebar -->
+    <div class="info-sidebar-overlay" id="infoSidebarOverlay"></div>
+    <div class="info-sidebar" id="infoSidebar">
+        <div class="info-sidebar-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0" id="infoSidebarTitle">폴더 정보</h5>
+            <button type="button" class="btn-close" id="closeInfoSidebar"></button>
+        </div>
+        <div class="info-sidebar-content">
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs mb-3" id="folderInfoTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="video-tab" data-bs-toggle="tab" data-bs-target="#video-pane" type="button" role="tab">
+                        <i class="fas fa-video me-2"></i>영상
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="image-tab" data-bs-toggle="tab" data-bs-target="#image-pane" type="button" role="tab">
+                        <i class="fas fa-image me-2"></i>이미지
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="subtitle-tab" data-bs-toggle="tab" data-bs-target="#subtitle-pane" type="button" role="tab">
+                        <i class="fas fa-closed-captioning me-2"></i>자막
+                    </button>
+                </li>
+            </ul>
+            
+            <!-- Tab Content -->
+            <div class="tab-content" id="folderInfoTabsContent">
+                <!-- Video Tab -->
+                <div class="tab-pane fade show active" id="video-pane" role="tabpanel">
+                    <div id="videoContent" class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">로딩중...</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Image Tab -->
+                <div class="tab-pane fade" id="image-pane" role="tabpanel">
+                    <div id="imageContent" class="text-center">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">로딩중...</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Subtitle Tab -->
+                <div class="tab-pane fade" id="subtitle-pane" role="tabpanel">
+                    <div id="subtitleContent">
+                        <div class="text-center">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">로딩중...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

@@ -127,6 +127,8 @@ fn create_router(state: AppState) -> Router {
         .route("/api/folders", get(dashboard::get_root_folders))
         .route("/api/folders/*path", get(dashboard::get_folder_contents))
         .route("/api/delete-item", post(dashboard::delete_item))
+        .route("/api/subtitle/:book_id/:title", get(dashboard::get_subtitle_data))
+        .route("/api/image/:book_id/:title", get(dashboard::get_image_content))
         .layer(DefaultBodyLimit::max(2 * 1024 * 1024 * 1024)) // 2GB limit for asset uploads
         .layer(axum_middleware::from_fn(AuthMiddleware::auth_middleware));
 

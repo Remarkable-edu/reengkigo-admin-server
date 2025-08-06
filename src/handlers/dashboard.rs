@@ -1,11 +1,11 @@
 use axum::{
     extract::{Multipart, State, Path},
-    http::StatusCode,
+    http::{StatusCode, HeaderMap, HeaderValue},
     response::{Html, IntoResponse, Json},
 };
 use tracing::{error, info};
 use crate::{
-    dto::asset::CreateAssetResponse,
+    dto::asset::{CreateAssetResponse, SubtitleData},
     AppState,
 };
 use serde::{Deserialize, Serialize};
@@ -445,6 +445,160 @@ pub async fn delete_item(
                     "error": format!("Failed to delete item: {}", error)
                 }))
             ).into_response()
+        }
+    }
+}
+
+#[derive(Debug, Deserialize)]
+pub struct SubtitleRequest {
+    pub book_id: String,
+    pub title: String,
+}
+
+pub async fn get_subtitle_data(
+    State(_app_state): State<AppState>,
+    Path((book_id, title)): Path<(String, String)>,
+) -> impl IntoResponse {
+    info!("Getting subtitle data for: {}/{}", book_id, title);
+    
+    let subtitle_url = format!("https://r2-api.reengki.com/download/{}/{}/subtitle.json", book_id, title);
+    
+    match reqwest::get(&subtitle_url).await {
+        Ok(response) => {
+            if response.status().is_success() {
+                match response.json::<Vec<SubtitleData>>().await {
+                    Ok(subtitle_data) => {
+                        info!("Successfully loaded {} subtitle items", subtitle_data.len());
+                        (
+                            StatusCode::OK,
+                            Json(serde_json::json!({
+                                "success": true,
+                                "data": subtitle_data
+                            }))
+                        ).into_response()
+                    }
+                    Err(parse_error) => {
+                        error!("Failed to parse subtitle JSON: {}", parse_error);
+                        (
+                            StatusCode::OK,
+                            Json(serde_json::json!({
+                                "success": true,
+                                "data": [],
+                                "message": "자막 데이터 파싱 실패"
+                            }))
+                        ).into_response()
+                    }
+                }
+            } else {
+                info!("Subtitle file not found: {} (status: {})", subtitle_url, response.status());
+                (
+                    StatusCode::OK,
+                    Json(serde_json::json!({
+                        "success": true,
+                        "data": [],
+                        "message": "자막 파일이 없습니다"
+                    }))
+                ).into_response()
+            }
+        }
+        Err(error) => {
+            error!("Failed to fetch subtitle data: {}", error);
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(serde_json::json!({
+                    "success": false,
+                    "error": format!("자막 데이터 요청 실패: {}", error)
+                }))
+            ).into_response()
+        }
+    }
+}
+
+pub async fn get_image_content(
+    State(_app_state): State<AppState>,
+    Path((book_id, title)): Path<(String, String)>,
+) -> impl IntoResponse {
+    info!("Getting image content for: {}/{}", book_id, title);
+    
+    // Find image file first
+    match reqwest::get(&format!("https://r2-api.reengki.com/folder-files?key={}/{}", book_id, title)).await {
+        Ok(folder_response) => {
+            if !folder_response.status().is_success() {
+                return (
+                    StatusCode::NOT_FOUND,
+                    "Folder not found".to_string()
+                ).into_response();
+            }
+            
+            match folder_response.text().await {
+                Ok(folder_content) => {
+                    // Parse folder content to find image file
+                    if let Ok(folder_data) = serde_json::from_str::<serde_json::Value>(&folder_content) {
+                        if let Some(files) = folder_data.as_array() {
+                            // Find image file
+                            for file in files {
+                                if let Some(key) = file.get("key").and_then(|k| k.as_str()) {
+                                    let filename = key.split('/').last().unwrap_or("");
+                                    if filename.to_lowercase().ends_with(".jpg") || 
+                                       filename.to_lowercase().ends_with(".jpeg") || 
+                                       filename.to_lowercase().ends_with(".png") {
+                                        
+                                        // Get the image extension
+                                        let extension = filename.split('.').last().unwrap_or("jpg");
+                                        let image_url = format!("https://r2-api.reengki.com/download/{}/{}/{}.{}", book_id, title, title, extension);
+                                        
+                                        info!("Loading image from: {}", image_url);
+                                        
+                                        // Fetch the image
+                                        match reqwest::get(&image_url).await {
+                                            Ok(image_response) => {
+                                                if image_response.status().is_success() {
+                                                    match image_response.bytes().await {
+                                                        Ok(image_bytes) => {
+                                                            // Create response with proper content type
+                                                            let mut headers = HeaderMap::new();
+                                                            let content_type = match extension.to_lowercase().as_str() {
+                                                                "png" => "image/png",
+                                                                "jpg" | "jpeg" => "image/jpeg",
+                                                                _ => "image/jpeg"
+                                                            };
+                                                            headers.insert("content-type", HeaderValue::from_static(content_type));
+                                                            headers.insert("cache-control", HeaderValue::from_static("public, max-age=3600"));
+                                                            
+                                                            return (StatusCode::OK, headers, image_bytes.to_vec()).into_response();
+                                                        }
+                                                        Err(e) => {
+                                                            error!("Failed to read image bytes: {}", e);
+                                                            return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to read image").into_response();
+                                                        }
+                                                    }
+                                                } else {
+                                                    info!("Image not found: {} (status: {})", image_url, image_response.status());
+                                                    return (StatusCode::NOT_FOUND, "Image not found").into_response();
+                                                }
+                                            }
+                                            Err(e) => {
+                                                error!("Failed to fetch image: {}", e);
+                                                return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to fetch image").into_response();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    (StatusCode::NOT_FOUND, "No image file found".to_string()).into_response()
+                }
+                Err(e) => {
+                    error!("Failed to read folder response: {}", e);
+                    (StatusCode::INTERNAL_SERVER_ERROR, "Failed to read folder data".to_string()).into_response()
+                }
+            }
+        }
+        Err(e) => {
+            error!("Failed to fetch folder data: {}", e);
+            (StatusCode::INTERNAL_SERVER_ERROR, "Failed to fetch folder data".to_string()).into_response()
         }
     }
 }
