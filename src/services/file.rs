@@ -91,15 +91,20 @@ impl FileService {
             }
         }
         
-        // 업로드된 경로의 캐시만 선택적으로 무효화
-        // base_path에서 첫 번째 폴더(교재ID)를 추출
-        let cache_path = if base_path.contains('/') {
-            base_path.split('/').next().unwrap_or("").to_string()
-        } else {
-            base_path.to_string()
-        };
+        // 경로 깊이에 따라 다른 캐시 전략 사용
+        let path_parts: Vec<&str> = base_path.trim_end_matches('/').split('/').filter(|s| !s.is_empty()).collect();
         
-        self.invalidate_path_cache(&cache_path).await;
+        if path_parts.len() >= 2 {
+            // 두번째 깊이 이상: 특정 폴더 캐시만 무효화
+            let folder_path = path_parts[..2].join("/");
+            self.invalidate_specific_folder_cache(&folder_path).await;
+            
+            // 업로드 직후 짧은 대기 시간 추가 (R2 API 반영 대기)
+            tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
+        } else {
+            // 첫번째 깊이: 전체 캐시 무효화
+            self.invalidate_cache().await;
+        }
         
         tracing::info!("Successfully uploaded {} files to {}", all_uploaded.len(), base_path);
         
@@ -312,6 +317,25 @@ impl FileService {
         cache_write.remove("all_files");
         tracing::info!("Invalidated cache for path: {}", path);
     }
+    
+    // 특정 폴더 캐시만 무효화 (두번째 깊이 이상용)
+    async fn invalidate_specific_folder_cache(&self, folder_path: &str) {
+        let mut cache_write = self.cache.write().await;
+        
+        // 특정 폴더와 관련된 캐시만 무효화
+        let keys_to_remove: Vec<String> = cache_write.keys()
+            .filter(|key| key.as_str() == "all_files" || key.contains(folder_path))
+            .cloned()
+            .collect();
+            
+        for key in keys_to_remove {
+            cache_write.remove(&key);
+            tracing::info!("Specific folder cache invalidated for key: {}", key);
+        }
+    }
+    
+    // 캐시에 파일 직접 추가 (제거 - 더 이상 사용하지 않음)
+    // R2 API 반영 타이밍 이슈로 인해 캐시 무효화 전략으로 변경
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
