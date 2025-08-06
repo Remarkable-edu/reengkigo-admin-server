@@ -1030,10 +1030,7 @@
             // 로딩 상태 표시
             showLoadingState();
             
-            // Add cache busting parameter to force refresh
-            const cacheBuster = `?_t=${Date.now()}`;
-            
-            API.get(apiUrl + cacheBuster)
+            API.get(apiUrl)
                 .then(data => {
                     hideLoadingState();
                     renderFolderView(data);
@@ -1319,6 +1316,58 @@
             }
             
             loadAssets();
+        }
+
+        // 새로운 폴더가 생성될 때까지 기다리는 함수
+        async function waitForNewFolder(assetId) {
+            const maxAttempts = 20; // 최대 20번 시도
+            const pollInterval = 1000; // 1초 간격
+            
+            // asset_id에서 book_id와 title 추출 (format: "bookId_title")
+            const parts = assetId.split('_');
+            if (parts.length < 2) {
+                throw new Error('Invalid asset_id format');
+            }
+            
+            const bookId = parts[0];
+            const title = parts.slice(1).join('_'); // title에 underscore가 포함될 수 있음
+            const expectedPath = `${bookId}/${title}`;
+            
+            console.log(`Waiting for new folder: ${expectedPath}`);
+            
+            for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+                try {
+                    console.log(`Checking folder existence (attempt ${attempt}/${maxAttempts}): ${expectedPath}`);
+                    
+                    // 해당 경로의 폴더 내용을 조회해서 실제 파일들이 있는지 확인
+                    const response = await fetch(`/api/folders/${expectedPath}`, {
+                        method: 'GET',
+                        credentials: 'include',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        // 폴더가 존재하고 파일이 하나 이상 있으면 성공
+                        if (data.items && data.items.length > 0) {
+                            console.log(`New folder found with ${data.items.length} files after ${attempt} attempts`);
+                            return Promise.resolve();
+                        }
+                    }
+                } catch (error) {
+                    console.warn(`Attempt ${attempt} failed:`, error);
+                }
+                
+                // 마지막 시도가 아니면 대기
+                if (attempt < maxAttempts) {
+                    await new Promise(resolve => setTimeout(resolve, pollInterval));
+                }
+            }
+            
+            // 최대 시도 횟수 도달
+            throw new Error(`Timeout: New folder not found after ${maxAttempts} attempts`);
         }
 
         function filterItems() {
@@ -1943,11 +1992,23 @@
                                     modalInstance.hide();
                                 }
                                 
-                                // Refresh assets list immediately
-                                loadAssets();
+                                // Wait for the new folder to be available before refreshing
+                                console.log('Asset created successfully, waiting for folder availability...');
+                                updateProgressDisplay(100, '폴더 생성 대기 중...', '새로운 폴더가 생성될 때까지 기다리는 중...');
                                 
-                                console.log('Asset created successfully');
-                                resetUploadUI();
+                                waitForNewFolder(data.asset_id)
+                                    .then(() => {
+                                        console.log('New folder is now available, refreshing...');
+                                        updateProgressDisplay(100, '완료!', '새로운 폴더가 생성되었습니다!');
+                                        loadAssets();
+                                        resetUploadUI();
+                                    })
+                                    .catch((error) => {
+                                        console.warn('Timeout waiting for new folder, refreshing anyway:', error);
+                                        updateProgressDisplay(100, '완료!', '폴더 생성 확인 시간 초과, 새로고침을 진행합니다.');
+                                        loadAssets();
+                                        resetUploadUI();
+                                    });
                             }, 1500); // Show success for 1.5 seconds
                         } else {
                             handleUploadError('에셋 추가에 실패했습니다: ' + data.message);
@@ -2321,7 +2382,7 @@
 
             const previewHtml = asset.covers.map(cover => `
                 <div class="d-inline-block m-2">
-                    <img src="/asset/${asset.curriculum}/${asset.month}/${cover}?v=${Date.now()}" 
+                    <img src="/asset/${asset.curriculum}/${asset.month}/${cover}" 
                          alt="표지" 
                          style="width: 100px; height: 100px; object-fit: cover;" 
                          class="border rounded"
@@ -2722,7 +2783,7 @@
                         <div class="row align-items-center">
                             <div class="col-md-2">
                                 ${link.thumbnail_file ? `
-                                    <img src="/asset/${asset.curriculum}/${asset.month}/${link.thumbnail_file}?v=${Date.now()}" 
+                                    <img src="/asset/${asset.curriculum}/${asset.month}/${link.thumbnail_file}" 
                                          alt="썸네일" 
                                          style="width: 80px; height: 48px; object-fit: cover;" 
                                          class="border rounded"

@@ -6,17 +6,13 @@ use anyhow::Result;
 use axum::body::Bytes;
 use reqwest::{multipart, Client};
 use std::sync::Arc;
-use std::time::{Duration, Instant};
-use std::collections::HashMap;
-use tokio::sync::RwLock;
+use std::time::Duration;
 
 #[derive(Clone)]
 pub struct FileService {
     client: Arc<Client>,
     base_url: String,
     bucket: String,
-    // 간단한 메모리 캐시 (5분 TTL)
-    cache: Arc<RwLock<HashMap<String, (R2AllFilesResponse, Instant)>>>,
 }
 
 impl FileService {
@@ -32,7 +28,6 @@ impl FileService {
             client: Arc::new(client),
             base_url,
             bucket,
-            cache: Arc::new(RwLock::new(HashMap::new())),
         }
     }
 
@@ -89,21 +84,6 @@ impl FileService {
                 tracing::error!("Upload failed for {}: {} - {}", filename, status, error_text);
                 anyhow::bail!("Failed to upload file {}: {} - {}", filename, status, error_text);
             }
-        }
-        
-        // 경로 깊이에 따라 다른 캐시 전략 사용
-        let path_parts: Vec<&str> = base_path.trim_end_matches('/').split('/').filter(|s| !s.is_empty()).collect();
-        
-        if path_parts.len() >= 2 {
-            // 두번째 깊이 이상: 특정 폴더 캐시만 무효화
-            let folder_path = path_parts[..2].join("/");
-            self.invalidate_specific_folder_cache(&folder_path).await;
-            
-            // 업로드 직후 짧은 대기 시간 추가 (R2 API 반영 대기)
-            tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
-        } else {
-            // 첫번째 깊이: 전체 캐시 무효화
-            self.invalidate_cache().await;
         }
         
         tracing::info!("Successfully uploaded {} files to {}", all_uploaded.len(), base_path);
@@ -168,14 +148,7 @@ impl FileService {
             .await?;
 
         if response.status().is_success() {
-            // 삭제된 파일 경로의 캐시만 선택적으로 무효화
-            let cache_path = if key.contains('/') {
-                key.split('/').next().unwrap_or("").to_string()
-            } else {
-                key.to_string()
-            };
-            
-            self.invalidate_path_cache(&cache_path).await;
+            tracing::info!("Successfully deleted file: {}", key);
             Ok(())
         } else {
             let status = response.status();
@@ -203,23 +176,9 @@ impl FileService {
     }
 
     pub async fn get_all_files(&self, _bucket: Option<&str>) -> Result<R2AllFilesResponse> {
-        let cache_key = "all_files".to_string();
-        let cache_ttl = Duration::from_secs(60); // 1분 캐시로 단축
+        tracing::info!("Fetching all files from R2 Worker API (for root folder structure only)");
         
-        // 캐시에서 확인
-        {
-            let cache_read = self.cache.read().await;
-            if let Some((cached_response, cached_time)) = cache_read.get(&cache_key) {
-                if cached_time.elapsed() < cache_ttl {
-                    tracing::info!("Returning cached all_files (age: {:?})", cached_time.elapsed());
-                    return Ok(cached_response.clone());
-                }
-            }
-        }
-        
-        tracing::info!("Cache miss or expired, fetching all files from R2 Worker API");
-        
-        // Use R2 Worker API with * to get all files
+        // Use R2 Worker API with * to get all files (only for root level folder structure)
         let worker_response = self.get_r2_folder_files("*").await?;
         
         // Convert R2WorkerFolderResponse to R2AllFilesResponse
@@ -234,13 +193,7 @@ impl FileService {
         
         let response = R2AllFilesResponse { files };
         
-        // 캐시에 저장
-        {
-            let mut cache_write = self.cache.write().await;
-            cache_write.insert(cache_key, (response.clone(), Instant::now()));
-        }
-        
-        tracing::info!("Cached all_files response with {} files", response.files.len());
+        tracing::info!("Retrieved {} files from R2 API", response.files.len());
         Ok(response)
     }
 
@@ -262,80 +215,52 @@ impl FileService {
         }
     }
     
-    // 폴더 구조 최적화를 위한 경로 기반 폴더 조회
+    // 폴더 구조를 위한 경로 기반 폴더 조회 (최적화된 버전)
     pub async fn get_folder_structure(&self, prefix: &str) -> Result<Vec<String>> {
-        // 먼저 캐시된 전체 파일 목록을 가져옴
-        let all_files = self.get_all_files(None).await?;
-        
-        let mut folders = std::collections::HashSet::new();
-        
-        for file in all_files.files {
-            if file.key.starts_with(prefix) {
-                let remaining_path = if prefix.is_empty() {
-                    file.key.as_str()
-                } else {
-                    file.key.strip_prefix(&format!("{}/", prefix.trim_end_matches('/'))).unwrap_or("")
-                };
-                
-                if let Some(first_slash) = remaining_path.find('/') {
-                    let folder_name = &remaining_path[..first_slash];
+        if prefix.is_empty() {
+            // 루트 레벨: 모든 최상위 폴더 조회
+            let all_files = self.get_all_files(None).await?;
+            
+            let mut folders = std::collections::HashSet::new();
+            
+            for file in all_files.files {
+                if let Some(first_slash) = file.key.find('/') {
+                    let folder_name = &file.key[..first_slash];
                     if !folder_name.is_empty() {
                         folders.insert(folder_name.to_string());
                     }
                 }
             }
+            
+            let mut result: Vec<String> = folders.into_iter().collect();
+            result.sort();
+            Ok(result)
+        } else {
+            // 특정 prefix: 해당 폴더만 조회 (최적화)
+            let folder_key = format!("{}/", prefix.trim_end_matches('/'));
+            let worker_response = self.get_r2_folder_files(&folder_key).await?;
+            
+            let mut folders = std::collections::HashSet::new();
+            
+            for item in worker_response {
+                // key에서 prefix 이후 부분 추출
+                if let Some(remaining) = item.key.strip_prefix(&folder_key) {
+                    if let Some(slash_pos) = remaining.find('/') {
+                        let folder_name = &remaining[..slash_pos];
+                        if !folder_name.is_empty() {
+                            folders.insert(folder_name.to_string());
+                        }
+                    }
+                }
+            }
+            
+            let mut result: Vec<String> = folders.into_iter().collect();
+            result.sort();
+            Ok(result)
         }
-        
-        let mut result: Vec<String> = folders.into_iter().collect();
-        result.sort();
-        Ok(result)
     }
 
-    // 전체 캐시 무효화 메서드
-    async fn invalidate_cache(&self) {
-        let mut cache_write = self.cache.write().await;
-        cache_write.clear();
-        tracing::info!("All cache invalidated");
-    }
-    
-    // 선택적 캐시 무효화 메서드
-    pub async fn invalidate_path_cache(&self, path: &str) {
-        let mut cache_write = self.cache.write().await;
-        
-        // Remove cache entries that match or contain the path
-        let keys_to_remove: Vec<String> = cache_write.keys()
-            .filter(|key| key.contains(path) || path.is_empty())
-            .cloned()
-            .collect();
-            
-        for key in keys_to_remove {
-            cache_write.remove(&key);
-            tracing::info!("Cache invalidated for key: {}", key);
-        }
-        
-        // Always invalidate the all_files cache when any path changes
-        cache_write.remove("all_files");
-        tracing::info!("Invalidated cache for path: {}", path);
-    }
-    
-    // 특정 폴더 캐시만 무효화 (두번째 깊이 이상용)
-    async fn invalidate_specific_folder_cache(&self, folder_path: &str) {
-        let mut cache_write = self.cache.write().await;
-        
-        // 특정 폴더와 관련된 캐시만 무효화
-        let keys_to_remove: Vec<String> = cache_write.keys()
-            .filter(|key| key.as_str() == "all_files" || key.contains(folder_path))
-            .cloned()
-            .collect();
-            
-        for key in keys_to_remove {
-            cache_write.remove(&key);
-            tracing::info!("Specific folder cache invalidated for key: {}", key);
-        }
-    }
-    
-    // 캐시에 파일 직접 추가 (제거 - 더 이상 사용하지 않음)
-    // R2 API 반영 타이밍 이슈로 인해 캐시 무효화 전략으로 변경
+    // 캐시 로직 완전 제거 - 항상 실시간 데이터 사용
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
