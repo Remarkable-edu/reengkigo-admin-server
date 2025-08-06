@@ -1029,7 +1029,10 @@
             // 로딩 상태 표시
             showLoadingState();
             
-            API.get(apiUrl)
+            // Add cache busting parameter to force refresh
+            const cacheBuster = `?_t=${Date.now()}`;
+            
+            API.get(apiUrl + cacheBuster)
                 .then(data => {
                     hideLoadingState();
                     renderFolderView(data);
