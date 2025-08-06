@@ -1943,23 +1943,8 @@
                                     modalInstance.hide();
                                 }
                                 
-                                // For second depth, add a delay before refresh to allow server cache to update
-                                if (currentPath && currentPath.includes('/')) {
-                                    // Show temporary success message
-                                    Notification.info('에셋이 추가되었습니다. 잠시 후 목록이 갱신됩니다.');
-                                    
-                                    // Force refresh with delay
-                                    setTimeout(() => {
-                                        loadAssets();
-                                        // Try again after another delay if needed
-                                        setTimeout(() => {
-                                            loadAssets();
-                                        }, 2000);
-                                    }, 1000);
-                                } else {
-                                    // For first depth, refresh immediately
-                                    loadAssets();
-                                }
+                                // Refresh assets list immediately
+                                loadAssets();
                                 
                                 console.log('Asset created successfully');
                                 resetUploadUI();

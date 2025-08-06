@@ -91,8 +91,15 @@ impl FileService {
             }
         }
         
-        // 캐시 무효화 (파일이 추가되었으므로)
-        self.invalidate_cache().await;
+        // 업로드된 경로의 캐시만 선택적으로 무효화
+        // base_path에서 첫 번째 폴더(교재ID)를 추출
+        let cache_path = if base_path.contains('/') {
+            base_path.split('/').next().unwrap_or("").to_string()
+        } else {
+            base_path.to_string()
+        };
+        
+        self.invalidate_path_cache(&cache_path).await;
         
         tracing::info!("Successfully uploaded {} files to {}", all_uploaded.len(), base_path);
         
@@ -156,8 +163,14 @@ impl FileService {
             .await?;
 
         if response.status().is_success() {
-            // 캐시 무효화 (파일이 삭제되었으므로)
-            self.invalidate_cache().await;
+            // 삭제된 파일 경로의 캐시만 선택적으로 무효화
+            let cache_path = if key.contains('/') {
+                key.split('/').next().unwrap_or("").to_string()
+            } else {
+                key.to_string()
+            };
+            
+            self.invalidate_path_cache(&cache_path).await;
             Ok(())
         } else {
             let status = response.status();
@@ -186,7 +199,7 @@ impl FileService {
 
     pub async fn get_all_files(&self, _bucket: Option<&str>) -> Result<R2AllFilesResponse> {
         let cache_key = "all_files".to_string();
-        let cache_ttl = Duration::from_secs(300); // 5분 캐시
+        let cache_ttl = Duration::from_secs(60); // 1분 캐시로 단축
         
         // 캐시에서 확인
         {
@@ -273,11 +286,31 @@ impl FileService {
         Ok(result)
     }
 
-    // 캐시 무효화 메서드
+    // 전체 캐시 무효화 메서드
     async fn invalidate_cache(&self) {
         let mut cache_write = self.cache.write().await;
         cache_write.clear();
-        tracing::info!("Cache invalidated");
+        tracing::info!("All cache invalidated");
+    }
+    
+    // 선택적 캐시 무효화 메서드
+    pub async fn invalidate_path_cache(&self, path: &str) {
+        let mut cache_write = self.cache.write().await;
+        
+        // Remove cache entries that match or contain the path
+        let keys_to_remove: Vec<String> = cache_write.keys()
+            .filter(|key| key.contains(path) || path.is_empty())
+            .cloned()
+            .collect();
+            
+        for key in keys_to_remove {
+            cache_write.remove(&key);
+            tracing::info!("Cache invalidated for key: {}", key);
+        }
+        
+        // Always invalidate the all_files cache when any path changes
+        cache_write.remove("all_files");
+        tracing::info!("Invalidated cache for path: {}", path);
     }
 }
 
