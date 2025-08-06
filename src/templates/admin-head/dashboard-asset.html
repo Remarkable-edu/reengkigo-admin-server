@@ -134,7 +134,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 10px 5px;
+            padding: 16px 8px; /* 패딩 증가로 우클릭 영역 확보 */
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -142,6 +142,8 @@
             color: inherit;
             background: white;
             border: 1px solid transparent;
+            min-height: 110px; /* 최소 높이 설정으로 클릭 영역 확보 */
+            position: relative; /* 컨텍스트 메뉴 위치 기준점 */
         }
         
         .folder-item:hover, .file-item:hover {
@@ -158,12 +160,29 @@
             border-color: #2196f3;
         }
         
-        .item-icon {
-            font-size: 2.5rem;
+        .item-icon,
+        .folder-item .item-icon,
+        .file-item .item-icon {
+            font-size: 2rem !important; /* 크기 축소 - !important로 강제 적용 */
             margin-bottom: 8px;
             color: #6c757d;
             pointer-events: none; /* 아이콘 클릭 방지 */
             user-select: none; /* 텍스트 선택 방지 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 40px; /* 고정 높이 */
+            width: 40px; /* 고정 너비 */
+            margin: 0 auto 8px auto; /* 가운데 정렬 */
+        }
+        
+        /* 아이콘 내부 FontAwesome 아이콘들 */
+        .item-icon i,
+        .folder-item .item-icon i,
+        .file-item .item-icon i {
+            font-size: 2rem !important;
+            pointer-events: none !important;
+            user-select: none !important;
         }
         
         .folder-icon {
@@ -299,6 +318,8 @@
             font-size: 20px;
             color: #0d6efd;
             display: none;
+            pointer-events: none; /* 플레이 오버레이도 클릭 방지 */
+            user-select: none;
         }
         
         .playable-video:hover .play-overlay {
@@ -335,8 +356,18 @@
                 grid-template-columns: repeat(3, 1fr);
             }
             
-            .item-icon {
-                font-size: 2.5rem;
+            .item-icon,
+            .folder-item .item-icon,
+            .file-item .item-icon {
+                font-size: 1.8rem !important; /* 모바일에서도 축소 */
+                height: 35px !important;
+                width: 35px !important;
+            }
+            
+            .item-icon i,
+            .folder-item .item-icon i,
+            .file-item .item-icon i {
+                font-size: 1.8rem !important;
             }
             
             .item-name {
@@ -467,7 +498,7 @@
 
 
     <!-- Create Asset Modal -->
-    <div class="modal fade" id="createAssetModal" tabindex="-1">
+    <div class="modal fade" id="createAssetModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -814,6 +845,7 @@
     <script>
         let currentPath = '';
         let selectedItem = null;
+        let currentAssets = []; // 현재 표시 중인 에셋/폴더 목록
 
         // Utility function to get cookie value
         function getCookie(name) {
@@ -876,8 +908,17 @@
                 return;
             }
             
-            // 폴더 뷰 초기화
-            loadFolderContents(currentPath);
+            // 첫 진입 시 서버 캐시 초기화
+            initializeCache()
+                .then(() => {
+                    // 폴더 뷰 초기화
+                    loadFolderContents(currentPath);
+                })
+                .catch(error => {
+                    console.warn('Cache initialization failed, proceeding anyway:', error);
+                    // 폴더 뷰 초기화
+                    loadFolderContents(currentPath);
+                });
             
             // Setup filter form (only if it exists)
             const filterForm = document.getElementById('filterForm');
@@ -1065,7 +1106,10 @@
             const folderContents = document.getElementById('folderContents');
             const emptyState = document.getElementById('emptyState');
             
-            if (!data.items || data.items.length === 0) {
+            // currentAssets 전역 변수에 데이터 저장
+            currentAssets = data.items || [];
+            
+            if (!currentAssets || currentAssets.length === 0) {
                 folderContents.innerHTML = '';
                 emptyState.style.display = 'block';
                 return;
@@ -1074,10 +1118,15 @@
             emptyState.style.display = 'none';
             folderContents.innerHTML = '';
             
-            data.items.forEach(item => {
+            currentAssets.forEach(item => {
                 const itemElement = createItemElement(item);
                 folderContents.appendChild(itemElement);
             });
+            
+            // 모든 아이콘에 스타일 강제 적용
+            setTimeout(() => {
+                enforceIconStyles();
+            }, 100);
         }
 
         function createItemElement(item) {
@@ -1126,16 +1175,64 @@
                 handleContextMenu(e, item);
             });
             
-            // 아이콘 클릭 시 스크롤 방지
+            // 아이콘 및 하위 요소 클릭 방지 - 더 강화된 방법
             const iconElement = div.querySelector('.item-icon');
             if (iconElement) {
                 iconElement.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
+                    return false;
+                });
+                
+                // 아이콘 내부의 모든 자식 요소에도 적용
+                const iconChildren = iconElement.querySelectorAll('*');
+                iconChildren.forEach(child => {
+                    child.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        return false;
+                    });
                 });
             }
             
             return div;
+        }
+        
+        // 모든 아이템 아이콘에 올바른 스타일 강제 적용
+        function enforceIconStyles() {
+            const allIcons = document.querySelectorAll('.item-icon, .item-icon i');
+            allIcons.forEach(icon => {
+                if (icon.classList.contains('item-icon')) {
+                    // 아이콘 컨테이너
+                    icon.style.fontSize = '2rem';
+                    icon.style.height = '40px';
+                    icon.style.width = '40px';
+                    icon.style.display = 'flex';
+                    icon.style.justifyContent = 'center';
+                    icon.style.alignItems = 'center';
+                    icon.style.margin = '0 auto 8px auto';
+                    icon.style.pointerEvents = 'none';
+                    icon.style.userSelect = 'none';
+                } else {
+                    // FontAwesome 아이콘
+                    icon.style.fontSize = '2rem';
+                    icon.style.pointerEvents = 'none';
+                    icon.style.userSelect = 'none';
+                }
+            });
+            
+            // 모바일에서는 더 작게
+            if (window.innerWidth <= 576) {
+                allIcons.forEach(icon => {
+                    if (icon.classList.contains('item-icon')) {
+                        icon.style.fontSize = '1.8rem';
+                        icon.style.height = '35px';
+                        icon.style.width = '35px';
+                    } else {
+                        icon.style.fontSize = '1.8rem';
+                    }
+                });
+            }
         }
 
         function getItemIcon(item) {
@@ -1308,66 +1405,222 @@
                 const originalContent = refreshButton.innerHTML;
                 refreshButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>새로고침';
                 
-                // loadAssets will show the main loading indicator, so re-enable button after a short delay
-                setTimeout(() => {
-                    refreshButton.disabled = false;
-                    refreshButton.innerHTML = originalContent;
-                }, 1000);
+                // 전체 캐시 갱신 후 새로고침
+                clearAllCache()
+                    .then(() => {
+                        loadAssets();
+                    })
+                    .catch(error => {
+                        console.warn('Cache clear failed, proceeding with refresh:', error);
+                        loadAssets();
+                    })
+                    .finally(() => {
+                        // loadAssets will show the main loading indicator, so re-enable button after a short delay
+                        setTimeout(() => {
+                            refreshButton.disabled = false;
+                            refreshButton.innerHTML = originalContent;
+                        }, 1000);
+                    });
+            } else {
+                // 버튼이 없을 때는 바로 실행
+                clearAllCache()
+                    .then(() => loadAssets())
+                    .catch(error => {
+                        console.warn('Cache clear failed, proceeding with refresh:', error);
+                        loadAssets();
+                    });
             }
-            
-            loadAssets();
         }
 
-        // 새로운 폴더가 생성될 때까지 기다리는 함수
-        async function waitForNewFolder(assetId) {
-            const maxAttempts = 20; // 최대 20번 시도
-            const pollInterval = 1000; // 1초 간격
+        // 캐시 관리 함수들
+        
+        // 첫 진입 시 서버 캐시 초기화
+        async function initializeCache() {
+            try {
+                console.log('Initializing server cache...');
+                const response = await fetch('/api/cache/clear', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    console.log('Server cache initialized successfully');
+                } else {
+                    console.warn('Failed to initialize server cache:', response.status);
+                }
+            } catch (error) {
+                console.error('Cache initialization error:', error);
+                throw error;
+            }
+        }
+        
+        // 전체 캐시 갱신 (새로고침 시)
+        async function clearAllCache() {
+            try {
+                console.log('Clearing all server cache...');
+                const response = await fetch('/api/cache/clear', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    console.log('All server cache cleared successfully');
+                } else {
+                    console.warn('Failed to clear server cache:', response.status);
+                }
+            } catch (error) {
+                console.error('Cache clear error:', error);
+                throw error;
+            }
+        }
+
+        // 업로드 시 로컬 캐시에 수동 반영
+        function addToLocalCache(assetId, uploadedFiles) {
+            console.log('Adding uploaded files to local cache:', assetId, uploadedFiles);
             
-            // asset_id에서 book_id와 title 추출 (format: "bookId_title")
+            // asset_id에서 path 정보 추출
             const parts = assetId.split('_');
             if (parts.length < 2) {
-                throw new Error('Invalid asset_id format');
+                console.warn('Invalid asset_id format:', assetId);
+                return;
             }
             
             const bookId = parts[0];
-            const title = parts.slice(1).join('_'); // title에 underscore가 포함될 수 있음
-            const expectedPath = `${bookId}/${title}`;
+            const title = parts.slice(1).join('_');
+            const folderPath = `${bookId}/${title}`;
             
-            console.log(`Waiting for new folder: ${expectedPath}`);
-            
-            for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-                try {
-                    console.log(`Checking folder existence (attempt ${attempt}/${maxAttempts}): ${expectedPath}`);
-                    
-                    // 해당 경로의 폴더 내용을 조회해서 실제 파일들이 있는지 확인
-                    const response = await fetch(`/api/folders/${expectedPath}`, {
-                        method: 'GET',
-                        credentials: 'include',
-                        headers: {
-                            'Accept': 'application/json'
-                        }
-                    });
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        // 폴더가 존재하고 파일이 하나 이상 있으면 성공
-                        if (data.items && data.items.length > 0) {
-                            console.log(`New folder found with ${data.items.length} files after ${attempt} attempts`);
-                            return Promise.resolve();
-                        }
-                    }
-                } catch (error) {
-                    console.warn(`Attempt ${attempt} failed:`, error);
+            // 업로드된 파일들을 R2WorkerFileItem 형식으로 변환
+            const now = new Date().toISOString();
+            const newItems = uploadedFiles.map(file => ({
+                key: folderPath + '/' + file.filename,
+                value: {
+                    file: file.file || file.filename,
+                    original_file: file.filename,
+                    size: file.size || 0,
+                    subtitle: [],
+                    modifiedDate: now,
+                    createDate: now
                 }
+            }));
+            
+            // 현재 표시 중인 경로가 업로드된 경로와 같으면 즉시 UI 업데이트
+            if (currentPath === folderPath) {
+                console.log('Adding files to current view:', newItems.length);
                 
-                // 마지막 시도가 아니면 대기
-                if (attempt < maxAttempts) {
-                    await new Promise(resolve => setTimeout(resolve, pollInterval));
+                // 현재 assets 배열에 추가
+                newItems.forEach(item => {
+                    const fileItem = {
+                        name: item.value.original_file,
+                        path: item.key,
+                        item_type: 'file',
+                        size: item.value.size,
+                        file_type: getFileTypeFromName(item.value.original_file),
+                        url: `https://r2-api.reengki.com/file?key=${item.key}`,
+                        modified_at: item.value.modifiedDate,
+                        children_count: null
+                    };
+                    
+                    currentAssets.push(fileItem);
+                });
+                
+                // 이름 순으로 정렬
+                currentAssets.sort((a, b) => a.name.localeCompare(b.name));
+                
+                // UI 업데이트 (폴더 뷰로 다시 렌더링)
+                renderFolderView({ items: currentAssets });
+                updateItemCount(currentAssets.length);
+                
+                // 아이콘 스타일 강제 적용
+                setTimeout(() => {
+                    enforceIconStyles();
+                }, 150);
+                
+                console.log('Local cache updated, UI refreshed immediately');
+            } else if (currentPath === bookId) {
+                // book_id 레벨에서 업로드했으면 새 폴더 추가
+                const existingFolder = currentAssets.find(item => 
+                    item.item_type === 'folder' && item.name === title
+                );
+                
+                if (!existingFolder) {
+                    const folderItem = {
+                        name: title,
+                        path: folderPath,
+                        item_type: 'folder',
+                        size: null,
+                        file_type: null,
+                        url: null,
+                        modified_at: now,
+                        children_count: newItems.length
+                    };
+                    
+                    currentAssets.push(folderItem);
+                    currentAssets.sort((a, b) => a.name.localeCompare(b.name));
+                    
+                    renderFolderView({ items: currentAssets });
+                    updateItemCount(currentAssets.length);
+                    
+                    // 아이콘 스타일 강제 적용
+                    setTimeout(() => {
+                        enforceIconStyles();
+                    }, 150);
+                    
+                    console.log('New folder added to current view:', title);
+                }
+            } else if (currentPath === '') {
+                // 루트 레벨에서 업로드했으면 book_id 폴더 추가
+                const existingFolder = currentAssets.find(item => 
+                    item.item_type === 'folder' && item.name === bookId
+                );
+                
+                if (!existingFolder) {
+                    const folderItem = {
+                        name: bookId,
+                        path: bookId,
+                        item_type: 'folder',
+                        size: null,
+                        file_type: null,
+                        url: null,
+                        modified_at: now,
+                        children_count: null
+                    };
+                    
+                    currentAssets.push(folderItem);
+                    currentAssets.sort((a, b) => a.name.localeCompare(b.name));
+                    
+                    renderFolderView({ items: currentAssets });
+                    updateItemCount(currentAssets.length);
+                    
+                    // 아이콘 스타일 강제 적용
+                    setTimeout(() => {
+                        enforceIconStyles();
+                    }, 150);
+                    
+                    console.log('New book folder added to root view:', bookId);
                 }
             }
-            
-            // 최대 시도 횟수 도달
-            throw new Error(`Timeout: New folder not found after ${maxAttempts} attempts`);
+        }
+        
+        // 파일명에서 파일 타입 판단
+        function getFileTypeFromName(filename) {
+            const lower = filename.toLowerCase();
+            if (lower.endsWith('.png') || lower.endsWith('.jpg') || lower.endsWith('.jpeg') || lower.endsWith('.gif') || lower.endsWith('.webp')) {
+                return 'image';
+            } else if (lower.endsWith('.mp4') || lower.endsWith('.mov') || lower.endsWith('.avi') || lower.endsWith('.mkv') || lower.endsWith('.webm')) {
+                return 'video';
+            } else if (lower.endsWith('.pdf')) {
+                return 'pdf';
+            } else if (lower.endsWith('.txt') || lower.endsWith('.json') || lower.endsWith('.xml') || lower.endsWith('.csv')) {
+                return 'text';
+            } else {
+                return 'other';
+            }
         }
 
         function filterItems() {
@@ -1648,7 +1901,10 @@
                 }
                 
                 // Show create asset modal
-                const modal = new bootstrap.Modal(document.getElementById('createAssetModal'));
+                const modal = new bootstrap.Modal(document.getElementById('createAssetModal'), {
+                    backdrop: 'static', // 외부 클릭 시 닫히지 않음
+                    keyboard: false     // ESC 키로 닫히지 않음
+                });
                 modal.show();
                 
                 // Auto-fill book ID if we're in second depth
@@ -1992,23 +2248,57 @@
                                     modalInstance.hide();
                                 }
                                 
-                                // Wait for the new folder to be available before refreshing
-                                console.log('Asset created successfully, waiting for folder availability...');
-                                updateProgressDisplay(100, '폴더 생성 대기 중...', '새로운 폴더가 생성될 때까지 기다리는 중...');
+                                // 업로드 완료 후 로컬 캐시에 수동 반영
+                                console.log('Asset created successfully, adding to local cache...');
                                 
-                                waitForNewFolder(data.asset_id)
-                                    .then(() => {
-                                        console.log('New folder is now available, refreshing...');
-                                        updateProgressDisplay(100, '완료!', '새로운 폴더가 생성되었습니다!');
-                                        loadAssets();
-                                        resetUploadUI();
-                                    })
-                                    .catch((error) => {
-                                        console.warn('Timeout waiting for new folder, refreshing anyway:', error);
-                                        updateProgressDisplay(100, '완료!', '폴더 생성 확인 시간 초과, 새로고침을 진행합니다.');
-                                        loadAssets();
-                                        resetUploadUI();
-                                    });
+                                // 업로드 응답에서 파일 정보 추출 (xhr.responseText에서 전체 업로드 응답 파싱)
+                                let uploadedFiles = [];
+                                try {
+                                    const fullResponse = JSON.parse(xhr.responseText);
+                                    console.log('Full upload response:', fullResponse);
+                                    // 실제 파일 정보는 별도 API 호출 결과에 있을 것으로 예상, 일단 기본 정보로 추가
+                                    const parts = data.asset_id.split('_');
+                                    const title = parts.slice(1).join('_');
+                                    
+                                    // 폼에서 업로드한 파일들 정보 수집
+                                    const formData = new FormData(form);
+                                    const coverFile = formData.get('cover_image');
+                                    const videoFile = formData.get('video_file');
+                                    
+                                    if (coverFile && coverFile.size > 0) {
+                                        uploadedFiles.push({
+                                            filename: `${title}.${coverFile.name.split('.').pop()}`,
+                                            original_file: `${title}.${coverFile.name.split('.').pop()}`,
+                                            size: coverFile.size,
+                                            file: `${title}.${coverFile.name.split('.').pop()}`
+                                        });
+                                    }
+                                    
+                                    if (videoFile && videoFile.size > 0) {
+                                        uploadedFiles.push({
+                                            filename: `${title}.${videoFile.name.split('.').pop()}`,
+                                            original_file: `${title}.${videoFile.name.split('.').pop()}`,
+                                            size: videoFile.size,
+                                            file: `${title}.${videoFile.name.split('.').pop()}`
+                                        });
+                                    }
+                                    
+                                    // 자막 파일도 추가
+                                    const subtitles = formData.get('subtitles');
+                                    if (subtitles && subtitles.trim()) {
+                                        uploadedFiles.push({
+                                            filename: 'subtitle.json',
+                                            original_file: 'subtitle.json',
+                                            size: new Blob([subtitles]).size,
+                                            file: 'subtitle.json'
+                                        });
+                                    }
+                                } catch (e) {
+                                    console.warn('Could not extract upload file details:', e);
+                                }
+                                
+                                addToLocalCache(data.asset_id, uploadedFiles);
+                                resetUploadUI();
                             }, 1500); // Show success for 1.5 seconds
                         } else {
                             handleUploadError('에셋 추가에 실패했습니다: ' + data.message);
@@ -2082,8 +2372,8 @@
             
             API.get('/api/assets/filter?' + params.toString())
                 .then(data => {
-                    renderAssetsTable(data.assets || []);
-                    updateAssetCount(data.total_found || 0);
+                    renderFolderView({ items: data.assets || [] });
+                    updateItemCount(data.total_found || 0);
                 })
                 .catch(error => {
                     console.error('Failed to filter assets:', error);
@@ -2096,8 +2386,8 @@
             if (filterForm) {
                 filterForm.reset();
             }
-            renderAssetsTable(currentAssets);
-            updateAssetCount(currentAssets.length);
+            renderFolderView({ items: currentAssets });
+            updateItemCount(currentAssets.length);
         }
 
         function viewAsset(assetId) {
@@ -2187,9 +2477,9 @@
                         // Remove from current assets array for immediate UI update
                         currentAssets = currentAssets.filter(asset => asset.id !== assetId);
                         
-                        // Re-render table immediately
-                        renderAssetsTable(currentAssets);
-                        updateAssetCount(currentAssets.length);
+                        // Re-render folder view immediately
+                        renderFolderView({ items: currentAssets });
+                        updateItemCount(currentAssets.length);
                         
                         // Also refresh from server for consistency
                         setTimeout(() => {

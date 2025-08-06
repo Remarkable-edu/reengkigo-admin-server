@@ -23,15 +23,11 @@ pub struct AppState {
 #[openapi(
     paths(
         handlers::file::upload_file,
-        handlers::file::list_files,
         handlers::file::delete_file,
     ),
     components(schemas(
         dto::file::FileUploadResponse,
         dto::file::UploadedFile,
-        dto::file::FileListQuery,
-        dto::file::FileListResponse,
-        dto::file::FileInfo,
         dto::file::DeleteFileRequest,
         dto::file::DeleteFileResponse
     )),

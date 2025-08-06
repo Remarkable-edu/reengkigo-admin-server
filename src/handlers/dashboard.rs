@@ -603,3 +603,51 @@ pub async fn get_image_content(
     }
 }
 
+// 캐시 관리 API 엔드포인트들
+
+pub async fn clear_cache(State(app_state): State<AppState>) -> impl IntoResponse {
+    info!("Clearing all cache");
+    
+    app_state.file_service.clear_all_cache().await;
+    
+    (
+        StatusCode::OK,
+        Json(serde_json::json!({
+            "success": true,
+            "message": "All cache cleared successfully"
+        }))
+    ).into_response()
+}
+
+pub async fn get_cache_stats(State(app_state): State<AppState>) -> impl IntoResponse {
+    info!("Getting cache statistics");
+    
+    let (total, expired) = app_state.file_service.get_cache_stats().await;
+    
+    (
+        StatusCode::OK,
+        Json(serde_json::json!({
+            "success": true,
+            "stats": {
+                "total_entries": total,
+                "expired_entries": expired,
+                "active_entries": total - expired
+            }
+        }))
+    ).into_response()
+}
+
+pub async fn cleanup_expired_cache(State(app_state): State<AppState>) -> impl IntoResponse {
+    info!("Cleaning up expired cache entries");
+    
+    app_state.file_service.cleanup_expired_cache().await;
+    
+    (
+        StatusCode::OK,
+        Json(serde_json::json!({
+            "success": true,
+            "message": "Expired cache entries cleaned up"
+        }))
+    ).into_response()
+}
+

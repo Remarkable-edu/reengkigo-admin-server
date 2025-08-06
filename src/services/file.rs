@@ -1,18 +1,34 @@
 use crate::dto::file::{
-    DeleteFileRequest, DeleteFileResponse, FileListResponse, FileUploadResponse,
+    DeleteFileRequest, DeleteFileResponse, FileUploadResponse,
 };
 use serde::{Deserialize, Serialize};
 use anyhow::Result;
 use axum::body::Bytes;
 use reqwest::{multipart, Client};
 use std::sync::Arc;
-use std::time::Duration;
+use std::time::{Duration, Instant};
+use tokio::sync::RwLock;
 
 #[derive(Clone)]
 pub struct FileService {
     client: Arc<Client>,
     base_url: String,
     bucket: String,
+    // 단일 전체 데이터 메모리 캐시
+    all_files_cache: Arc<RwLock<Option<AllFilesCache>>>,
+}
+
+#[derive(Debug, Clone)]
+struct AllFilesCache {
+    data: R2WorkerFolderResponse,
+    created_at: Instant,
+    ttl: Duration,
+}
+
+impl AllFilesCache {
+    fn is_expired(&self) -> bool {
+        self.created_at.elapsed() > self.ttl
+    }
 }
 
 impl FileService {
@@ -28,6 +44,7 @@ impl FileService {
             client: Arc::new(client),
             base_url,
             bucket,
+            all_files_cache: Arc::new(RwLock::new(None)),
         }
     }
 
@@ -86,30 +103,16 @@ impl FileService {
             }
         }
         
-        tracing::info!("Successfully uploaded {} files to {}", all_uploaded.len(), base_path);
+        // 업로드 성공 후 관련 캐시 무효화
+        self.invalidate_cache_for_path(base_path).await;
+        
+        tracing::info!("Successfully uploaded {} files to {} and invalidated cache", all_uploaded.len(), base_path);
         
         Ok(FileUploadResponse {
             uploaded: all_uploaded,
         })
     }
 
-    pub async fn list_files(&self, bucket: Option<&str>) -> Result<FileListResponse> {
-        let url = format!("{}/all-file", self.base_url);
-
-        let bucket_name = bucket.unwrap_or(&self.bucket);
-        let response = self.client
-            .get(&url)
-            .query(&[("bucket", bucket_name)])
-            .send()
-            .await?;
-
-        if response.status().is_success() {
-            let result = response.json::<FileListResponse>().await?;
-            Ok(result)
-        } else {
-            anyhow::bail!("Failed to list files: {}", response.status())
-        }
-    }
 
     pub async fn delete_file(&self, bucket: Option<&str>, key: &str) -> Result<DeleteFileResponse> {
         let url = format!("{}/delete-file", self.base_url);
@@ -148,7 +151,22 @@ impl FileService {
             .await?;
 
         if response.status().is_success() {
-            tracing::info!("Successfully deleted file: {}", key);
+            // 삭제 성공 후 관련 캐시 무효화
+            let cache_path = if key.contains('/') {
+                // "book_id/title/file.ext" -> "book_id/title"로 변환
+                let parts: Vec<&str> = key.rsplitn(2, '/').collect();
+                if parts.len() == 2 {
+                    parts[1].to_string() // 마지막 '/' 이전 부분
+                } else {
+                    key.to_string()
+                }
+            } else {
+                key.to_string()
+            };
+            
+            self.invalidate_cache_for_path(&cache_path).await;
+            
+            tracing::info!("Successfully deleted file: {} and invalidated cache", key);
             Ok(())
         } else {
             let status = response.status();
@@ -176,13 +194,11 @@ impl FileService {
     }
 
     pub async fn get_all_files(&self, _bucket: Option<&str>) -> Result<R2AllFilesResponse> {
-        tracing::info!("Fetching all files from R2 Worker API (for root folder structure only)");
+        // 메모리 캐시에서 전체 데이터 가져오기
+        let all_files_data = self.get_cached_all_files().await?;
         
-        // Use R2 Worker API with * to get all files (only for root level folder structure)
-        let worker_response = self.get_r2_folder_files("*").await?;
-        
-        // Convert R2WorkerFolderResponse to R2AllFilesResponse
-        let files: Vec<R2FileInfo> = worker_response.into_iter()
+        // R2WorkerFolderResponse를 R2AllFilesResponse로 변환
+        let files: Vec<R2FileInfo> = all_files_data.iter()
             .map(|item| R2FileInfo {
                 key: item.key.clone(),
                 size: item.value.size,
@@ -191,14 +207,33 @@ impl FileService {
             })
             .collect();
         
-        let response = R2AllFilesResponse { files };
-        
-        tracing::info!("Retrieved {} files from R2 API", response.files.len());
-        Ok(response)
+        Ok(R2AllFilesResponse { files })
     }
 
     pub async fn get_r2_folder_files(&self, key: &str) -> Result<R2WorkerFolderResponse> {
-        // Use the R2 worker API for folder-specific files
+        tracing::info!("Getting folder files for key: '{}' (from memory)", key);
+        
+        // 메모리에서 전체 데이터 가져오기
+        let all_files = self.get_cached_all_files().await?;
+        
+        // key로 필터링 (key는 보통 "folder/" 형태이므로 prefix로 매칭)
+        let prefix = if key == "*" {
+            // 전체 데이터 요청
+            return Ok(all_files);
+        } else {
+            key.to_string()
+        };
+        
+        let filtered_files: Vec<R2WorkerFileItem> = all_files.into_iter()
+            .filter(|item| item.key.starts_with(&prefix))
+            .collect();
+        
+        tracing::info!("Found {} files for key '{}' from memory", filtered_files.len(), key);
+        Ok(filtered_files)
+    }
+    
+    // 전체 데이터 로드를 위한 직접 API 호출
+    async fn get_r2_folder_files_direct(&self, key: &str) -> Result<R2WorkerFolderResponse> {
         let url = "https://reengki-assets-r2-worker.reengkigo.workers.dev/folder-files";
         
         let response = self.client
@@ -215,36 +250,86 @@ impl FileService {
         }
     }
     
-    // 폴더 구조를 위한 경로 기반 폴더 조회 (최적화된 버전)
+    // 메모리 캐시에서 전체 데이터 가져오기 (캐시가 없으면 로드)
+    async fn get_cached_all_files(&self) -> Result<R2WorkerFolderResponse> {
+        self.ensure_all_files_loaded().await?;
+        
+        let cache_read = self.all_files_cache.read().await;
+        if let Some(ref cache) = *cache_read {
+            if !cache.is_expired() {
+                tracing::info!("Cache hit for all_files (age: {:?})", cache.created_at.elapsed());
+                return Ok(cache.data.clone());
+            }
+        }
+        
+        // 캐시가 만료된 경우 다시 로드
+        drop(cache_read);
+        self.load_all_files_to_cache().await
+    }
+    
+    // 전체 데이터가 캐시에 로드되어 있는지 확인하고 없으면 로드
+    async fn ensure_all_files_loaded(&self) -> Result<()> {
+        let cache_read = self.all_files_cache.read().await;
+        if let Some(ref cache) = *cache_read {
+            if !cache.is_expired() {
+                return Ok(());
+            }
+        }
+        drop(cache_read);
+        
+        self.load_all_files_to_cache().await?;
+        Ok(())
+    }
+    
+    // 전체 데이터를 캐시에 로드
+    async fn load_all_files_to_cache(&self) -> Result<R2WorkerFolderResponse> {
+        tracing::info!("Loading all files to cache from R2 Worker API");
+        
+        // R2 Worker API에서 전체 데이터 가져오기 ("*" 사용)
+        let worker_response = self.get_r2_folder_files_direct("*").await?;
+        
+        // 캐시에 저장
+        let ttl = Duration::from_secs(600); // 10분 TTL
+        let cache_entry = AllFilesCache {
+            data: worker_response.clone(),
+            created_at: Instant::now(),
+            ttl,
+        };
+        
+        {
+            let mut cache_write = self.all_files_cache.write().await;
+            *cache_write = Some(cache_entry);
+        }
+        
+        tracing::info!("Cached all_files with {} files (TTL: {:?})", worker_response.len(), ttl);
+        Ok(worker_response)
+    }
+    
+    // 폴더 구조를 위한 경로 기반 폴더 조회 (메모리 필터링)
     pub async fn get_folder_structure(&self, prefix: &str) -> Result<Vec<String>> {
+        tracing::info!("Getting folder structure for prefix: '{}' (from memory)", prefix);
+        
+        // 메모리에서 전체 데이터 가져오기
+        let all_files = self.get_cached_all_files().await?;
+        
+        let mut folders = std::collections::HashSet::new();
+        
         if prefix.is_empty() {
-            // 루트 레벨: 모든 최상위 폴더 조회
-            let all_files = self.get_all_files(None).await?;
-            
-            let mut folders = std::collections::HashSet::new();
-            
-            for file in all_files.files {
-                if let Some(first_slash) = file.key.find('/') {
-                    let folder_name = &file.key[..first_slash];
+            // 루트 레벨: 첫 번째 '/' 이전 부분들 추출
+            for item in &all_files {
+                if let Some(first_slash) = item.key.find('/') {
+                    let folder_name = &item.key[..first_slash];
                     if !folder_name.is_empty() {
                         folders.insert(folder_name.to_string());
                     }
                 }
             }
-            
-            let mut result: Vec<String> = folders.into_iter().collect();
-            result.sort();
-            Ok(result)
         } else {
-            // 특정 prefix: 해당 폴더만 조회 (최적화)
-            let folder_key = format!("{}/", prefix.trim_end_matches('/'));
-            let worker_response = self.get_r2_folder_files(&folder_key).await?;
+            // 특정 prefix: 해당 prefix 아래 폴더들 추출
+            let folder_prefix = format!("{}/", prefix.trim_end_matches('/'));
             
-            let mut folders = std::collections::HashSet::new();
-            
-            for item in worker_response {
-                // key에서 prefix 이후 부분 추출
-                if let Some(remaining) = item.key.strip_prefix(&folder_key) {
+            for item in &all_files {
+                if let Some(remaining) = item.key.strip_prefix(&folder_prefix) {
                     if let Some(slash_pos) = remaining.find('/') {
                         let folder_name = &remaining[..slash_pos];
                         if !folder_name.is_empty() {
@@ -253,14 +338,58 @@ impl FileService {
                     }
                 }
             }
-            
-            let mut result: Vec<String> = folders.into_iter().collect();
-            result.sort();
-            Ok(result)
+        }
+        
+        let mut result: Vec<String> = folders.into_iter().collect();
+        result.sort();
+        
+        tracing::info!("Found {} folders for prefix '{}' from memory", result.len(), prefix);
+        Ok(result)
+    }
+
+    // 캐시 관리 메서드들
+    
+    // 전체 캐시 초기화 (첫 진입 시)
+    pub async fn clear_all_cache(&self) {
+        let mut cache_write = self.all_files_cache.write().await;
+        *cache_write = None;
+        tracing::info!("All files cache cleared");
+    }
+    
+    // 업로드/삭제 시 캐시 무효화 
+    pub async fn invalidate_cache_for_path(&self, _path: &str) {
+        // 전체 데이터를 하나로 관리하므로 항상 전체 캐시 무효화
+        let mut cache_write = self.all_files_cache.write().await;
+        *cache_write = None;
+        tracing::info!("All files cache invalidated due to path change: {}", _path);
+    }
+    
+    // 만료된 캐시 정리 (자동으로 처리됨)
+    pub async fn cleanup_expired_cache(&self) {
+        let mut cache_write = self.all_files_cache.write().await;
+        if let Some(ref cache) = *cache_write {
+            if cache.is_expired() {
+                *cache_write = None;
+                tracing::info!("Expired cache cleaned up");
+            }
+        }
+    }
+    
+    // 캐시 통계 정보 반환
+    pub async fn get_cache_stats(&self) -> (usize, usize) {
+        let cache_read = self.all_files_cache.read().await;
+        match *cache_read {
+            Some(ref cache) => {
+                if cache.is_expired() {
+                    (1, 1) // 1개 있지만 만료됨
+                } else {
+                    (1, 0) // 1개 있고 유효함
+                }
+            }
+            None => (0, 0) // 캐시 없음
         }
     }
 
-    // 캐시 로직 완전 제거 - 항상 실시간 데이터 사용
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -293,7 +422,7 @@ pub struct R2AllFilesResponse {
 }
 
 // R2 Worker API용 구조체 (새로운 API)
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct R2WorkerFileValue {
     pub file: String,
     pub original_file: String,
@@ -305,7 +434,7 @@ pub struct R2WorkerFileValue {
     pub create_date: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct R2WorkerFileItem {
     pub key: String,
     pub value: R2WorkerFileValue,

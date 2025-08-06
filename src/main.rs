@@ -108,7 +108,6 @@ fn create_router(state: AppState) -> Router {
     // File API routes - no authentication for now
     let file_api_routes = Router::new()
         .route("/upload", post(file::upload_file))
-        .route("/all-file", get(file::list_files))
         .route("/delete-file", post(file::delete_file))
         .layer(DefaultBodyLimit::max(2 * 1024 * 1024 * 1024)) // 2GB limit for file uploads
         .with_state(state.file_service.clone());
@@ -129,6 +128,9 @@ fn create_router(state: AppState) -> Router {
         .route("/api/delete-item", post(dashboard::delete_item))
         .route("/api/subtitle/:book_id/:title", get(dashboard::get_subtitle_data))
         .route("/api/image/:book_id/:title", get(dashboard::get_image_content))
+        .route("/api/cache/clear", post(dashboard::clear_cache))
+        .route("/api/cache/stats", get(dashboard::get_cache_stats))
+        .route("/api/cache/cleanup", post(dashboard::cleanup_expired_cache))
         .layer(DefaultBodyLimit::max(2 * 1024 * 1024 * 1024)) // 2GB limit for asset uploads
         .layer(axum_middleware::from_fn(AuthMiddleware::auth_middleware));
 

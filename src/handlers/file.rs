@@ -1,9 +1,9 @@
 use crate::{
-    dto::file::{DeleteFileRequest, FileListQuery},
+    dto::file::DeleteFileRequest,
     services::file::FileService,
 };
 use axum::{
-    extract::{Multipart, Query, State},
+    extract::{Multipart, State},
     http::StatusCode,
     response::{IntoResponse, Json},
 };
@@ -61,34 +61,6 @@ pub async fn upload_file(
     }
 }
 
-#[utoipa::path(
-    get,
-    path = "/all-file",
-    params(
-        ("bucket" = String, Query, description = "Bucket name")
-    ),
-    responses(
-        (status = 200, description = "Files listed successfully"),
-        (status = 500, description = "Internal server error")
-    ),
-    tag = "file"
-)]
-pub async fn list_files(
-    State(file_service): State<Arc<FileService>>,
-    Query(params): Query<FileListQuery>,
-) -> impl IntoResponse {
-    let bucket_param = if params.bucket.is_empty() { None } else { Some(params.bucket.as_str()) };
-    match file_service.list_files(bucket_param).await {
-        Ok(response) => (StatusCode::OK, Json(response)).into_response(),
-        Err(e) => {
-            error!("List files failed: {}", e);
-            (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                Json(serde_json::json!({"error": format!("List files failed: {}", e)}))
-            ).into_response()
-        }
-    }
-}
 
 #[utoipa::path(
     post,
