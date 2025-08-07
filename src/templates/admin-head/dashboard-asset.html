@@ -506,11 +506,11 @@
                             <input type="text" class="form-control" id="assetCategory" name="category" placeholder="예: 영어, 과학, 수학">
                         </div>
 
-                        <!-- 표지 이미지 (필수) -->
+                        <!-- 표지 이미지 (옵션) -->
                         <div class="mb-3">
-                            <label class="form-label">표지 이미지 <span class="text-danger">*</span></label>
+                            <label class="form-label">표지 이미지</label>
                             <div class="border rounded p-3">
-                                <input type="file" class="form-control mb-2" id="coverImageFile" accept="image/*" required onchange="handleCoverImageChange()">
+                                <input type="file" class="form-control mb-2" id="coverImageFile" accept="image/*" onchange="handleCoverImageChange()">
                                 <div class="form-text">
                                     <i class="fas fa-info-circle"></i> 
                                     JPG, PNG 형식만 지원됩니다.
@@ -1999,8 +1999,8 @@
             });
 
             // Validate required fields
-            if (!bookId || !title || !coverFile || !videoFile) {
-                Notification.error('필수 필드를 모두 입력해주세요. (교재 ID, 제목, 표지 이미지, 비디오 파일)');
+            if (!bookId || !title || !videoFile) {
+                Notification.error('필수 필드를 모두 입력해주세요. (교재 ID, 제목, 비디오 파일)');
                 return;
             }
             
@@ -2010,7 +2010,7 @@
                 Notification.error(`비디오 파일이 너무 큽니다: ${(videoFile.size / (1024 * 1024 * 1024)).toFixed(2)}GB (최대 2GB)`);
                 return;
             }
-            if (coverFile.size > maxFileSize) {
+            if (coverFile && coverFile.size > maxFileSize) {
                 Notification.error(`이미지 파일이 너무 큽니다: ${(coverFile.size / (1024 * 1024 * 1024)).toFixed(2)}GB (최대 2GB)`);
                 return;
             }
@@ -2032,12 +2032,14 @@
             formData.append('book_id', bookId);
             formData.append('title', title);
             formData.append('category', category);
-            formData.append('cover_image', coverFile);
+            if (coverFile) {
+                formData.append('cover_image', coverFile);
+            }
             formData.append('video_file', videoFile);
             formData.append('subtitles', JSON.stringify(subtitles));
 
             // Calculate total file size
-            const totalSize = coverFile.size + videoFile.size;
+            const totalSize = (coverFile ? coverFile.size : 0) + videoFile.size;
             const totalSizeMB = (totalSize / (1024 * 1024)).toFixed(2);
             document.getElementById('uploadStatus').textContent = `총 ${totalSizeMB}MB 업로드 중...`;
 
@@ -3495,7 +3497,7 @@
                     <div class="image-editor">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
-                                <span class="text-muted">새 이미지 파일: ${imagePath}</span>
+                                <span class="text-muted">새 이미지 업로드: ${bookId}/${title}/</span>
                             </div>
                         </div>
                         
@@ -3503,7 +3505,7 @@
                             <div class="mb-3">
                                 <label class="form-label">이미지 파일 선택</label>
                                 <input type="file" class="form-control" id="imageFileInput" accept="image/*">
-                                <div class="form-text">JPG, PNG, GIF, WebP 등 이미지 파일을 선택하세요.</div>
+                                <div class="form-text">JPG, PNG, GIF, WebP 등 이미지 파일을 선택하세요. 파일명은 자동으로 "${title}.확장자"로 저장됩니다.</div>
                             </div>
                             
                             <div class="mb-3">
@@ -3566,16 +3568,25 @@
             const bookId = imageContent.dataset.bookId;
             const title = imageContent.dataset.title;
             
-            // Use existing filename if available, otherwise use uploaded filename
-            const originalFileName = imageContent.dataset.fileName || file.name;
-            const imagePath = `${bookId}/${title}/${originalFileName}`;
+            // Determine filename based on whether this is a new upload or existing file edit
+            let targetFileName;
+            if (imageContent.dataset.fileName) {
+                // Editing existing file - keep original filename
+                targetFileName = imageContent.dataset.fileName;
+            } else {
+                // New upload - use title as filename with original file extension
+                const fileExtension = file.name.split('.').pop().toLowerCase();
+                targetFileName = `${title}.${fileExtension}`;
+            }
+            const imagePath = `${bookId}/${title}/${targetFileName}`;
             
             console.log('Debug - Saving image:', {
                 bookId,
                 title,
                 imagePath,
-                fileName: originalFileName,
-                fileSize: file.size
+                fileName: targetFileName,
+                fileSize: file.size,
+                isNewUpload: !imageContent.dataset.fileName
             });
             
             try {
@@ -3587,9 +3598,9 @@
                 // Show loading state
                 showImageValidation('업로드 중...', 'info');
                 
-                // Upload the file using the new endpoint with original filename
+                // Upload the file using the new endpoint with correct filename
                 const formData = new FormData();
-                const renamedFile = new File([file], originalFileName, { type: file.type });
+                const renamedFile = new File([file], targetFileName, { type: file.type });
                 formData.append('file', renamedFile);
                 formData.append('full_path', imagePath);
                 

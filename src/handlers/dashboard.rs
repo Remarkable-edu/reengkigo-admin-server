@@ -142,14 +142,14 @@ pub async fn create_asset(
         }
     }
 
-    // Validate required fields
-    if book_id.is_empty() || title.is_empty() || files.len() < 2 {
+    // Validate required fields (only video file is required now, cover image is optional)
+    if book_id.is_empty() || title.is_empty() {
         return (
             StatusCode::BAD_REQUEST,
             Json(CreateAssetResponse {
                 success: false,
                 asset_id: None,
-                message: "필수 필드 누락: 교재 ID, 제목, 표지 이미지, 비디오 파일".to_string(),
+                message: "필수 필드 누락: 교재 ID, 제목".to_string(),
                 cover_image_url: None,
                 video_url: None,
             })
@@ -158,7 +158,6 @@ pub async fn create_asset(
 
     // Rename files and validate types
     let mut renamed_files = Vec::new();
-    let mut has_image = false;
     let mut has_video = false;
 
     for (original_filename, data) in files {
@@ -166,9 +165,7 @@ pub async fn create_asset(
         let new_filename = format!("{}{}", title, extension);
         
         let lower = new_filename.to_lowercase();
-        if lower.ends_with(".png") || lower.ends_with(".jpg") || lower.ends_with(".jpeg") {
-            has_image = true;
-        } else if lower.ends_with(".mp4") || lower.ends_with(".mov") || lower.ends_with(".avi") {
+        if lower.ends_with(".mp4") || lower.ends_with(".mov") || lower.ends_with(".avi") {
             has_video = true;
         }
         
@@ -181,13 +178,13 @@ pub async fn create_asset(
         renamed_files.push(("subtitle.json".to_string(), subtitle_data));
     }
 
-    if !has_image || !has_video {
+    if !has_video {
         return (
             StatusCode::BAD_REQUEST,
             Json(CreateAssetResponse {
                 success: false,
                 asset_id: None,
-                message: "이미지 파일과 비디오 파일이 모두 필요합니다".to_string(),
+                message: "비디오 파일이 필요합니다".to_string(),
                 cover_image_url: None,
                 video_url: None,
             })
