@@ -974,6 +974,35 @@ main {
     padding: 0.5rem 0.75rem;
 }
 
+/* Folder and File Icons */
+.folder-icon {
+    color: #ffc107 !important; /* Yellow folder color */
+}
+
+.image-icon {
+    color: #28a745 !important; /* Green for images */
+}
+
+.video-icon {
+    color: #dc3545 !important; /* Red for videos */
+}
+
+.audio-icon {
+    color: #17a2b8 !important; /* Blue for audio */
+}
+
+.pdf-icon {
+    color: #6f42c1 !important; /* Purple for PDF */
+}
+
+.text-icon {
+    color: #6c757d !important; /* Gray for text files */
+}
+
+.other-icon {
+    color: #6c757d !important; /* Gray for other files */
+}
+
 /* Print styles */
 @media print {
     .sidebar,

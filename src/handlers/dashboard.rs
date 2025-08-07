@@ -455,13 +455,51 @@ pub struct SubtitleRequest {
     pub title: String,
 }
 
+async fn find_subtitle_filename(book_id: &str, title: &str) -> String {
+    let folder_url = format!("https://r2-api.reengki.com/folder-files?key={}/{}", book_id, title);
+    
+    match reqwest::get(&folder_url).await {
+        Ok(folder_response) => {
+            if folder_response.status().is_success() {
+                match folder_response.text().await {
+                    Ok(folder_content) => {
+                        if let Ok(folder_data) = serde_json::from_str::<serde_json::Value>(&folder_content) {
+                            if let Some(files) = folder_data.as_array() {
+                                // Find subtitle file
+                                for file in files {
+                                    if let Some(key) = file.get("key").and_then(|k| k.as_str()) {
+                                        let filename = key.split('/').last().unwrap_or("");
+                                        if filename.to_lowercase().ends_with(".json") && 
+                                           (filename.to_lowercase().contains("subtitle") || 
+                                            filename.to_lowercase().contains("sub")) {
+                                            info!("Found subtitle file: {}", filename);
+                                            return filename.to_string();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Err(_) => {}
+                }
+            }
+        }
+        Err(_) => {}
+    }
+    
+    // Default fallback
+    "subtitle.json".to_string()
+}
+
 pub async fn get_subtitle_data(
     State(_app_state): State<AppState>,
     Path((book_id, title)): Path<(String, String)>,
 ) -> impl IntoResponse {
     info!("Getting subtitle data for: {}/{}", book_id, title);
     
-    let subtitle_url = format!("https://r2-api.reengki.com/download/{}/{}/subtitle.json", book_id, title);
+    // Find the actual subtitle filename
+    let subtitle_filename = find_subtitle_filename(&book_id, &title).await;
+    let subtitle_url = format!("https://r2-api.reengki.com/download/{}/{}/{}", book_id, title, subtitle_filename);
     
     match reqwest::get(&subtitle_url).await {
         Ok(response) => {
@@ -473,7 +511,9 @@ pub async fn get_subtitle_data(
                             StatusCode::OK,
                             Json(serde_json::json!({
                                 "success": true,
-                                "data": subtitle_data
+                                "data": subtitle_data,
+                                "path": format!("{}/{}/{}", book_id, title, subtitle_filename),
+                                "filename": subtitle_filename
                             }))
                         ).into_response()
                     }
@@ -649,5 +689,101 @@ pub async fn cleanup_expired_cache(State(app_state): State<AppState>) -> impl In
             "message": "Expired cache entries cleaned up"
         }))
     ).into_response()
+}
+
+pub async fn upload_single_file(
+    State(app_state): State<AppState>,
+    mut multipart: Multipart,
+) -> impl IntoResponse {
+    info!("Single file upload request received");
+    
+    let mut file_data: Option<(String, axum::body::Bytes)> = None;
+    let mut full_path = String::new();
+    
+    while let Some(field) = multipart.next_field().await.unwrap_or(None) {
+        match field.name().unwrap_or("") {
+            "file" => {
+                let filename = field.file_name().unwrap_or("unknown").to_string();
+                let data = match field.bytes().await {
+                    Ok(bytes) => bytes,
+                    Err(e) => {
+                        error!("Failed to read file data: {}", e);
+                        return (
+                            StatusCode::BAD_REQUEST,
+                            Json(serde_json::json!({
+                                "success": false,
+                                "error": "Failed to read file data"
+                            }))
+                        ).into_response();
+                    }
+                };
+                file_data = Some((filename, data));
+            }
+            "full_path" => {
+                full_path = field.text().await.unwrap_or_default();
+            }
+            _ => {}
+        }
+    }
+    
+    if let Some((filename, bytes)) = file_data {
+        if full_path.is_empty() {
+            return (
+                StatusCode::BAD_REQUEST,
+                Json(serde_json::json!({
+                    "success": false,
+                    "error": "Missing full_path parameter"
+                }))
+            ).into_response();
+        }
+        
+        info!("Uploading file '{}' to full path: '{}'", filename, full_path);
+        info!("Full path length: {}, contains slash: {}", full_path.len(), full_path.contains('/'));
+        
+        // Extract directory path from full_path (remove the filename)
+        let base_path = if let Some(last_slash) = full_path.rfind('/') {
+            &full_path[..last_slash + 1] // Include the trailing slash
+        } else {
+            "" // No directory structure, use empty base path
+        };
+        
+        info!("Extracted base_path: '{}' for filename: '{}'", base_path, filename);
+        
+        // Use the file service to upload the file
+        let files = vec![(filename.clone(), bytes)];
+        match app_state.file_service.upload_file(files, None, base_path).await {
+            Ok(response) => {
+                info!("File uploaded successfully to: {}", full_path);
+                (
+                    StatusCode::OK,
+                    Json(serde_json::json!({
+                        "success": true,
+                        "message": "File uploaded successfully",
+                        "file_path": full_path,
+                        "filename": filename,
+                        "details": response
+                    }))
+                ).into_response()
+            }
+            Err(e) => {
+                error!("Failed to upload file: {}", e);
+                (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    Json(serde_json::json!({
+                        "success": false,
+                        "error": format!("Upload failed: {}", e)
+                    }))
+                ).into_response()
+            }
+        }
+    } else {
+        (
+            StatusCode::BAD_REQUEST,
+            Json(serde_json::json!({
+                "success": false,
+                "error": "No file provided"
+            }))
+        ).into_response()
+    }
 }
 

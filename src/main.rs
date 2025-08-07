@@ -128,6 +128,7 @@ fn create_router(state: AppState) -> Router {
         .route("/api/delete-item", post(dashboard::delete_item))
         .route("/api/subtitle/:book_id/:title", get(dashboard::get_subtitle_data))
         .route("/api/image/:book_id/:title", get(dashboard::get_image_content))
+        .route("/api/upload-file", post(dashboard::upload_single_file))
         .route("/api/cache/clear", post(dashboard::clear_cache))
         .route("/api/cache/stats", get(dashboard::get_cache_stats))
         .route("/api/cache/cleanup", post(dashboard::cleanup_expired_cache))
