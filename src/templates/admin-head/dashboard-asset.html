@@ -229,8 +229,8 @@
         .info-sidebar {
             position: fixed;
             top: 0;
-            right: -500px;
-            width: 500px;
+            right: -650px;
+            width: 650px;
             height: 100vh;
             background: white;
             border-left: 1px solid #dee2e6;
@@ -263,13 +263,35 @@
         }
         
         .info-sidebar-header {
-            padding: 1rem;
+            padding: 1.2rem 1.5rem;
             border-bottom: 1px solid #dee2e6;
             background: #f8f9fa;
         }
         
         .info-sidebar-content {
-            padding: 1rem;
+            padding: 1.5rem;
+        }
+        
+        /* Better alignment for subtitle edit form */
+        .subtitle-item {
+            background-color: #f8f9fa;
+        }
+        
+        .subtitle-item:hover {
+            background-color: #e9ecef;
+        }
+        
+        /* Consistent badge and text sizes */
+        .table .badge {
+            font-size: 12px;
+            padding: 0.35em 0.65em;
+        }
+        
+        /* Responsive form labels */
+        .form-label.small {
+            font-size: 12px;
+            font-weight: 600;
+            color: #495057;
         }
         
         .context-menu-item {
@@ -607,157 +629,6 @@
     </div>
 
 
-    <!-- Edit Cover Images Modal -->
-    <div class="modal fade" id="editCoverModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">표지 이미지 편집</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editCoverForm">
-                        <input type="hidden" id="editCoverAssetId" name="asset_id">
-                        
-                        <!-- Current covers display -->
-                        <div id="coverPreview" class="mb-3">
-                        </div>
-                        
-                        <!-- File upload section -->
-                        <div class="mb-3">
-                            <label class="form-label">새 표지 이미지 업로드</label>
-                            <div class="border rounded p-3">
-                                <input type="file" class="form-control mb-2" id="coverFileInput" accept="image/*" multiple>
-                                <div class="form-text">
-                                    <i class="fas fa-info-circle"></i> 
-                                    여러 개의 이미지를 선택할 수 있습니다. JPG, PNG 형식만 지원됩니다.
-                                </div>
-                                <button type="button" class="btn btn-outline-primary btn-sm mt-2" onclick="uploadCoverFiles()">
-                                    <i class="fas fa-upload"></i> 파일 업로드
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Upload progress -->
-                        <div id="coverUploadProgress" class="mb-3" style="display: none;">
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" style="width: 0%"></div>
-                            </div>
-                            <div class="small text-muted mt-1" id="coverUploadStatus">업로드 중...</div>
-                        </div>
-                        
-                        <!-- Uploaded files list -->
-                        <div id="uploadedCoversList" class="mb-3">
-                        </div>
-                        
-                        <!-- Manual path editing (advanced) -->
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="showAdvancedCoverEdit">
-                                <label class="form-check-label" for="showAdvancedCoverEdit">
-                                    고급: 경로 직접 편집
-                                </label>
-                            </div>
-                            <div id="advancedCoverEdit" style="display: none;" class="mt-2">
-                                <label for="editCovers" class="form-label">표지 이미지 경로들 (JSON)</label>
-                                <textarea class="form-control" id="editCovers" name="covers" rows="5" placeholder='예: ["cover/1_J1R.png", "cover/2_J1R.png"]'></textarea>
-                                <div class="form-text">JSON 배열 형태로 입력해주세요.</div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                    <button type="button" class="btn btn-primary" onclick="saveCoverChanges()">저장</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Edit YouTube Links Modal -->
-    <div class="modal fade" id="editYouTubeModal" tabindex="-1">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">YouTube 링크 편집</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editYouTubeForm">
-                        <input type="hidden" id="editYouTubeAssetId" name="asset_id">
-                        
-                        <!-- Current YouTube links display will be managed below -->
-                        
-                        <!-- Add new YouTube link section -->
-                        <div class="mb-3">
-                            <h6>새 YouTube 링크 추가</h6>
-                            <div class="border rounded p-3">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <label class="form-label">썸네일 이미지 업로드</label>
-                                        <input type="file" class="form-control mb-2" id="thumbnailFileInput" accept="image/*">
-                                        <div id="thumbnailPreview" class="mb-2">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="youtubeUrl" class="form-label">YouTube URL</label>
-                                        <input type="url" class="form-control mb-2" id="youtubeUrl" placeholder="https://youtu.be/...">
-                                        
-                                        <label for="youtubeTitle" class="form-label">제목 (선택사항)</label>
-                                        <input type="text" class="form-control mb-2" id="youtubeTitle" placeholder="비디오 제목">
-                                    </div>
-                                </div>
-                                <button type="button" class="btn btn-outline-success btn-sm" onclick="addYouTubeLink()">
-                                    <i class="fas fa-plus"></i> YouTube 링크 추가
-                                </button>
-                            </div>
-                        </div>
-                        <!-- Current YouTube links management -->
-                        <div class="mb-3">
-                            <h6>현재 YouTube 링크들</h6>
-                            <div id="currentYouTubeLinks">
-                            </div>
-                        </div>
-                        <!-- Upload progress -->
-                        <div id="youtubeUploadProgress" class="mb-3" style="display: none;">
-                            <div class="progress">
-                                <div class="progress-bar" role="progressbar" style="width: 0%"></div>
-                            </div>
-                            <div class="small text-muted mt-1" id="youtubeUploadStatus">업로드 중...</div>
-                        </div>
-                        
-                        <!-- Manual JSON editing (advanced) -->
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="showAdvancedYouTubeEdit">
-                                <label class="form-check-label" for="showAdvancedYouTubeEdit">
-                                    고급: JSON 직접 편집
-                                </label>
-                            </div>
-                            <div id="advancedYouTubeEdit" style="display: none;" class="mt-2">
-                                <label for="editYouTubeLinks" class="form-label">YouTube 링크 데이터 (JSON)</label>
-                                <textarea class="form-control" id="editYouTubeLinks" name="youtube_links" rows="10" placeholder='예: [{"thumbnail_file": "thumbnail/J1R_amazing.png", "youtube_url": "https://youtu.be/v-r7AtCFc-w", "title": "J1R Amazing"}]'></textarea>
-                                <div class="form-text">JSON 배열 형태로 입력해주세요.</div>
-                                <div class="mt-2">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="formatYouTubeJson()">
-                                        <i class="fas fa-magic"></i> JSON 포맷팅
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-info" onclick="validateYouTubeJson()">
-                                        <i class="fas fa-check"></i> JSON 검증
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-                    <button type="button" class="btn btn-primary" onclick="saveYouTubeChanges()">저장</button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/static/js/admin.js"></script>
@@ -887,9 +758,11 @@
                 createModalElement.addEventListener('hidden.bs.modal', function() {
                     // Reset form
                     document.getElementById('createAssetForm').reset();
-                    // Clear previews
+                    // Clear previews and file inputs
                     document.getElementById('coverImagePreview').innerHTML = '';
                     document.getElementById('videoPreview').innerHTML = '';
+                    document.getElementById('coverImageFile').value = '';
+                    document.getElementById('videoFile').value = '';
                     // Clear subtitle container
                     document.getElementById('subtitleContainer').innerHTML = '';
                     // Hide progress section
@@ -1650,6 +1523,111 @@
             }
             return field;
         }
+        
+        // Export subtitles as CSV
+        async function exportFolderSubtitlesAsCSV(folder) {
+            try {
+                // Show loading notification
+                Notification.info('자막 데이터를 수집 중입니다...');
+                
+                // Recursively collect all subtitle data
+                const subtitles = [];
+                await collectSubtitlesRecursively(folder.path, subtitles);
+                
+                if (subtitles.length === 0) {
+                    Notification.warning('내보낼 자막 데이터가 없습니다.');
+                    return;
+                }
+                
+                // Create CSV content
+                const csvContent = createSubtitleCSV(subtitles);
+                
+                // Download CSV file
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `${folder.name}_subtitles_${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                Notification.success(`${subtitles.length}개의 자막 항목을 내보냈습니다.`);
+            } catch (error) {
+                Notification.error('자막 내보내기 중 오류가 발생했습니다: ' + error.message);
+            }
+        }
+        
+        async function collectSubtitlesRecursively(path, subtitles) {
+            try {
+                const apiUrl = `/api/folders/${encodeURIComponent(path)}`;
+                const response = await API.get(apiUrl);
+                
+                if (response && response.items) {
+                    for (const item of response.items) {
+                        if (item.item_type === 'folder') {
+                            // For each folder, try to get subtitle data
+                            const pathParts = item.path.split('/');
+                            if (pathParts.length >= 2) {
+                                const bookId = pathParts[0];
+                                const title = pathParts[1];
+                                
+                                try {
+                                    const subtitleResponse = await API.get(`/api/subtitle/${bookId}/${title}`);
+                                    if (subtitleResponse.success && subtitleResponse.data && Array.isArray(subtitleResponse.data)) {
+                                        subtitleResponse.data.forEach(subtitleItem => {
+                                            subtitles.push({
+                                                bookId: bookId,
+                                                title: title,
+                                                pageNum: subtitleItem.page_num || 1,
+                                                sentenceNum: subtitleItem.sentence_num || 1,
+                                                text: subtitleItem.text || ''
+                                            });
+                                        });
+                                    }
+                                } catch (subtitleError) {
+                                    // Skip folders without subtitle data
+                                    console.log(`No subtitle data for ${bookId}/${title}:`, subtitleError.message);
+                                }
+                            }
+                            
+                            // Recursively collect from subfolders
+                            await collectSubtitlesRecursively(item.path, subtitles);
+                        }
+                    }
+                }
+            } catch (error) {
+                throw error;
+            }
+        }
+        
+        function createSubtitleCSV(subtitles) {
+            // CSV header with BOM for proper UTF-8 encoding
+            let csv = '\uFEFF교재ID,제목,페이지번호,문장번호,문장\n';
+            
+            // Sort subtitles by bookId, title, pageNum, sentenceNum
+            subtitles.sort((a, b) => {
+                if (a.bookId !== b.bookId) return a.bookId.localeCompare(b.bookId);
+                if (a.title !== b.title) return a.title.localeCompare(b.title);
+                if (a.pageNum !== b.pageNum) return a.pageNum - b.pageNum;
+                return a.sentenceNum - b.sentenceNum;
+            });
+            
+            // Add subtitle data
+            subtitles.forEach(subtitle => {
+                // Escape CSV fields
+                const bookId = escapeCSVField(subtitle.bookId.toString());
+                const title = escapeCSVField(subtitle.title.toString());
+                const pageNum = subtitle.pageNum;
+                const sentenceNum = subtitle.sentenceNum;
+                const text = escapeCSVField(subtitle.text.toString());
+                
+                csv += `${bookId},${title},${pageNum},${sentenceNum},${text}\n`;
+            });
+            
+            return csv;
+        }
 
         function deleteItemWithConfirm(item) {
             const itemType = item.item_type === 'folder' ? '폴더' : '파일';
@@ -1713,14 +1691,23 @@
             
             // 최상위 폴더인 경우 내보내기 메뉴 추가
             if (item.item_type === 'folder' && currentPath === '') {
-                const exportItem = document.createElement('div');
-                exportItem.className = 'context-menu-item';
-                exportItem.innerHTML = '<i class="fas fa-file-export text-primary me-2"></i>비디오 링크 내보내기';
-                exportItem.onclick = () => {
+                const exportVideoItem = document.createElement('div');
+                exportVideoItem.className = 'context-menu-item';
+                exportVideoItem.innerHTML = '<i class="fas fa-video text-primary me-2"></i>비디오 링크 내보내기';
+                exportVideoItem.onclick = () => {
                     menu.remove();
                     exportFolderVideosAsCSV(item);
                 };
-                menu.appendChild(exportItem);
+                menu.appendChild(exportVideoItem);
+                
+                const exportSubtitleItem = document.createElement('div');
+                exportSubtitleItem.className = 'context-menu-item';
+                exportSubtitleItem.innerHTML = '<i class="fas fa-closed-captioning text-success me-2"></i>자막 정보 내보내기';
+                exportSubtitleItem.onclick = () => {
+                    menu.remove();
+                    exportFolderSubtitlesAsCSV(item);
+                };
+                menu.appendChild(exportSubtitleItem);
             }
             
             // 삭제 메뉴 아이템
@@ -1843,9 +1830,16 @@
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     previewDiv.innerHTML = `
-                        <div class="text-center">
+                        <div class="d-flex align-items-start gap-3 mt-2">
                             <img src="${e.target.result}" alt="표지 미리보기" style="max-width: 200px; max-height: 200px; object-fit: cover;" class="border rounded">
-                            <div class="small mt-1">${file.name}</div>
+                            <div class="flex-grow-1">
+                                <div class="mb-2">
+                                    <small class="text-muted">${file.name} (${(file.size/1024/1024).toFixed(2)}MB)</small>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="clearCoverImage()">
+                                    <i class="fas fa-times"></i> 취소
+                                </button>
+                            </div>
                         </div>
                     `;
                 };
@@ -1853,6 +1847,14 @@
             } else {
                 previewDiv.innerHTML = '';
             }
+        }
+        
+        // Clear cover image selection
+        function clearCoverImage() {
+            const fileInput = document.getElementById('coverImageFile');
+            const previewDiv = document.getElementById('coverImagePreview');
+            fileInput.value = '';
+            previewDiv.innerHTML = '';
         }
 
         // Handle video file change
@@ -1868,17 +1870,39 @@
                 const url = URL.createObjectURL(file);
                 
                 previewDiv.innerHTML = `
-                    <div class="text-center">
+                    <div class="d-flex align-items-start gap-3 mt-2">
                         <video controls style="max-width: 300px; max-height: 200px;" class="border rounded">
                             <source src="${url}" type="${file.type}">
                             브라우저가 비디오를 지원하지 않습니다.
                         </video>
-                        <div class="small mt-1">${file.name} (${fileSize} MB)</div>
+                        <div class="flex-grow-1">
+                            <div class="mb-2">
+                                <small class="text-muted">${file.name} (${fileSize} MB)</small>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="clearVideoFile()">
+                                <i class="fas fa-times"></i> 취소
+                            </button>
+                        </div>
                     </div>
                 `;
             } else {
                 previewDiv.innerHTML = '';
             }
+        }
+        
+        // Clear video file selection
+        function clearVideoFile() {
+            const fileInput = document.getElementById('videoFile');
+            const previewDiv = document.getElementById('videoPreview');
+            
+            // Clean up object URL if exists
+            const video = previewDiv.querySelector('video source');
+            if (video && video.src) {
+                URL.revokeObjectURL(video.src);
+            }
+            
+            fileInput.value = '';
+            previewDiv.innerHTML = '';
         }
 
         // Add subtitle row
@@ -2843,13 +2867,21 @@
             
             // Extract book ID and title from path
             const pathParts = item.path.split('/').filter(p => p);
+            console.log('Debug - showFolderInfoPanel:', {
+                itemPath: item.path,
+                pathParts: pathParts,
+                itemName: item.name
+            });
+            
             if (pathParts.length < 2) {
                 Notification.error('폴더 정보를 가져올 수 없습니다.');
                 return;
             }
             
             const bookId = pathParts[0];
-            const title = pathParts[1];
+            const title = item.name; // Use actual folder name instead of path parsing
+            
+            console.log('Debug - Extracted values:', { bookId, title, originalPathTitle: pathParts[1] });
             
             // Update sidebar title
             document.getElementById('infoSidebarTitle').textContent = `폴더 정보 - ${title}`;
@@ -3024,9 +3056,16 @@
             const imageContent = document.getElementById('imageContent');
             imageContent.innerHTML = '<div class="spinner-border" role="status"><span class="visually-hidden">로딩중...</span></div>';
             
+            console.log('Debug - loadImageContent called with:', { bookId, title });
+            
             // Store current bookId and title for save operation
             imageContent.dataset.bookId = bookId;
             imageContent.dataset.title = title;
+            
+            console.log('Debug - Dataset set in loadImageContent:', {
+                bookId: imageContent.dataset.bookId,
+                title: imageContent.dataset.title
+            });
             
             // Find image files
             API.get(`/api/folders/${bookId}/${title}`)
@@ -3174,25 +3213,25 @@
                             
                             <!-- View Mode -->
                             <div id="subtitleViewMode">
-                                <div class="table-responsive" style="max-height: 400px;">
-                                    <table class="table table-striped table-hover">
+                                <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                                    <table class="table table-sm table-striped table-hover">
                                         <thead class="table-light sticky-top">
                                             <tr>
-                                                <th style="width: 20%; color: black;">페이지 번호</th>
-                                                <th style="width: 20%; color: black;">문장 번호</th>
-                                                <th style="width: 60%; color: black;">문장</th>
+                                                <th class="text-center" style="width: 12%; color: black; font-size: 13px;">페이지</th>
+                                                <th class="text-center" style="width: 12%; color: black; font-size: 13px;">문장</th>
+                                                <th style="width: 76%; color: black; font-size: 13px; padding-left: 15px;">텍스트</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             ${subtitleData.map((item, index) => `
                                                 <tr>
                                                     <td class="text-center">
-                                                        <span class="badge bg-primary fs-6">${item.page_num || 'N/A'}</span>
+                                                        <span class="badge bg-primary">${item.page_num || 'N/A'}</span>
                                                     </td>
                                                     <td class="text-center">
-                                                        <span class="badge bg-secondary fs-6">${item.sentence_num || 'N/A'}</span>
+                                                        <span class="badge bg-secondary">${item.sentence_num || 'N/A'}</span>
                                                     </td>
-                                                    <td class="text-start">${item.text || ''}</td>
+                                                    <td class="text-start" style="font-size: 14px; line-height: 1.5;">${item.text || ''}</td>
                                                 </tr>
                                             `).join('')}
                                         </tbody>
@@ -3206,19 +3245,19 @@
                             <!-- Edit Mode (Hidden by default) -->
                             <div id="subtitleEditMode" style="display: none;">
                                 <div class="mb-3">
-                                    <label class="form-label">자막 데이터 (JSON)</label>
-                                    <textarea class="form-control" id="subtitleJsonEditor" rows="15" placeholder='예: [{"page_num": 1, "sentence_num": 1, "text": "Amazing Animals"}]'>${JSON.stringify(subtitleData, null, 2)}</textarea>
-                                    <div class="form-text">JSON 배열 형태로 입력해주세요. page_num, sentence_num, text 필드가 필요합니다.</div>
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label class="form-label mb-0">자막 목록</label>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addSubtitleItem()">
+                                            <i class="fas fa-plus"></i> 자막 추가
+                                        </button>
+                                    </div>
+                                    <div id="subtitleItemsList" class="border rounded p-3" style="max-height: 500px; overflow-y: auto;">
+                                        <!-- Subtitle items will be populated here -->
+                                    </div>
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="formatSubtitleJson()">
-                                        <i class="fas fa-magic"></i> JSON 포맷팅
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-info" onclick="validateSubtitleJson()">
-                                        <i class="fas fa-check"></i> JSON 검증
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-secondary ms-3" onclick="cancelSubtitleEdit()">
+                                    <button type="button" class="btn btn-sm btn-secondary" onclick="cancelSubtitleEdit()">
                                         <i class="fas fa-times"></i> 취소
                                     </button>
                                     <button type="button" class="btn btn-sm btn-success ms-2" onclick="saveSubtitleChanges()">
@@ -3306,25 +3345,19 @@
                         
                         <div id="subtitleEditMode">
                             <div class="mb-3">
-                                <label class="form-label">자막 데이터 (JSON)</label>
-                                <textarea class="form-control" id="subtitleJsonEditor" rows="15" placeholder='예: [{"page_num": 1, "sentence_num": 1, "text": "Amazing Animals"}]'>[
-  {
-    "page_num": 1,
-    "sentence_num": 1,
-    "text": ""
-  }
-]</textarea>
-                                <div class="form-text">JSON 배열 형태로 입력해주세요. page_num, sentence_num, text 필드가 필요합니다.</div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <label class="form-label mb-0">자막 목록</label>
+                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="addSubtitleItem()">
+                                        <i class="fas fa-plus"></i> 자막 추가
+                                    </button>
+                                </div>
+                                <div id="subtitleItemsList" class="border rounded p-3" style="max-height: 500px; overflow-y: auto;">
+                                    <!-- Subtitle items will be added here -->
+                                </div>
                             </div>
                             
                             <div class="mb-3">
-                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="formatSubtitleJson()">
-                                    <i class="fas fa-magic"></i> JSON 포맷팅
-                                </button>
-                                <button type="button" class="btn btn-sm btn-outline-info" onclick="validateSubtitleJson()">
-                                    <i class="fas fa-check"></i> JSON 검증
-                                </button>
-                                <button type="button" class="btn btn-sm btn-secondary ms-3" onclick="cancelSubtitleEdit()">
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="cancelSubtitleEdit()">
                                     <i class="fas fa-times"></i> 취소
                                 </button>
                                 <button type="button" class="btn btn-sm btn-success ms-2" onclick="saveSubtitleChanges()">
@@ -3338,6 +3371,9 @@
                 `;
                 
                 subtitleContent.innerHTML = newSubtitleHtml;
+                
+                // Add initial subtitle item
+                addSubtitleItem();
             } else {
                 // Switch to edit mode
                 const viewMode = document.getElementById('subtitleViewMode');
@@ -3347,6 +3383,9 @@
                 if (viewMode) viewMode.style.display = 'none';
                 if (editMode) editMode.style.display = 'block';
                 if (editBtn) editBtn.style.display = 'none';
+                
+                // Load existing subtitle data into form
+                loadExistingSubtitleData();
             }
         }
         
@@ -3360,46 +3399,89 @@
             loadSubtitleContent(bookId, title);
         }
         
-        // Format subtitle JSON
-        function formatSubtitleJson() {
-            const textarea = document.getElementById('subtitleJsonEditor');
-            if (!textarea) return;
+        // Add new subtitle item
+        function addSubtitleItem(pageNum = 1, sentenceNum = 1, text = '') {
+            const subtitlesList = document.getElementById('subtitleItemsList');
+            if (!subtitlesList) return;
             
-            try {
-                const json = JSON.parse(textarea.value);
-                textarea.value = JSON.stringify(json, null, 2);
-                showSubtitleValidation('JSON 포맷팅 완료!', 'success');
-            } catch (e) {
-                showSubtitleValidation('잘못된 JSON 형식입니다: ' + e.message, 'danger');
+            const itemId = `subtitle-item-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+            
+            const itemHtml = `
+                <div class="subtitle-item border rounded p-3 mb-2" id="${itemId}">
+                    <div class="row g-3 align-items-start">
+                        <div class="col-lg-2 col-md-3">
+                            <label class="form-label small mb-1">페이지</label>
+                            <input type="number" class="form-control form-control-sm page-num" value="${pageNum}" min="1" step="1">
+                        </div>
+                        <div class="col-lg-2 col-md-3">
+                            <label class="form-label small mb-1">문장</label>
+                            <input type="number" class="form-control form-control-sm sentence-num" value="${sentenceNum}" min="1" step="1">
+                        </div>
+                        <div class="col-lg-7 col-md-5">
+                            <label class="form-label small mb-1">텍스트</label>
+                            <textarea class="form-control form-control-sm subtitle-text" rows="3" placeholder="자막 텍스트를 입력하세요" style="resize: vertical; line-height: 1.5;">${text}</textarea>
+                        </div>
+                        <div class="col-lg-1 col-md-1 d-flex align-items-end">
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeSubtitleItem('${itemId}')" title="삭제">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            subtitlesList.insertAdjacentHTML('beforeend', itemHtml);
+        }
+        
+        // Remove subtitle item
+        function removeSubtitleItem(itemId) {
+            const item = document.getElementById(itemId);
+            if (item) {
+                item.remove();
             }
         }
         
-        // Validate subtitle JSON
-        function validateSubtitleJson() {
-            const textarea = document.getElementById('subtitleJsonEditor');
-            if (!textarea) return;
+        // Load existing subtitle data into form
+        function loadExistingSubtitleData() {
+            const subtitleContent = document.getElementById('subtitleContent');
+            const bookId = subtitleContent.dataset.bookId;
+            const title = subtitleContent.dataset.title;
             
-            try {
-                const json = JSON.parse(textarea.value);
-                
-                if (!Array.isArray(json)) {
-                    throw new Error('자막 데이터는 배열이어야 합니다');
-                }
-                
-                let hasErrors = false;
-                json.forEach((item, index) => {
-                    if (!item.hasOwnProperty('page_num') || !item.hasOwnProperty('sentence_num') || !item.hasOwnProperty('text')) {
-                        hasErrors = true;
-                        throw new Error(`항목 ${index + 1}: page_num, sentence_num, text 필드가 필요합니다`);
-                    }
-                });
-                
-                if (!hasErrors) {
-                    showSubtitleValidation(`검증 성공! ${json.length}개의 자막 항목이 유효합니다.`, 'success');
-                }
-            } catch (e) {
-                showSubtitleValidation('검증 실패: ' + e.message, 'danger');
+            // Clear existing items
+            const subtitlesList = document.getElementById('subtitleItemsList');
+            if (subtitlesList) {
+                subtitlesList.innerHTML = '';
             }
+            
+            // Try to get subtitle data from API
+            API.get(`/api/subtitle/${bookId}/${title}`)
+                .then(response => {
+                    if (response.success && response.data && Array.isArray(response.data)) {
+                        const subtitleData = response.data;
+                        
+                        if (subtitleData.length > 0) {
+                            // Load existing subtitle items
+                            subtitleData.forEach(item => {
+                                addSubtitleItem(
+                                    item.page_num || 1, 
+                                    item.sentence_num || 1, 
+                                    item.text || ''
+                                );
+                            });
+                        } else {
+                            // No subtitle data, add one empty item
+                            addSubtitleItem();
+                        }
+                    } else {
+                        // No subtitle file found, add one empty item
+                        addSubtitleItem();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading subtitle data:', error);
+                    // Add one empty item if loading fails
+                    addSubtitleItem();
+                });
         }
         
         // Show validation message
@@ -3418,10 +3500,8 @@
         
         // Save subtitle changes
         async function saveSubtitleChanges() {
-            const textarea = document.getElementById('subtitleJsonEditor');
             const subtitleContent = document.getElementById('subtitleContent');
-            
-            if (!textarea || !subtitleContent) return;
+            if (!subtitleContent) return;
             
             const bookId = subtitleContent.dataset.bookId;
             const title = subtitleContent.dataset.title;
@@ -3432,16 +3512,23 @@
                 bookId,
                 title,
                 subtitlePath,
-                subtitleFilename,
-                datasetPath: subtitleContent.dataset.subtitlePath
+                subtitleFilename
             });
             
             try {
-                // Validate JSON
-                const subtitleData = JSON.parse(textarea.value);
+                // Collect data from form
+                const subtitleData = collectSubtitleData();
                 
-                if (!Array.isArray(subtitleData)) {
-                    throw new Error('자막 데이터는 배열이어야 합니다');
+                if (!subtitleData || subtitleData.length === 0) {
+                    throw new Error('자막 데이터가 없습니다');
+                }
+                
+                // Validate data
+                for (let i = 0; i < subtitleData.length; i++) {
+                    const item = subtitleData[i];
+                    if (!item.page_num || !item.sentence_num || !item.text.trim()) {
+                        throw new Error(`자막 항목 ${i + 1}: 페이지 번호, 문장 번호, 텍스트를 모두 입력해주세요`);
+                    }
                 }
                 
                 // Show loading state
@@ -3484,6 +3571,39 @@
             }
         }
         
+        // Collect subtitle data from form
+        function collectSubtitleData() {
+            const subtitlesList = document.getElementById('subtitleItemsList');
+            if (!subtitlesList) return [];
+            
+            const items = subtitlesList.querySelectorAll('.subtitle-item');
+            const subtitleData = [];
+            
+            items.forEach(item => {
+                const pageNum = parseInt(item.querySelector('.page-num').value) || 1;
+                const sentenceNum = parseInt(item.querySelector('.sentence-num').value) || 1;
+                const text = item.querySelector('.subtitle-text').value.trim();
+                
+                if (text) { // Only include items with text
+                    subtitleData.push({
+                        page_num: pageNum,
+                        sentence_num: sentenceNum,
+                        text: text
+                    });
+                }
+            });
+            
+            // Sort by page_num, then by sentence_num
+            subtitleData.sort((a, b) => {
+                if (a.page_num !== b.page_num) {
+                    return a.page_num - b.page_num;
+                }
+                return a.sentence_num - b.sentence_num;
+            });
+            
+            return subtitleData;
+        }
+        
         // Image edit functions
         function enableImageEdit(isNew = false) {
             const imageContent = document.getElementById('imageContent');
@@ -3492,6 +3612,10 @@
                 // Create new image editor - we'll determine filename when file is selected
                 const bookId = imageContent.dataset.bookId;
                 const title = imageContent.dataset.title;
+                
+                // Clear any existing fileName dataset for new uploads
+                delete imageContent.dataset.fileName;
+                console.log('Debug - Cleared fileName dataset for new image upload');
                 
                 imageContent.innerHTML = `
                     <div class="image-editor">
@@ -3568,17 +3692,33 @@
             const bookId = imageContent.dataset.bookId;
             const title = imageContent.dataset.title;
             
+            console.log('Debug - saveImageChanges datasets:', {
+                bookId: imageContent.dataset.bookId,
+                title: imageContent.dataset.title,
+                fileName: imageContent.dataset.fileName,
+                allDatasets: imageContent.dataset
+            });
+            
             // Determine filename based on whether this is a new upload or existing file edit
             let targetFileName;
             if (imageContent.dataset.fileName) {
                 // Editing existing file - keep original filename
                 targetFileName = imageContent.dataset.fileName;
+                console.log('Debug - Using existing fileName:', targetFileName);
             } else {
                 // New upload - use title as filename with original file extension
                 const fileExtension = file.name.split('.').pop().toLowerCase();
                 targetFileName = `${title}.${fileExtension}`;
+                console.log('Debug - Creating new fileName:', {
+                    originalFileName: file.name,
+                    fileExtension,
+                    title,
+                    targetFileName
+                });
             }
             const imagePath = `${bookId}/${title}/${targetFileName}`;
+            
+            console.log('Debug - Final path:', imagePath);
             
             console.log('Debug - Saving image:', {
                 bookId,
@@ -3617,12 +3757,10 @@
                 const result = await response.json();
                 
                 if (result.success) {
-                    showImageValidation('이미지가 성공적으로 저장되었습니다!', 'success');
+                    showImageValidation('이미지가 성공적으로 저장되었습니다! 파일 동기화 중...', 'success');
                     
-                    // Wait a moment then reload the image content
-                    setTimeout(() => {
-                        loadImageContent(bookId, title);
-                    }, 1500);
+                    // Start auto-sync process
+                    startAutoSyncAfterUpload(bookId, title, targetFileName);
                 } else {
                     throw new Error(result.error || '저장 실패');
                 }
@@ -3630,6 +3768,91 @@
             } catch (e) {
                 showImageValidation('저장 실패: ' + e.message, 'danger');
             }
+        }
+        
+        // Auto-sync after image upload
+        async function startAutoSyncAfterUpload(bookId, title, expectedFileName) {
+            let attempts = 0;
+            const maxAttempts = 5;
+            const checkInterval = 2000; // 2 seconds
+            
+            console.log('Debug - Starting auto-sync for file:', expectedFileName);
+            
+            const checkFileExists = async () => {
+                try {
+                    attempts++;
+                    console.log(`Debug - Sync attempt ${attempts}/${maxAttempts}`);
+                    
+                    showImageValidation(`파일 동기화 확인 중... (${attempts}/${maxAttempts})`, 'info');
+                    
+                    // Check if file exists in folder
+                    const response = await API.get(`/api/folders/${bookId}/${title}`);
+                    const imageFiles = response.items.filter(item => 
+                        item.item_type === 'file' && 
+                        item.name.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|webp)$/) &&
+                        item.name === expectedFileName
+                    );
+                    
+                    if (imageFiles.length > 0) {
+                        // File found! Success
+                        console.log('Debug - File sync successful:', expectedFileName);
+                        showImageValidation('파일 동기화 완료! 이미지를 새로고침합니다.', 'success');
+                        
+                        setTimeout(() => {
+                            loadImageContent(bookId, title);
+                            refreshAssets(); // Also refresh the main view
+                        }, 1000);
+                        
+                        return true; // Success
+                    } else if (attempts >= maxAttempts) {
+                        // Max attempts reached
+                        console.log('Debug - File sync failed after max attempts');
+                        showImageValidation(
+                            `파일 동기화에 시간이 걸리고 있습니다. <button type="button" class="btn btn-sm btn-primary ms-2" onclick="manualRefreshAfterSync('${bookId}', '${title}')">새로고침 버튼 누르기</button>`, 
+                            'warning'
+                        );
+                        return false; // Failed
+                    } else {
+                        // Try again after interval
+                        setTimeout(checkFileExists, checkInterval);
+                        return null; // Continue
+                    }
+                    
+                } catch (error) {
+                    console.error('Debug - Sync check error:', error);
+                    if (attempts >= maxAttempts) {
+                        showImageValidation(
+                            `동기화 확인 중 오류가 발생했습니다. <button type="button" class="btn btn-sm btn-primary ms-2" onclick="manualRefreshAfterSync('${bookId}', '${title}')">새로고침 버튼 누르기</button>`, 
+                            'warning'
+                        );
+                        return false;
+                    } else {
+                        setTimeout(checkFileExists, checkInterval);
+                        return null;
+                    }
+                }
+            };
+            
+            // Start checking
+            checkFileExists();
+        }
+        
+        // Manual refresh function for when auto-sync fails
+        function manualRefreshAfterSync(bookId, title) {
+            showImageValidation('수동 새로고침 중...', 'info');
+            
+            // Clear cache and refresh
+            clearAllCache()
+                .then(() => {
+                    loadAssets(); // Refresh main view
+                    loadImageContent(bookId, title); // Refresh image content
+                    showImageValidation('새로고침 완료!', 'success');
+                })
+                .catch(() => {
+                    loadAssets();
+                    loadImageContent(bookId, title);
+                    showImageValidation('새로고침 완료!', 'success');
+                });
         }
         
         // Video edit functions
