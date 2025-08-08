@@ -285,12 +285,14 @@ async fn build_folder_structure(app_state: &AppState, target_path: &str) -> Resu
         let path_parts: Vec<&str> = normalized_path.split('/').collect();
         
         if path_parts.len() == 1 {
-            // 교재ID 레벨: 해당 교재의 모든 제목 폴더 표시 - 최적화된 방법 사용
+            // 교재ID 레벨: 해당 교재의 모든 제목 폴더와 교재 레벨 파일들 표시
             let curriculum_id = path_parts[0];
+            
+            // 1. 폴더 구조 가져오기
             let folder_names = app_state.file_service.get_folder_structure(curriculum_id).await
                 .map_err(|e| format!("Failed to get folder structure: {}", e))?;
             
-            let folder_items: Vec<FolderItem> = folder_names.into_iter()
+            let mut all_items: Vec<FolderItem> = folder_names.into_iter()
                 .map(|folder_name| {
                     FolderItem {
                         name: folder_name.clone(),
@@ -300,18 +302,63 @@ async fn build_folder_structure(app_state: &AppState, target_path: &str) -> Resu
                         file_type: None,
                         url: None,
                         modified_at: None,
-                        children_count: None, // 정확한 개수는 생략하여 성능 향상
+                        children_count: None,
                     }
                 })
                 .collect();
             
-            // 이미 get_folder_structure에서 정렬됨
+            // 2. 교재 레벨의 파일들도 가져오기 (예: U2R_cover.png 등)
+            match app_state.file_service.get_r2_folder_files(&format!("{}/", curriculum_id)).await {
+                Ok(folder_result) => {
+                    let curriculum_files: Vec<FolderItem> = folder_result.into_iter()
+                        .filter_map(|item| {
+                            // 교재 레벨 파일만 선택 (하위 폴더의 파일 제외)
+                            let file_path_parts: Vec<&str> = item.key.split('/').collect();
+                            if file_path_parts.len() == 2 && file_path_parts[0] == curriculum_id {
+                                let filename = item.value.file
+                                    .rsplit('/')
+                                    .next()
+                                    .unwrap_or(&item.value.file)
+                                    .to_string();
+                                let file_type = get_file_type(&filename);
+                                
+                                Some(FolderItem {
+                                    name: filename,
+                                    path: item.key.clone(),
+                                    item_type: "file".to_string(),
+                                    size: Some(item.value.size),
+                                    file_type: Some(file_type),
+                                    url: Some(format!("https://reengki-assets-r2-worker.reengkigo.workers.dev/content/{}/{}", curriculum_id, item.key.split('/').last().unwrap_or(&item.key))),
+                                    modified_at: Some(item.value.modified_date),
+                                    children_count: None,
+                                })
+                            } else {
+                                None
+                            }
+                        })
+                        .collect();
+                    
+                    all_items.extend(curriculum_files);
+                }
+                Err(e) => {
+                    info!("No files found at curriculum level for {}: {}", curriculum_id, e);
+                }
+            }
+            
+            // 정렬: 폴더 먼저, 그 다음 파일 (이름순)
+            all_items.sort_by(|a, b| {
+                match (a.item_type.as_str(), b.item_type.as_str()) {
+                    ("folder", "file") => std::cmp::Ordering::Less,
+                    ("file", "folder") => std::cmp::Ordering::Greater,
+                    _ => a.name.cmp(&b.name),
+                }
+            });
             
             let breadcrumbs = build_breadcrumbs(normalized_path);
             
             Ok(FolderContentsResponse {
                 current_path: normalized_path.to_string(),
-                items: folder_items,
+                items: all_items,
                 breadcrumbs,
             })
         } else {
