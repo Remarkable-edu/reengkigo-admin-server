@@ -1,4 +1,5 @@
 /target
 /asset
 /.claude
-
+doc
+.DS_Store

@@ -322,7 +322,12 @@ async fn build_folder_structure(app_state: &AppState, target_path: &str) -> Resu
                 Ok(folder_result) => {
                     let mut file_items: Vec<FolderItem> = folder_result.into_iter()
                         .map(|item| {
-                            let filename = item.value.original_file;
+                            // item.value.file에서 마지막 '/' 이후의 파일명만 추출
+                            let filename = item.value.file
+                                .rsplit('/')
+                                .next()
+                                .unwrap_or(&item.value.file)
+                                .to_string();
                             let file_type = get_file_type(&filename);
                             
                             FolderItem {
