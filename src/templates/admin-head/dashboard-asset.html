@@ -637,38 +637,46 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="coverImageUploadForm">
-                        <input type="hidden" id="coverBookId" />
-                        
-                        <div class="mb-3">
-                            <label for="coverImageInput" class="form-label">커버 이미지 선택 <span class="text-danger">*</span></label>
-                            <input type="file" class="form-control" id="coverImageInput" accept="image/*" required onchange="handleCoverImageSelect()">
-                            <div class="form-text">
-                                <i class="fas fa-info-circle"></i> 
-                                JPG, PNG 형식을 지원합니다. 파일명은 자동으로 <strong id="coverFileNamePreview">{교재ID}_cover.png</strong>로 변경됩니다.
-                            </div>
+                    <input type="hidden" id="coverBookId" />
+                    
+                    <div class="mb-3">
+                        <label for="coverImageInput" class="form-label">커버 이미지 선택 <span class="text-danger">*</span></label>
+                        <input type="file" class="form-control" id="coverImageInput" accept="image/*" onchange="handleCoverImageSelect()">
+                        <div class="form-text">
+                            <i class="fas fa-info-circle"></i> 
+                            JPG, PNG 형식을 지원합니다. 파일명은 자동으로 <strong id="coverFileNamePreview">{교재ID}_cover.png</strong>로 변경됩니다.
                         </div>
-                        
-                        <div id="coverImagePreviewDiv" class="mt-3" style="display: none;">
-                            <h6>미리보기</h6>
-                            <img id="coverImagePreviewImg" src="" alt="커버 이미지 미리보기" style="max-width: 100%; max-height: 300px; object-fit: contain;" class="border rounded">
-                        </div>
-                        
-                        <!-- Upload Progress Indicator -->
-                        <div id="coverUploadProgressSection" style="display: none;">
-                            <div class="border rounded p-3 mt-3">
-                                <h6 class="mb-3">업로드 진행 상황</h6>
-                                <div class="progress mb-2" style="height: 25px;">
-                                    <div id="coverUploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">
-                                        <span id="coverUploadProgressText">0%</span>
-                                    </div>
-                                </div>
-                                <div class="text-center">
-                                    <small id="coverUploadStatus" class="text-muted">업로드 준비 중...</small>
+                    </div>
+                    
+                    <div id="coverImagePreviewDiv" class="mt-3" style="display: none;">
+                        <h6>미리보기</h6>
+                        <img id="coverImagePreviewImg" src="" alt="커버 이미지 미리보기" style="max-width: 100%; max-height: 300px; object-fit: contain;" class="border rounded">
+                    </div>
+                    
+                    <!-- Upload Progress Indicator -->
+                    <div id="coverUploadProgressSection" style="display: none;">
+                        <div class="border rounded p-3 mt-3">
+                            <h6 class="mb-3">업로드 진행 상황</h6>
+                            <div class="progress mb-2" style="height: 25px;">
+                                <div id="coverUploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;">
+                                    <span id="coverUploadProgressText">0%</span>
                                 </div>
                             </div>
+                            <div class="text-center">
+                                <small id="coverUploadStatus" class="text-muted">업로드 준비 중...</small>
+                            </div>
                         </div>
-                    </form>
+                    </div>
+                    
+                    <!-- Sync Status Section -->
+                    <div id="coverSyncStatusSection" style="display: none;">
+                        <div class="border rounded p-3 mt-3">
+                            <h6 class="mb-3">파일 동기화</h6>
+                            <div id="coverSyncStatus" class="alert alert-info">
+                                파일 동기화 중...
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
@@ -1120,7 +1128,10 @@
             if (item.item_type === 'file') {
                 // 경로에서 교재 ID와 제목 추출
                 const pathParts = item.path.split('/');
+                let targetUrl;
+                
                 if (pathParts.length >= 3) {
+                    // 세 번째 뎁스: 교재ID/제목/파일
                     const bookId = pathParts[0];
                     const title = pathParts[1];
                     const fileName = item.name;
@@ -1128,7 +1139,6 @@
                     // 영상 파일인지 확인
                     const isVideoFile = item.name.toLowerCase().match(/\.(mp4|mov|avi|mkv|wmv|flv|webm)$/);
                     
-                    let targetUrl;
                     if (isVideoFile) {
                         // 영상 파일은 player 경로 사용
                         targetUrl = `https://reengki-assets-r2-worker.reengkigo.workers.dev/player/${bookId}/${title}/${fileName}`;
@@ -1136,10 +1146,20 @@
                         // 기타 파일은 content 경로 사용
                         targetUrl = `https://reengki-assets-r2-worker.reengkigo.workers.dev/content/${bookId}/${title}/${fileName}`;
                     }
+                } else if (pathParts.length == 2) {
+                    // 두 번째 뎁스: 교재ID/파일 (예: U2R/U2R_cover.png)
+                    const bookId = pathParts[0];
+                    const fileName = item.name;
                     
-                    window.open(targetUrl, '_blank');
+                    // 교재 레벨 파일은 content 경로로 바로 접근
+                    targetUrl = `https://reengki-assets-r2-worker.reengkigo.workers.dev/content/${bookId}/${fileName}`;
+                } else {
+                    console.warn('Unexpected file path structure:', item.path);
                     return;
                 }
+                
+                window.open(targetUrl, '_blank');
+                return;
             }
             
             // 기존 선택 로직 (폴더나 영상 파일의 경우)
@@ -1430,7 +1450,7 @@
 
         function filterItems() {
             const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
-            const folderItems = document.querySelectorAll('.folder-item');
+            const folderItems = document.querySelectorAll('.folder-item, .file-item');
             const clearBtn = document.getElementById('clearSearchBtn');
             let visibleCount = 0;
             
@@ -1803,15 +1823,27 @@
             // 커버 이미지 추가 메뉴 아이템 (두번째 뎁스에서만)
             const pathDepth = currentPath ? currentPath.split('/').filter(p => p).length : 0;
             if (pathDepth === 1) {
-                const coverItem = document.createElement('div');
-                coverItem.className = 'context-menu-item';
-                coverItem.innerHTML = '<i class="fas fa-image text-success me-2"></i>커버 이미지 추가';
-                coverItem.onclick = () => {
-                    menu.remove();
-                    const bookId = currentPath.split('/').filter(p => p)[0];
-                    showCoverImageUploadModal(bookId);
-                };
-                menu.appendChild(coverItem);
+                const bookId = currentPath.split('/').filter(p => p)[0];
+                const coverImageName = `${bookId}_cover.png`;
+                
+                // 현재 폴더의 파일들 중에 커버 이미지가 있는지 확인
+                const folderItems = document.querySelectorAll('.file-item[data-type="file"]');
+                const hasCoverImage = Array.from(folderItems).some(item => {
+                    const itemName = item.querySelector('.item-name')?.textContent?.trim();
+                    return itemName === coverImageName;
+                });
+                
+                // 커버 이미지가 없을 때만 '커버 이미지 추가' 메뉴 표시
+                if (!hasCoverImage) {
+                    const coverItem = document.createElement('div');
+                    coverItem.className = 'context-menu-item';
+                    coverItem.innerHTML = '<i class="fas fa-image text-success me-2"></i>커버 이미지 추가';
+                    coverItem.onclick = () => {
+                        menu.remove();
+                        showCoverImageUploadModal(bookId);
+                    };
+                    menu.appendChild(coverItem);
+                }
             }
 
             // 에셋 추가 메뉴 아이템
@@ -2312,6 +2344,125 @@
 
         // Import modal is now handled by Bootstrap data attributes
 
+        // Show cover sync status in modal
+        function showCoverSyncStatus(message, type) {
+            const statusDiv = document.getElementById('coverSyncStatus');
+            if (!statusDiv) return;
+            
+            statusDiv.className = `alert alert-${type}`;
+            statusDiv.innerHTML = message;
+        }
+        
+        // Auto-sync after cover image upload
+        async function startCoverImageAutoSync(bookId, expectedFileName) {
+            let attempts = 0;
+            const maxAttempts = 5;
+            const checkInterval = 2000; // 2 seconds
+            
+            const checkFileExists = async () => {
+                try {
+                    attempts++;
+                    console.log(`Cover image sync attempt ${attempts}/${maxAttempts}`);
+                    
+                    showCoverSyncStatus(`파일 동기화 확인 중... (${attempts}/${maxAttempts})`, 'info');
+                    
+                    // Clear cache first
+                    await clearAllCache();
+                    
+                    // Check if file exists in folder
+                    const response = await fetch(`/api/folders/${bookId}`);
+                    const folderData = await response.json();
+                    
+                    if (folderData.items) {
+                        const coverFile = folderData.items.find(item => 
+                            item.item_type === 'file' && 
+                            (item.name.toLowerCase().includes('cover') && 
+                             (item.name.toLowerCase().includes('.png') || item.name.toLowerCase().includes('.jpg')))
+                        );
+                        
+                        if (coverFile) {
+                            // File found! Success
+                            showCoverSyncStatus('파일 동기화 완료! 폴더를 새로고침합니다.', 'success');
+                            
+                            setTimeout(() => {
+                                loadFolderContents(currentPath);
+                                
+                                // Close modal after success
+                                const modalElement = document.getElementById('coverImageUploadModal');
+                                const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                                if (modalInstance) {
+                                    modalInstance.hide();
+                                }
+                            }, 1500);
+                            
+                            return true; // Success
+                        }
+                    }
+                    
+                    if (attempts >= maxAttempts) {
+                        // Max attempts reached - provide refresh button
+                        showCoverSyncStatus(
+                            `파일 동기화에 시간이 걸리고 있습니다. <button type="button" class="btn btn-sm btn-primary ms-2" onclick="manualRefreshAfterCoverUpload()">새로고침</button>`, 
+                            'warning'
+                        );
+                        return false; // Failed
+                    } else {
+                        // Try again after interval
+                        setTimeout(checkFileExists, checkInterval);
+                        return null; // Continue
+                    }
+                    
+                } catch (error) {
+                    console.error('Cover sync check error:', error);
+                    if (attempts >= maxAttempts) {
+                        showCoverSyncStatus(
+                            `동기화 확인 중 오류가 발생했습니다. <button type="button" class="btn btn-sm btn-primary ms-2" onclick="manualRefreshAfterCoverUpload()">새로고침</button>`, 
+                            'warning'
+                        );
+                        return false;
+                    } else {
+                        setTimeout(checkFileExists, checkInterval);
+                        return null;
+                    }
+                }
+            };
+            
+            // Start checking
+            checkFileExists();
+        }
+        
+        // Manual refresh function for cover upload
+        function manualRefreshAfterCoverUpload() {
+            showCoverSyncStatus('수동 새로고침 중...', 'info');
+            
+            // Clear cache and refresh
+            clearAllCache()
+                .then(() => {
+                    loadFolderContents(currentPath);
+                    showCoverSyncStatus('새로고침 완료!', 'success');
+                    
+                    setTimeout(() => {
+                        const modalElement = document.getElementById('coverImageUploadModal');
+                        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                        if (modalInstance) {
+                            modalInstance.hide();
+                        }
+                    }, 1500);
+                })
+                .catch(() => {
+                    loadFolderContents(currentPath);
+                    showCoverSyncStatus('새로고침 완료!', 'success');
+                    
+                    setTimeout(() => {
+                        const modalElement = document.getElementById('coverImageUploadModal');
+                        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                        if (modalInstance) {
+                            modalInstance.hide();
+                        }
+                    }, 1500);
+                });
+        }
+        
         function importAssets() {
             const fileInput = document.getElementById('jsonFile');
             const textInput = document.getElementById('jsonContent');
@@ -2361,27 +2512,138 @@
         }
 
         // Cover Image Upload Functions
+        window.uploadCoverImageHandler = null;
+        
         function showCoverImageUploadModal(bookId) {
             document.getElementById('coverBookId').value = bookId;
             document.getElementById('coverFileNamePreview').textContent = bookId + '_cover.png';
             
-            // Reset form
-            document.getElementById('coverImageUploadForm').reset();
+            // Reset elements
+            document.getElementById('coverImageInput').value = '';
             document.getElementById('coverImagePreviewDiv').style.display = 'none';
             document.getElementById('coverUploadProgressSection').style.display = 'none';
             
             const uploadBtn = document.getElementById('coverImageUploadBtn');
             uploadBtn.disabled = true;
             
-            // Remove existing event listeners and add new one
-            const newUploadBtn = uploadBtn.cloneNode(true);
-            uploadBtn.parentNode.replaceChild(newUploadBtn, uploadBtn);
+            // Remove old handler if exists
+            if (window.uploadCoverImageHandler) {
+                uploadBtn.removeEventListener('click', window.uploadCoverImageHandler);
+            }
             
-            newUploadBtn.addEventListener('click', function(e) {
+            // Create new handler
+            window.uploadCoverImageHandler = function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                uploadCoverImage();
-            });
+                e.stopImmediatePropagation();
+                console.log('Upload button clicked - handler');
+                
+                // Call upload function directly
+                const fileInput = document.getElementById('coverImageInput');
+                const bookId = document.getElementById('coverBookId').value;
+                
+                if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                    Notification.warning('커버 이미지를 선택해주세요');
+                    return false;
+                }
+                
+                const file = fileInput.files[0];
+                console.log('File selected:', file.name, 'Size:', file.size);
+                const formData = new FormData();
+                
+                // 파일명을 {교재ID}_cover.png로 설정
+                const extension = file.name.substring(file.name.lastIndexOf('.')) || '.png';
+                const coverFileName = bookId + '_cover' + extension;
+                
+                // FormData에 파일 추가
+                formData.append('file', file, coverFileName);
+                // full_path 파라미터 추가 (서버에서 요구함)
+                formData.append('full_path', bookId + '/' + coverFileName);
+                
+                // Progress elements
+                const progressSection = document.getElementById('coverUploadProgressSection');
+                const progressBar = document.getElementById('coverUploadProgressBar');
+                const progressText = document.getElementById('coverUploadProgressText');
+                const uploadStatus = document.getElementById('coverUploadStatus');
+                const uploadBtnElement = document.getElementById('coverImageUploadBtn');
+                
+                // Show progress
+                progressSection.style.display = 'block';
+                uploadBtnElement.disabled = true;
+                
+                // Create XMLHttpRequest for progress tracking
+                const xhr = new XMLHttpRequest();
+                
+                // Track upload progress
+                xhr.upload.addEventListener('progress', function(e) {
+                    if (e.lengthComputable) {
+                        const percentComplete = Math.round((e.loaded / e.total) * 100);
+                        progressBar.style.width = percentComplete + '%';
+                        progressText.textContent = percentComplete + '%';
+                        uploadStatus.textContent = `업로드 중... (${(e.loaded/1024/1024).toFixed(2)}MB / ${(e.total/1024/1024).toFixed(2)}MB)`;
+                    }
+                });
+                
+                // Handle completion
+                xhr.addEventListener('load', function() {
+                    if (xhr.status === 200 || xhr.status === 201) {
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            
+                            // Hide upload progress and show sync status
+                            document.getElementById('coverUploadProgressSection').style.display = 'none';
+                            document.getElementById('coverSyncStatusSection').style.display = 'block';
+                            
+                            showCoverSyncStatus('커버 이미지가 성공적으로 업로드되었습니다! 파일 동기화 중...', 'info');
+                            
+                            // Start auto-sync process
+                            const bookId = document.getElementById('coverBookId').value;
+                            const expectedFileName = `${bookId}_cover.png`;
+                            startCoverImageAutoSync(bookId, expectedFileName);
+                            
+                        } catch (error) {
+                            showCoverSyncStatus('업로드 예상치 못한 오류가 발생했습니다.', 'danger');
+                        }
+                    } else {
+                        document.getElementById('coverUploadProgressSection').style.display = 'none';
+                        document.getElementById('coverSyncStatusSection').style.display = 'block';
+                        showCoverSyncStatus('업로드 실패: ' + xhr.statusText, 'danger');
+                    }
+                    
+                    uploadBtnElement.disabled = false;
+                });
+                
+                // Handle errors
+                xhr.addEventListener('error', function() {
+                    document.getElementById('coverUploadProgressSection').style.display = 'none';
+                    document.getElementById('coverSyncStatusSection').style.display = 'block';
+                    showCoverSyncStatus('네트워크 오류가 발생했습니다.', 'danger');
+                    uploadBtnElement.disabled = false;
+                });
+                
+                // API endpoint for single file upload
+                xhr.open('POST', '/api/upload-file');
+                xhr.withCredentials = true;
+                
+                try {
+                    xhr.send(formData);
+                } catch (error) {
+                    Notification.error('업로드 요청 실패: ' + error.message);
+                    uploadBtnElement.disabled = false;
+                }
+                
+                return false;
+            };
+            
+            // Add new handler
+            uploadBtn.addEventListener('click', window.uploadCoverImageHandler);
+            
+            // Reset modal state when showing
+            document.getElementById('coverUploadProgressSection').style.display = 'none';
+            document.getElementById('coverSyncStatusSection').style.display = 'none';
+            document.getElementById('coverImagePreviewDiv').style.display = 'none';
+            document.getElementById('coverImageInput').value = '';
+            document.getElementById('coverImageUploadBtn').disabled = true;
             
             // Show modal
             const modal = new bootstrap.Modal(document.getElementById('coverImageUploadModal'), {
@@ -2415,97 +2677,47 @@
         }
 
         function uploadCoverImage() {
-            console.log('uploadCoverImage function called');
+            // This function is now handled inline in the event listener above
+            console.log('uploadCoverImage function called - deprecated');
+        }
+
+        // Refresh folder contents with retry logic (similar to image sync)
+        function refreshFolderContentsWithRetry(maxAttempts = 5, checkInterval = 2000) {
+            let attempts = 0;
             
-            const fileInput = document.getElementById('coverImageInput');
-            const bookId = document.getElementById('coverBookId').value;
-            
-            if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
-                Notification.warning('커버 이미지를 선택해주세요');
-                return;
-            }
-            
-            const file = fileInput.files[0];
-            console.log('File selected:', file.name, 'Size:', file.size);
-            const formData = new FormData();
-            
-            // 파일명을 {교재ID}_cover.png로 설정
-            const extension = file.name.substring(file.name.lastIndexOf('.')) || '.png';
-            const coverFileName = bookId + '_cover' + extension;
-            
-            // FormData에 파일 추가
-            formData.append('file', file, coverFileName);
-            // full_path 파라미터 추가 (서버에서 요구함)
-            formData.append('full_path', bookId + '/' + coverFileName);
-            
-            // Progress elements
-            const progressSection = document.getElementById('coverUploadProgressSection');
-            const progressBar = document.getElementById('coverUploadProgressBar');
-            const progressText = document.getElementById('coverUploadProgressText');
-            const uploadStatus = document.getElementById('coverUploadStatus');
-            const uploadBtn = document.getElementById('coverImageUploadBtn');
-            
-            // Show progress
-            progressSection.style.display = 'block';
-            uploadBtn.disabled = true;
-            
-            // Create XMLHttpRequest for progress tracking
-            const xhr = new XMLHttpRequest();
-            
-            // Track upload progress
-            xhr.upload.addEventListener('progress', function(e) {
-                if (e.lengthComputable) {
-                    const percentComplete = Math.round((e.loaded / e.total) * 100);
-                    progressBar.style.width = percentComplete + '%';
-                    progressText.textContent = percentComplete + '%';
-                    uploadStatus.textContent = `업로드 중... (${(e.loaded/1024/1024).toFixed(2)}MB / ${(e.total/1024/1024).toFixed(2)}MB)`;
-                }
-            });
-            
-            // Handle completion
-            xhr.addEventListener('load', function() {
-                if (xhr.status === 200 || xhr.status === 201) {
-                    try {
-                        const response = JSON.parse(xhr.responseText);
-                        Notification.success('커버 이미지가 성공적으로 업로드되었습니다!');
-                        
-                        // Hide modal
-                        const modalElement = document.getElementById('coverImageUploadModal');
-                        const modalInstance = bootstrap.Modal.getInstance(modalElement);
-                        if (modalInstance) {
-                            modalInstance.hide();
-                        }
-                        
-                        // Refresh folder contents
-                        setTimeout(() => {
-                            loadFolderContents(currentPath);
-                        }, 500);
-                    } catch (error) {
-                        Notification.error('응답 처리 중 오류가 발생했습니다');
-                    }
-                } else {
-                    Notification.error('업로드 실패: ' + xhr.statusText);
-                }
+            function doRefresh() {
+                attempts++;
+                console.log(`Refreshing folder contents - attempt ${attempts}/${maxAttempts}`);
                 
-                uploadBtn.disabled = false;
-            });
-            
-            // Handle errors
-            xhr.addEventListener('error', function() {
-                Notification.error('네트워크 오류가 발생했습니다');
-                uploadBtn.disabled = false;
-            });
-            
-            // API endpoint for single file upload
-            xhr.open('POST', '/api/upload-file');
-            xhr.withCredentials = true;
-            
-            try {
-                xhr.send(formData);
-            } catch (error) {
-                Notification.error('업로드 요청 실패: ' + error.message);
-                uploadBtn.disabled = false;
+                try {
+                    // Clear cache first
+                    clearAllCache()
+                        .then(() => {
+                            // Load folder contents
+                            loadFolderContents(currentPath);
+                        })
+                        .catch(error => {
+                            console.warn('Cache clear failed, refreshing anyway:', error);
+                            loadFolderContents(currentPath);
+                        });
+                    
+                    // Schedule next refresh if not the last attempt
+                    if (attempts < maxAttempts) {
+                        setTimeout(doRefresh, checkInterval);
+                    }
+                    
+                } catch (error) {
+                    console.error('Refresh error:', error);
+                    
+                    // Schedule next refresh if not the last attempt
+                    if (attempts < maxAttempts) {
+                        setTimeout(doRefresh, checkInterval);
+                    }
+                }
             }
+            
+            // Start the refresh cycle
+            doRefresh();
         }
 
         function exportAssets() {
@@ -2528,21 +2740,7 @@
                 });
         }
 
-        function uploadCoverImage() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    uploadFile(file, 'cover_image', function(response) {
-                        document.getElementById('coverImg').value = response.file_path;
-                        Notification.success('표지 이미지가 성공적으로 업로드되었습니다!');
-                    });
-                }
-            };
-            input.click();
-        }
+        // Removed duplicate uploadCoverImage function
 
         function uploadVideoImage() {
             const input = document.createElement('input');
