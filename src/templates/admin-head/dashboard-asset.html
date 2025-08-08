@@ -1191,7 +1191,7 @@
                     const bookId = pathParts[0];
                     // Remove .mp4 extension from filename for the title
                     const title = item.name.replace(/\.mp4$/i, '');
-                    const playerUrl = `https://reengki-assets-r2-worker.reengkigo.workers.dev/player/${bookId}/${title}/${title}`;
+                    const playerUrl = `https://reengki-assets-r2-worker.reengkigo.workers.dev/player/${bookId}/${title}/${title}.mp4`;
                     window.open(playerUrl, '_blank');
                 } else {
                     Notification.warning('MP4 파일의 경로가 올바르지 않습니다.');
@@ -1552,7 +1552,7 @@
                             if (pathParts.length >= 2) {
                                 const bookId = pathParts[0];
                                 const title = item.name.replace(/\.mp4$/i, '');
-                                const videoLink = `https://reengki-assets-r2-worker.reengkigo.workers.dev/player/${bookId}/${title}/${title}`;
+                                const videoLink = `https://reengki-assets-r2-worker.reengkigo.workers.dev/player/${bookId}/${title}/${title}.mp4`;
                                 
                                 videos.push({
                                     bookId: bookId,
