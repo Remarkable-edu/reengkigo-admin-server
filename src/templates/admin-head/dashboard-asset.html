@@ -134,30 +134,54 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 16px 8px; /* 패딩 증가로 우클릭 영역 확보 */
+            padding: 8px 4px; /* 패딩 감소 */
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s ease;
             text-decoration: none;
             color: inherit;
-            background: white;
+            background: transparent;
             border: 1px solid transparent;
-            min-height: 110px; /* 최소 높이 설정으로 클릭 영역 확보 */
+            min-height: 90px; /* 높이 조정 */
             position: relative; /* 컨텍스트 메뉴 위치 기준점 */
         }
         
-        .folder-item:hover, .file-item:hover {
-            background-color: #f8f9fa;
-            border-color: #dee2e6;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        /* 호버 영역을 아이콘과 텍스트 포함하도록 설정 */
+        .folder-item .hover-zone,
+        .file-item .hover-zone {
+            position: absolute;
+            top: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 8px); /* 좌우 여백 제외한 전체 너비 */
+            height: 70px; /* 아이콘(40px) + 텍스트 영역 포함 */
+            border-radius: 10px;
+            z-index: 0;
+            transition: all 0.15s ease;
+        }
+        
+        .folder-item:hover .hover-zone,
+        .file-item:hover .hover-zone {
+            background-color: rgba(0, 123, 255, 0.08); /* 살짝 파란빛 배경 */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .folder-item:hover,
+        .file-item:hover {
             text-decoration: none;
             color: inherit;
         }
         
         .folder-item.selected, .file-item.selected {
-            background-color: #e3f2fd;
-            border-color: #2196f3;
+            background-color: transparent;
+            border-color: transparent;
+        }
+        
+        /* 선택된 항목의 hover-zone 스타일 */
+        .folder-item.selected .hover-zone,
+        .file-item.selected .hover-zone {
+            background-color: rgba(33, 150, 243, 0.15); /* 선택 시 파란색 배경 */
+            border: 1px solid #2196f3;
         }
         
         .item-icon,
@@ -174,6 +198,8 @@
             height: 40px; /* 고정 높이 */
             width: 40px; /* 고정 너비 */
             margin: 0 auto 8px auto; /* 가운데 정렬 */
+            position: relative;
+            z-index: 1; /* hover-zone 위에 표시 */
         }
         
         /* 아이콘 내부 FontAwesome 아이콘들 */
@@ -197,6 +223,8 @@
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
+            position: relative;
+            z-index: 1; /* hover-zone 위에 표시 */
         }
         
         .item-details {
@@ -421,6 +449,9 @@
                     <h1 class="h2">에셋 관리</h1>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group me-2">
+                            <button type="button" class="btn btn-sm btn-outline-primary" id="addAssetBtn">
+                                <i class="fas fa-plus"></i> 에셋 추가
+                            </button>
                             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="refreshAssets()">
                                 <i class="fas fa-sync"></i> 새로고침
                             </button>
@@ -758,14 +789,40 @@
                     loadFolderContents(currentPath);
                 });
             
+            // 헤더의 에셋 추가 버튼 이벤트 리스너
+            const addAssetBtn = document.getElementById('addAssetBtn');
+            if (addAssetBtn) {
+                addAssetBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // 현재 경로 깊이 확인
+                    const pathDepth = currentPath ? currentPath.split('/').filter(p => p).length : 0;
+                    
+                    // 루트 레벨(depth 0) 또는 두 번째 레벨(depth 1)에서만 허용
+                    if (pathDepth === 0 || pathDepth === 1) {
+                        // 에셋 생성 모달 표시
+                        const modal = new bootstrap.Modal(document.getElementById('createAssetModal'));
+                        
+                        // 모달 내 경로 표시 업데이트
+                        const pathDisplayElement = document.getElementById('currentFolderPath');
+                        if (pathDisplayElement) {
+                            pathDisplayElement.textContent = currentPath || 'root';
+                        }
+                        
+                        modal.show();
+                    } else {
+                        alert('에셋은 루트 또는 첫 번째 하위 폴더에서만 추가할 수 있습니다.');
+                    }
+                });
+            }
             
             // Add context menu handler for root and second level
             const folderContents = document.getElementById('folderContents');
             if (folderContents) {
                 folderContents.addEventListener('contextmenu', function(e) {
-                    // Check if we clicked on empty space (not on an item)
-                    // Make sure we didn't click on a folder-item or its children
-                    if (!e.target.closest('.folder-item')) {
+                    // Check if we clicked on empty space or outside hover-zone
+                    // Allow context menu on folder/file items but outside hover-zone
+                    if (!e.target.closest('.hover-zone')) {
                         // Count path depth (empty = root, one slash = second level)
                         const pathDepth = currentPath ? currentPath.split('/').filter(p => p).length : 0;
                         
@@ -979,30 +1036,47 @@
                 : '';
             
             div.innerHTML = `
+                <div class="hover-zone"></div>
                 <div class="item-icon ${getIconClass(item)}">${icon}${playOverlay}</div>
                 <div class="item-name" title="${item.name}">${item.name}</div>
                 ${details ? `<div class="item-details">${details}</div>` : ''}
             `;
             
-            // 클릭 이벤트 - 이벤트 전파 방지
+            // hover-zone에 이벤트 리스너 추가
+            setTimeout(() => {
+                const hoverZone = div.querySelector('.hover-zone');
+                if (hoverZone) {
+                    // 클릭 이벤트 - hover-zone 클릭 시
+                    hoverZone.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleItemClick(item);
+                    });
+                    
+                    // 더블클릭 이벤트 - hover-zone 더블클릭 시
+                    hoverZone.addEventListener('dblclick', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleItemDoubleClick(item);
+                    });
+                    
+                    // 우클릭 컨텍스트 메뉴 - hover-zone 우클릭 시만 발생
+                    hoverZone.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleContextMenu(e, item);
+                    });
+                }
+            }, 0);
+            
+            // 전체 div에 대한 클릭은 선택만 처리
             div.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                handleItemClick(item);
-            });
-            
-            // 더블클릭 이벤트 - 이벤트 전파 방지
-            div.addEventListener('dblclick', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                handleItemDoubleClick(item);
-            });
-            
-            // 우클릭 컨텍스트 메뉴 - 이벤트 전파 방지
-            div.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                handleContextMenu(e, item);
+                // hover-zone이 아닌 영역 클릭 시에만
+                if (!e.target.closest('.hover-zone')) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleItemClick(item);
+                }
             });
             
             // 아이콘 및 하위 요소 클릭 방지 - 더 강화된 방법

@@ -1,0 +1,765 @@
+   Compiling reengkigo-admin-app v0.1.0 (/Users/gyujinkim/Desktop/reengkigo/asset-server/reengkigo-admin-server)
+warning: unused import: `auth::AuthMiddleware`
+ --> src/middleware/mod.rs:3:9
+  |
+3 | pub use auth::AuthMiddleware;
+  |         ^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: struct `DashboardService` is never constructed
+  --> src/services/dashboard.rs:20:12
+   |
+20 | pub struct DashboardService;
+   |            ^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: associated items `new`, `get_dashboard_stats`, and `get_system_health` are never used
+  --> src/services/dashboard.rs:23:12
+   |
+22 | impl DashboardService {
+   | --------------------- associated items in this implementation
+23 |     pub fn new() -> Self {
+   |            ^^^
+...
+27 |     pub async fn get_dashboard_stats(&self) -> Result<DashboardStats> {
+   |                  ^^^^^^^^^^^^^^^^^^^
+...
+47 |     pub async fn get_system_health(&self) -> Result<SystemHealth> {
+   |                  ^^^^^^^^^^^^^^^^^
+
+warning: methods `is_director` and `can_access_director` are never used
+  --> src/models/user.rs:39:12
+   |
+29 | impl AdminUser {
+   | -------------- methods in this implementation
+...
+39 |     pub fn is_director(&self) -> bool {
+   |            ^^^^^^^^^^^
+...
+55 |     pub fn can_access_director(&self) -> bool {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: fields `book_id` and `title` are never read
+   --> src/handlers/dashboard.rs:456:9
+    |
+455 | pub struct SubtitleRequest {
+    |            --------------- fields in this struct
+456 |     pub book_id: String,
+    |         ^^^^^^^
+457 |     pub title: String,
+    |         ^^^^^
+    |
+    = note: `SubtitleRequest` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `bucket` is never read
+  --> src/dto/file.rs:26:9
+   |
+25 | pub struct FileListQuery {
+   |            ------------- field in this struct
+26 |     pub bucket: String,
+   |         ^^^^^^
+   |
+   = note: `FileListQuery` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: associated functions `require_admin_role`, `require_director_role`, and `require_any_role` are never used
+   --> src/middleware/auth.rs:65:18
+    |
+16  | impl AuthMiddleware {
+    | ------------------- associated functions in this implementation
+...
+65  |     pub async fn require_admin_role(
+    |                  ^^^^^^^^^^^^^^^^^^
+...
+85  |     pub async fn require_director_role(
+    |                  ^^^^^^^^^^^^^^^^^^^^^
+...
+100 |     pub async fn require_any_role(
+    |                  ^^^^^^^^^^^^^^^^
+
+warning: function `create_forbidden_response` is never used
+   --> src/middleware/auth.rs:180:4
+    |
+180 | fn create_forbidden_response(request: &Request) -> Response {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `get_current_user` is never used
+   --> src/middleware/auth.rs:206:8
+    |
+206 | pub fn get_current_user(request: &Request) -> Option<&AdminUser> {
+    |        ^^^^^^^^^^^^^^^^
+
+warning: `reengkigo-admin-app` (bin "reengkigo-admin-app") generated 9 warnings (run `cargo fix --bin "reengkigo-admin-app"` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.09s
+     Running `target/debug/reengkigo-admin-app`
+[2m2025-08-08T05:23:45.021758Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m65:[0m Loading application configuration...
+[2m2025-08-08T05:23:45.023884Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m76:[0m Configuration loaded successfully
+[2m2025-08-08T05:23:45.023919Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m77:[0m name: "reengkigo-admin"
+[2m2025-08-08T05:23:45.023932Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m78:[0m External API: https://r2-api.reengki.com
+[2m2025-08-08T05:23:45.023944Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m79:[0m Bucket: reengki-archive
+[2m2025-08-08T05:23:45.030210Z[0m [32m INFO[0m [2mreengkigo_admin_app[0m[2m:[0m [2msrc/main.rs[0m[2m:[0m[2m93:[0m Starting server on 0.0.0.0:3000
+[2m2025-08-08T05:28:12.410603Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:12.410819Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:12.411764Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:12.411793Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:12.411817Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:12.442487Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:12.442626Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:12.442956Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:12.443007Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:12.443048Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:12.443242Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m651:[0m Clearing all cache
+[2m2025-08-08T05:28:12.443365Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m356:[0m All files cache cleared
+[2m2025-08-08T05:28:12.459564Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:12.459657Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:12.459945Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:12.459991Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:12.460092Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:12.460280Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m69:[0m Getting root folders
+[2m2025-08-08T05:28:12.460365Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m252:[0m Building folder structure for path: ''
+[2m2025-08-08T05:28:12.460398Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m310:[0m Getting folder structure for prefix: '' (from memory)
+[2m2025-08-08T05:28:12.460482Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m286:[0m Loading all files to cache from R2 Worker API
+[2m2025-08-08T05:28:12.462266Z[0m [34mDEBUG[0m [2mreqwest::connect[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-0.11.27/src/connect.rs[0m[2m:[0m[2m449:[0m starting new connection: https://reengki-assets-r2-worker.reengkigo.workers.dev/    
+[2m2025-08-08T05:28:12.462779Z[0m [34mDEBUG[0m [2mhyper::client::connect::dns[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/connect/dns.rs[0m[2m:[0m[2m122:[0m resolving host="reengki-assets-r2-worker.reengkigo.workers.dev"
+[2m2025-08-08T05:28:12.486523Z[0m [34mDEBUG[0m [2mhyper::client::connect::http[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/connect/http.rs[0m[2m:[0m[2m542:[0m connecting to 104.21.112.1:443
+[2m2025-08-08T05:28:12.520557Z[0m [34mDEBUG[0m [2mhyper::client::connect::http[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/connect/http.rs[0m[2m:[0m[2m545:[0m connected to 104.21.112.1:443
+[2m2025-08-08T05:28:12.625987Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m352:[0m flushed 103 bytes
+[2m2025-08-08T05:28:13.253016Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:13.253187Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:13.253564Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:13.253605Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:13.253629Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:13.280742Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:13.280822Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:13.281005Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:13.281023Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:13.281038Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:13.281081Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m651:[0m Clearing all cache
+[2m2025-08-08T05:28:13.281100Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m356:[0m All files cache cleared
+[2m2025-08-08T05:28:13.296368Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:13.296427Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:13.296611Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:13.296629Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:13.296644Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:13.296690Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m69:[0m Getting root folders
+[2m2025-08-08T05:28:13.296704Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m252:[0m Building folder structure for path: ''
+[2m2025-08-08T05:28:13.296716Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m310:[0m Getting folder structure for prefix: '' (from memory)
+[2m2025-08-08T05:28:13.296737Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m286:[0m Loading all files to cache from R2 Worker API
+[2m2025-08-08T05:28:13.296960Z[0m [34mDEBUG[0m [2mreqwest::connect[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-0.11.27/src/connect.rs[0m[2m:[0m[2m449:[0m starting new connection: https://reengki-assets-r2-worker.reengkigo.workers.dev/    
+[2m2025-08-08T05:28:13.297055Z[0m [34mDEBUG[0m [2mhyper::client::connect::dns[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/connect/dns.rs[0m[2m:[0m[2m122:[0m resolving host="reengki-assets-r2-worker.reengkigo.workers.dev"
+[2m2025-08-08T05:28:13.298341Z[0m [34mDEBUG[0m [2mhyper::client::connect::http[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/connect/http.rs[0m[2m:[0m[2m542:[0m connecting to 104.21.112.1:443
+[2m2025-08-08T05:28:13.326216Z[0m [34mDEBUG[0m [2mhyper::client::connect::http[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/connect/http.rs[0m[2m:[0m[2m545:[0m connected to 104.21.112.1:443
+[2m2025-08-08T05:28:13.402295Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m352:[0m flushed 103 bytes
+[2m2025-08-08T05:28:13.908538Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m211:[0m parsed 10 headers
+[2m2025-08-08T05:28:13.908731Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m224:[0m incoming body is content-length (1463 bytes)
+[2m2025-08-08T05:28:13.909482Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m300:[0m incoming body completed
+[2m2025-08-08T05:28:13.909768Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m380:[0m pooling idle connection for ("https", reengki-assets-r2-worker.reengkigo.workers.dev)
+[2m2025-08-08T05:28:13.910283Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m304:[0m Cached all_files with 5 files (TTL: 600s)
+[2m2025-08-08T05:28:13.910344Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m260:[0m Cache hit for all_files (age: 86.083µs)
+[2m2025-08-08T05:28:13.910503Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m346:[0m Found 2 folders for prefix '' from memory
+[2m2025-08-08T05:28:15.209764Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:15.209954Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:15.210359Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:15.210402Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:15.210423Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:15.210611Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m50:[0m Getting folder contents for path: U3R
+[2m2025-08-08T05:28:15.210647Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m252:[0m Building folder structure for path: 'U3R'
+[2m2025-08-08T05:28:15.210671Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m310:[0m Getting folder structure for prefix: 'U3R' (from memory)
+[2m2025-08-08T05:28:15.210751Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m260:[0m Cache hit for all_files (age: 1.300498208s)
+[2m2025-08-08T05:28:15.210822Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m346:[0m Found 1 folders for prefix 'U3R' from memory
+[2m2025-08-08T05:28:20.446076Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:20.446304Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:20.446706Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:20.446741Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:20.446761Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:20.446947Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m700:[0m Single file upload request received
+[2m2025-08-08T05:28:20.449581Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m742:[0m Uploading file 'U3R_cover.png' to full path: 'U3R/U3R_cover.png'
+[2m2025-08-08T05:28:20.449668Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m743:[0m Full path length: 17, contains slash: true
+[2m2025-08-08T05:28:20.449693Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m752:[0m Extracted base_path: 'U3R/' for filename: 'U3R_cover.png'
+[2m2025-08-08T05:28:20.449714Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m61:[0m Starting file upload to U3R/: 1 files
+[2m2025-08-08T05:28:20.449810Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m68:[0m Uploading file with fullpath: U3R/U3R_cover.png
+[2m2025-08-08T05:28:20.450253Z[0m [34mDEBUG[0m [2mreqwest::connect[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-0.11.27/src/connect.rs[0m[2m:[0m[2m449:[0m starting new connection: https://r2-api.reengki.com/    
+[2m2025-08-08T05:28:20.450375Z[0m [34mDEBUG[0m [2mhyper::client::connect::dns[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/connect/dns.rs[0m[2m:[0m[2m122:[0m resolving host="r2-api.reengki.com"
+[2m2025-08-08T05:28:20.461171Z[0m [34mDEBUG[0m [2mhyper::client::connect::http[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/connect/http.rs[0m[2m:[0m[2m542:[0m connecting to 183.99.70.215:443
+[2m2025-08-08T05:28:20.467991Z[0m [34mDEBUG[0m [2mhyper::client::connect::http[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/connect/http.rs[0m[2m:[0m[2m545:[0m connected to 183.99.70.215:443
+[2m2025-08-08T05:28:20.495417Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m352:[0m flushed 114731 bytes
+[2m2025-08-08T05:28:22.282102Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m211:[0m parsed 5 headers
+[2m2025-08-08T05:28:22.282258Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m224:[0m incoming body is content-length (154 bytes)
+[2m2025-08-08T05:28:22.282424Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m300:[0m incoming body completed
+[2m2025-08-08T05:28:22.282842Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m380:[0m pooling idle connection for ("https", r2-api.reengki.com)
+[2m2025-08-08T05:28:22.283238Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m97:[0m Successfully uploaded file: U3R_cover.png
+[2m2025-08-08T05:28:22.283320Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m364:[0m All files cache invalidated due to path change: U3R/
+[2m2025-08-08T05:28:22.283361Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m109:[0m Successfully uploaded 1 files to U3R/ and invalidated cache
+[2m2025-08-08T05:28:22.283396Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m758:[0m File uploaded successfully to: U3R/U3R_cover.png
+[2m2025-08-08T05:28:22.795470Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:22.795667Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:22.796074Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:22.796115Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:22.796139Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:22.796241Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m50:[0m Getting folder contents for path: U3R
+[2m2025-08-08T05:28:22.796277Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m252:[0m Building folder structure for path: 'U3R'
+[2m2025-08-08T05:28:22.796306Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m310:[0m Getting folder structure for prefix: 'U3R' (from memory)
+[2m2025-08-08T05:28:22.796346Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m286:[0m Loading all files to cache from R2 Worker API
+[2m2025-08-08T05:28:22.796804Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m254:[0m reuse idle connection for ("https", reengki-assets-r2-worker.reengkigo.workers.dev)
+[2m2025-08-08T05:28:22.797432Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m352:[0m flushed 103 bytes
+[2m2025-08-08T05:28:22.868359Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m211:[0m parsed 10 headers
+[2m2025-08-08T05:28:22.868509Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m224:[0m incoming body is content-length (1463 bytes)
+[2m2025-08-08T05:28:22.869173Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m300:[0m incoming body completed
+[2m2025-08-08T05:28:22.869429Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m380:[0m pooling idle connection for ("https", reengki-assets-r2-worker.reengkigo.workers.dev)
+[2m2025-08-08T05:28:22.869815Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m304:[0m Cached all_files with 5 files (TTL: 600s)
+[2m2025-08-08T05:28:22.869894Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m260:[0m Cache hit for all_files (age: 102.917µs)
+[2m2025-08-08T05:28:22.870037Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m346:[0m Found 1 folders for prefix 'U3R' from memory
+[2m2025-08-08T05:28:24.961159Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:24.961324Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:24.961691Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:24.961728Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:24.961748Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:24.961827Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m651:[0m Clearing all cache
+[2m2025-08-08T05:28:24.961872Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m356:[0m All files cache cleared
+[2m2025-08-08T05:28:24.965440Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:24.965532Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:24.965702Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:24.965718Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:24.965731Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:24.965787Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m50:[0m Getting folder contents for path: U3R
+[2m2025-08-08T05:28:24.965812Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m252:[0m Building folder structure for path: 'U3R'
+[2m2025-08-08T05:28:24.965834Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m310:[0m Getting folder structure for prefix: 'U3R' (from memory)
+[2m2025-08-08T05:28:24.965859Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m286:[0m Loading all files to cache from R2 Worker API
+[2m2025-08-08T05:28:24.966198Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m254:[0m reuse idle connection for ("https", reengki-assets-r2-worker.reengkigo.workers.dev)
+[2m2025-08-08T05:28:24.966652Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m352:[0m flushed 103 bytes
+[2m2025-08-08T05:28:25.030797Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m211:[0m parsed 10 headers
+[2m2025-08-08T05:28:25.030951Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m224:[0m incoming body is content-length (1463 bytes)
+[2m2025-08-08T05:28:25.031587Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m300:[0m incoming body completed
+[2m2025-08-08T05:28:25.031816Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m380:[0m pooling idle connection for ("https", reengki-assets-r2-worker.reengkigo.workers.dev)
+[2m2025-08-08T05:28:25.032295Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m304:[0m Cached all_files with 5 files (TTL: 600s)
+[2m2025-08-08T05:28:25.032373Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m260:[0m Cache hit for all_files (age: 103.333µs)
+[2m2025-08-08T05:28:25.032496Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m346:[0m Found 1 folders for prefix 'U3R' from memory
+[2m2025-08-08T05:28:37.707751Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:37.708011Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:37.708441Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:37.708483Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:37.708509Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:37.708599Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m651:[0m Clearing all cache
+[2m2025-08-08T05:28:37.708646Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m356:[0m All files cache cleared
+[2m2025-08-08T05:28:37.711673Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:37.711717Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:37.711849Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:37.711867Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:37.711879Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:37.711933Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m50:[0m Getting folder contents for path: U3R
+[2m2025-08-08T05:28:37.711959Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m252:[0m Building folder structure for path: 'U3R'
+[2m2025-08-08T05:28:37.711981Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m310:[0m Getting folder structure for prefix: 'U3R' (from memory)
+[2m2025-08-08T05:28:37.712007Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m286:[0m Loading all files to cache from R2 Worker API
+[2m2025-08-08T05:28:37.712394Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m254:[0m reuse idle connection for ("https", reengki-assets-r2-worker.reengkigo.workers.dev)
+[2m2025-08-08T05:28:37.712825Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m352:[0m flushed 103 bytes
+[2m2025-08-08T05:28:37.774995Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m211:[0m parsed 10 headers
+[2m2025-08-08T05:28:37.775161Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m224:[0m incoming body is content-length (1463 bytes)
+[2m2025-08-08T05:28:37.775791Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m300:[0m incoming body completed
+[2m2025-08-08T05:28:37.775985Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m380:[0m pooling idle connection for ("https", reengki-assets-r2-worker.reengkigo.workers.dev)
+[2m2025-08-08T05:28:37.776389Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m304:[0m Cached all_files with 5 files (TTL: 600s)
+[2m2025-08-08T05:28:37.776478Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m260:[0m Cache hit for all_files (age: 111.334µs)
+[2m2025-08-08T05:28:37.776587Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m346:[0m Found 1 folders for prefix 'U3R' from memory
+[2m2025-08-08T05:28:39.813269Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:39.813439Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:39.813833Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:39.813874Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:39.813896Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:39.813976Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m69:[0m Getting root folders
+[2m2025-08-08T05:28:39.814002Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m252:[0m Building folder structure for path: ''
+[2m2025-08-08T05:28:39.814020Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m310:[0m Getting folder structure for prefix: '' (from memory)
+[2m2025-08-08T05:28:39.814059Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m260:[0m Cache hit for all_files (age: 2.037699792s)
+[2m2025-08-08T05:28:39.814124Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m346:[0m Found 2 folders for prefix '' from memory
+[2m2025-08-08T05:28:41.160521Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:41.160739Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:41.161159Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:41.161201Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:41.161223Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:41.161306Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m651:[0m Clearing all cache
+[2m2025-08-08T05:28:41.161351Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m356:[0m All files cache cleared
+[2m2025-08-08T05:28:41.164952Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:41.165007Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:41.165178Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:41.165197Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:41.165211Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:41.165256Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m69:[0m Getting root folders
+[2m2025-08-08T05:28:41.165277Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m252:[0m Building folder structure for path: ''
+[2m2025-08-08T05:28:41.165292Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m310:[0m Getting folder structure for prefix: '' (from memory)
+[2m2025-08-08T05:28:41.165318Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m286:[0m Loading all files to cache from R2 Worker API
+[2m2025-08-08T05:28:41.165665Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m254:[0m reuse idle connection for ("https", reengki-assets-r2-worker.reengkigo.workers.dev)
+[2m2025-08-08T05:28:41.166072Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m352:[0m flushed 103 bytes
+[2m2025-08-08T05:28:41.228117Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m211:[0m parsed 10 headers
+[2m2025-08-08T05:28:41.228221Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m224:[0m incoming body is content-length (1463 bytes)
+[2m2025-08-08T05:28:41.228797Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m300:[0m incoming body completed
+[2m2025-08-08T05:28:41.229022Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m380:[0m pooling idle connection for ("https", reengki-assets-r2-worker.reengkigo.workers.dev)
+[2m2025-08-08T05:28:41.229403Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m304:[0m Cached all_files with 5 files (TTL: 600s)
+[2m2025-08-08T05:28:41.229464Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m260:[0m Cache hit for all_files (age: 78.875µs)
+[2m2025-08-08T05:28:41.229589Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m346:[0m Found 2 folders for prefix '' from memory
+[2m2025-08-08T05:28:42.310147Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:42.310339Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:42.310748Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:42.310792Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:42.310815Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:42.310914Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m50:[0m Getting folder contents for path: U3R
+[2m2025-08-08T05:28:42.310950Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m252:[0m Building folder structure for path: 'U3R'
+[2m2025-08-08T05:28:42.310977Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m310:[0m Getting folder structure for prefix: 'U3R' (from memory)
+[2m2025-08-08T05:28:42.311017Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m260:[0m Cache hit for all_files (age: 1.081635459s)
+[2m2025-08-08T05:28:42.311080Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m346:[0m Found 1 folders for prefix 'U3R' from memory
+[2m2025-08-08T05:28:43.993615Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:43.993797Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:43.994186Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:43.994216Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:43.994236Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:43.994315Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m651:[0m Clearing all cache
+[2m2025-08-08T05:28:43.994356Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m356:[0m All files cache cleared
+[2m2025-08-08T05:28:43.998234Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:43.998390Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:43.998618Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:43.998655Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:43.998672Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:43.998738Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m50:[0m Getting folder contents for path: U3R
+[2m2025-08-08T05:28:43.998766Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m252:[0m Building folder structure for path: 'U3R'
+[2m2025-08-08T05:28:43.998791Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m310:[0m Getting folder structure for prefix: 'U3R' (from memory)
+[2m2025-08-08T05:28:43.998820Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m286:[0m Loading all files to cache from R2 Worker API
+[2m2025-08-08T05:28:43.999210Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m254:[0m reuse idle connection for ("https", reengki-assets-r2-worker.reengkigo.workers.dev)
+[2m2025-08-08T05:28:43.999690Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m352:[0m flushed 103 bytes
+[2m2025-08-08T05:28:44.268406Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m211:[0m parsed 10 headers
+[2m2025-08-08T05:28:44.268597Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m224:[0m incoming body is content-length (1670 bytes)
+[2m2025-08-08T05:28:44.269324Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m300:[0m incoming body completed
+[2m2025-08-08T05:28:44.269657Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m380:[0m pooling idle connection for ("https", reengki-assets-r2-worker.reengkigo.workers.dev)
+[2m2025-08-08T05:28:44.270319Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m304:[0m Cached all_files with 6 files (TTL: 600s)
+[2m2025-08-08T05:28:44.270412Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m260:[0m Cache hit for all_files (age: 139.125µs)
+[2m2025-08-08T05:28:44.270664Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m346:[0m Found 1 folders for prefix 'U3R' from memory
+[2m2025-08-08T05:28:45.543085Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:45.543266Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:45.543660Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:45.543698Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:45.543720Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:45.543795Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m651:[0m Clearing all cache
+[2m2025-08-08T05:28:45.543838Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m356:[0m All files cache cleared
+[2m2025-08-08T05:28:45.547893Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:45.547979Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:45.548186Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:45.548212Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:45.548268Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:45.548346Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m50:[0m Getting folder contents for path: U3R
+[2m2025-08-08T05:28:45.548374Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m252:[0m Building folder structure for path: 'U3R'
+[2m2025-08-08T05:28:45.548397Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m310:[0m Getting folder structure for prefix: 'U3R' (from memory)
+[2m2025-08-08T05:28:45.548424Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m286:[0m Loading all files to cache from R2 Worker API
+[2m2025-08-08T05:28:45.548784Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m254:[0m reuse idle connection for ("https", reengki-assets-r2-worker.reengkigo.workers.dev)
+[2m2025-08-08T05:28:45.549306Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m352:[0m flushed 103 bytes
+[2m2025-08-08T05:28:45.620714Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m211:[0m parsed 10 headers
+[2m2025-08-08T05:28:45.620844Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m224:[0m incoming body is content-length (1670 bytes)
+[2m2025-08-08T05:28:45.621296Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m300:[0m incoming body completed
+[2m2025-08-08T05:28:45.621464Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m380:[0m pooling idle connection for ("https", reengki-assets-r2-worker.reengkigo.workers.dev)
+[2m2025-08-08T05:28:45.621745Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m304:[0m Cached all_files with 6 files (TTL: 600s)
+[2m2025-08-08T05:28:45.621793Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m260:[0m Cache hit for all_files (age: 66.25µs)
+[2m2025-08-08T05:28:45.621883Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m346:[0m Found 1 folders for prefix 'U3R' from memory
+[2m2025-08-08T05:28:47.144283Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:47.144411Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:47.144774Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:47.144835Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:47.144854Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:47.144932Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m651:[0m Clearing all cache
+[2m2025-08-08T05:28:47.144969Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m356:[0m All files cache cleared
+[2m2025-08-08T05:28:47.147728Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:47.147770Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:47.147887Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:47.147903Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:47.147916Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:47.147959Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m50:[0m Getting folder contents for path: U3R
+[2m2025-08-08T05:28:47.147996Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m252:[0m Building folder structure for path: 'U3R'
+[2m2025-08-08T05:28:47.148017Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m310:[0m Getting folder structure for prefix: 'U3R' (from memory)
+[2m2025-08-08T05:28:47.148038Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m286:[0m Loading all files to cache from R2 Worker API
+[2m2025-08-08T05:28:47.148250Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m254:[0m reuse idle connection for ("https", reengki-assets-r2-worker.reengkigo.workers.dev)
+[2m2025-08-08T05:28:47.148529Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m352:[0m flushed 103 bytes
+[2m2025-08-08T05:28:47.218283Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m211:[0m parsed 10 headers
+[2m2025-08-08T05:28:47.218433Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m224:[0m incoming body is content-length (1670 bytes)
+[2m2025-08-08T05:28:47.219057Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m300:[0m incoming body completed
+[2m2025-08-08T05:28:47.219338Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m380:[0m pooling idle connection for ("https", reengki-assets-r2-worker.reengkigo.workers.dev)
+[2m2025-08-08T05:28:47.219782Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m304:[0m Cached all_files with 6 files (TTL: 600s)
+[2m2025-08-08T05:28:47.219849Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m260:[0m Cache hit for all_files (age: 106µs)
+[2m2025-08-08T05:28:47.219939Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m346:[0m Found 1 folders for prefix 'U3R' from memory
+[2m2025-08-08T05:28:48.944804Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:48.944966Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:48.945351Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:48.945386Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:48.945407Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:48.945489Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m651:[0m Clearing all cache
+[2m2025-08-08T05:28:48.945533Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m356:[0m All files cache cleared
+[2m2025-08-08T05:28:48.948516Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:48.948589Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:48.948751Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:48.948777Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:48.948791Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:48.948849Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m50:[0m Getting folder contents for path: U3R
+[2m2025-08-08T05:28:48.948904Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m252:[0m Building folder structure for path: 'U3R'
+[2m2025-08-08T05:28:48.948931Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m310:[0m Getting folder structure for prefix: 'U3R' (from memory)
+[2m2025-08-08T05:28:48.948959Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m286:[0m Loading all files to cache from R2 Worker API
+[2m2025-08-08T05:28:48.949323Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m254:[0m reuse idle connection for ("https", reengki-assets-r2-worker.reengkigo.workers.dev)
+[2m2025-08-08T05:28:48.949807Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m352:[0m flushed 103 bytes
+[2m2025-08-08T05:28:49.012372Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m211:[0m parsed 10 headers
+[2m2025-08-08T05:28:49.012516Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m224:[0m incoming body is content-length (1670 bytes)
+[2m2025-08-08T05:28:49.013153Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m300:[0m incoming body completed
+[2m2025-08-08T05:28:49.013404Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m380:[0m pooling idle connection for ("https", reengki-assets-r2-worker.reengkigo.workers.dev)
+[2m2025-08-08T05:28:49.013888Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m304:[0m Cached all_files with 6 files (TTL: 600s)
+[2m2025-08-08T05:28:49.013968Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m260:[0m Cache hit for all_files (age: 105.458µs)
+[2m2025-08-08T05:28:49.014093Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m346:[0m Found 1 folders for prefix 'U3R' from memory
+[2m2025-08-08T05:28:58.364287Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:28:58.364511Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:28:58.364922Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:28:58.364962Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:28:58.364986Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:28:58.365106Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m50:[0m Getting folder contents for path: U3R/U3R_링키영어
+[2m2025-08-08T05:28:58.365141Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m252:[0m Building folder structure for path: 'U3R/U3R_링키영어'
+[2m2025-08-08T05:28:58.365203Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m214:[0m Getting folder files for key: 'U3R/U3R_링키영어/' (from memory)
+[2m2025-08-08T05:28:58.365249Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m260:[0m Cache hit for all_files (age: 9.351415916s)
+[2m2025-08-08T05:28:58.365350Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m231:[0m Found 3 files for key 'U3R/U3R_링키영어/' from memory
+[2m2025-08-08T05:31:12.143088Z[0m [32m INFO[0m [2mreengkigo_admin_app[0m[2m:[0m [2msrc/main.rs[0m[2m:[0m[2m55:[0m Received SIGTERM, shutting down gracefully...
+   Compiling reengkigo-admin-app v0.1.0 (/Users/gyujinkim/Desktop/reengkigo/asset-server/reengkigo-admin-server)
+warning: unused import: `auth::AuthMiddleware`
+ --> src/middleware/mod.rs:3:9
+  |
+3 | pub use auth::AuthMiddleware;
+  |         ^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: struct `DashboardService` is never constructed
+  --> src/services/dashboard.rs:20:12
+   |
+20 | pub struct DashboardService;
+   |            ^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: associated items `new`, `get_dashboard_stats`, and `get_system_health` are never used
+  --> src/services/dashboard.rs:23:12
+   |
+22 | impl DashboardService {
+   | --------------------- associated items in this implementation
+23 |     pub fn new() -> Self {
+   |            ^^^
+...
+27 |     pub async fn get_dashboard_stats(&self) -> Result<DashboardStats> {
+   |                  ^^^^^^^^^^^^^^^^^^^
+...
+47 |     pub async fn get_system_health(&self) -> Result<SystemHealth> {
+   |                  ^^^^^^^^^^^^^^^^^
+
+warning: methods `is_director` and `can_access_director` are never used
+  --> src/models/user.rs:39:12
+   |
+29 | impl AdminUser {
+   | -------------- methods in this implementation
+...
+39 |     pub fn is_director(&self) -> bool {
+   |            ^^^^^^^^^^^
+...
+55 |     pub fn can_access_director(&self) -> bool {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: fields `book_id` and `title` are never read
+   --> src/handlers/dashboard.rs:456:9
+    |
+455 | pub struct SubtitleRequest {
+    |            --------------- fields in this struct
+456 |     pub book_id: String,
+    |         ^^^^^^^
+457 |     pub title: String,
+    |         ^^^^^
+    |
+    = note: `SubtitleRequest` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `bucket` is never read
+  --> src/dto/file.rs:26:9
+   |
+25 | pub struct FileListQuery {
+   |            ------------- field in this struct
+26 |     pub bucket: String,
+   |         ^^^^^^
+   |
+   = note: `FileListQuery` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: associated functions `require_admin_role`, `require_director_role`, and `require_any_role` are never used
+   --> src/middleware/auth.rs:65:18
+    |
+16  | impl AuthMiddleware {
+    | ------------------- associated functions in this implementation
+...
+65  |     pub async fn require_admin_role(
+    |                  ^^^^^^^^^^^^^^^^^^
+...
+85  |     pub async fn require_director_role(
+    |                  ^^^^^^^^^^^^^^^^^^^^^
+...
+100 |     pub async fn require_any_role(
+    |                  ^^^^^^^^^^^^^^^^
+
+warning: function `create_forbidden_response` is never used
+   --> src/middleware/auth.rs:180:4
+    |
+180 | fn create_forbidden_response(request: &Request) -> Response {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `get_current_user` is never used
+   --> src/middleware/auth.rs:206:8
+    |
+206 | pub fn get_current_user(request: &Request) -> Option<&AdminUser> {
+    |        ^^^^^^^^^^^^^^^^
+
+warning: `reengkigo-admin-app` (bin "reengkigo-admin-app") generated 9 warnings (run `cargo fix --bin "reengkigo-admin-app"` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.07s
+     Running `target/debug/reengkigo-admin-app`
+[2m2025-08-08T05:31:28.566325Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m65:[0m Loading application configuration...
+[2m2025-08-08T05:31:28.569013Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m76:[0m Configuration loaded successfully
+[2m2025-08-08T05:31:28.569058Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m77:[0m name: "reengkigo-admin"
+[2m2025-08-08T05:31:28.569072Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m78:[0m External API: https://r2-api.reengki.com
+[2m2025-08-08T05:31:28.569083Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m79:[0m Bucket: reengki-archive
+[2m2025-08-08T05:31:28.577722Z[0m [32m INFO[0m [2mreengkigo_admin_app[0m[2m:[0m [2msrc/main.rs[0m[2m:[0m[2m93:[0m Starting server on 0.0.0.0:3000
+[2m2025-08-08T05:31:49.743728Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:31:49.743969Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:31:49.744918Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:31:49.744957Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:31:49.744979Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:31:49.770843Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:31:49.770950Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:31:49.771263Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:31:49.771297Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:31:49.771321Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:31:49.771447Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m651:[0m Clearing all cache
+[2m2025-08-08T05:31:49.771523Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m356:[0m All files cache cleared
+[2m2025-08-08T05:31:49.780914Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:31:49.780957Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:31:49.781108Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:31:49.781129Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:31:49.781146Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:31:49.781228Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m69:[0m Getting root folders
+[2m2025-08-08T05:31:49.781268Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m252:[0m Building folder structure for path: ''
+[2m2025-08-08T05:31:49.781285Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m310:[0m Getting folder structure for prefix: '' (from memory)
+[2m2025-08-08T05:31:49.781323Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m286:[0m Loading all files to cache from R2 Worker API
+[2m2025-08-08T05:31:49.782152Z[0m [34mDEBUG[0m [2mreqwest::connect[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/reqwest-0.11.27/src/connect.rs[0m[2m:[0m[2m449:[0m starting new connection: https://reengki-assets-r2-worker.reengkigo.workers.dev/    
+[2m2025-08-08T05:31:49.782417Z[0m [34mDEBUG[0m [2mhyper::client::connect::dns[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/connect/dns.rs[0m[2m:[0m[2m122:[0m resolving host="reengki-assets-r2-worker.reengkigo.workers.dev"
+[2m2025-08-08T05:31:49.785231Z[0m [34mDEBUG[0m [2mhyper::client::connect::http[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/connect/http.rs[0m[2m:[0m[2m542:[0m connecting to 104.21.80.1:443
+[2m2025-08-08T05:31:49.815658Z[0m [34mDEBUG[0m [2mhyper::client::connect::http[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/connect/http.rs[0m[2m:[0m[2m545:[0m connected to 104.21.80.1:443
+[2m2025-08-08T05:31:49.907659Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m352:[0m flushed 103 bytes
+[2m2025-08-08T05:31:50.592839Z[0m [34mDEBUG[0m [2mhyper::proto::h1::io[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/io.rs[0m[2m:[0m[2m211:[0m parsed 10 headers
+[2m2025-08-08T05:31:50.593051Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m224:[0m incoming body is content-length (1670 bytes)
+[2m2025-08-08T05:31:50.593779Z[0m [34mDEBUG[0m [2mhyper::proto::h1::conn[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/proto/h1/conn.rs[0m[2m:[0m[2m300:[0m incoming body completed
+[2m2025-08-08T05:31:50.594056Z[0m [34mDEBUG[0m [2mhyper::client::pool[0m[2m:[0m [2m/Users/gyujinkim/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/hyper-0.14.32/src/client/pool.rs[0m[2m:[0m[2m380:[0m pooling idle connection for ("https", reengki-assets-r2-worker.reengkigo.workers.dev)
+[2m2025-08-08T05:31:50.594638Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m304:[0m Cached all_files with 6 files (TTL: 600s)
+[2m2025-08-08T05:31:50.594744Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m260:[0m Cache hit for all_files (age: 132.334µs)
+[2m2025-08-08T05:31:50.594925Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m346:[0m Found 2 folders for prefix '' from memory
+[2m2025-08-08T05:31:51.609860Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m131:[0m Parsing cookies: auth_status=authenticated; auth_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6IkhFQURfT0ZGSUNFIiwiZXhwIjoxNzU0NzE0NzY3LCJpYXQiOjE3NTQ2MjgzNjd9.SCFFTVKV9n0h5rGknCwl-RHAllzyiutJ4KE3K5yTJTc
+[2m2025-08-08T05:31:51.610050Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m136:[0m Found auth_token in cookies
+[2m2025-08-08T05:31:51.610450Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m35:[0m Token validation successful for user: admin
+[2m2025-08-08T05:31:51.610494Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m54:[0m Created AdminUser: AdminUser { account_id: 0, account: "admin", role: "HEAD_OFFICE", agency_id: 0, academy_id: 0, is_active: true }
+[2m2025-08-08T05:31:51.610518Z[0m [34mDEBUG[0m [2mreengkigo_admin_app::middleware::auth[0m[2m:[0m [2msrc/middleware/auth.rs[0m[2m:[0m[2m55:[0m AdminUser can_access_admin: true
+[2m2025-08-08T05:31:51.610680Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m50:[0m Getting folder contents for path: U3R
+[2m2025-08-08T05:31:51.610721Z[0m [32m INFO[0m [2mreengkigo_admin_app::handlers::dashboard[0m[2m:[0m [2msrc/handlers/dashboard.rs[0m[2m:[0m[2m252:[0m Building folder structure for path: 'U3R'
+[2m2025-08-08T05:31:51.610762Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m310:[0m Getting folder structure for prefix: 'U3R' (from memory)
+[2m2025-08-08T05:31:51.610804Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m260:[0m Cache hit for all_files (age: 1.016197042s)
+[2m2025-08-08T05:31:51.610872Z[0m [32m INFO[0m [2mreengkigo_admin_app::services::file[0m[2m:[0m [2msrc/services/file.rs[0m[2m:[0m[2m346:[0m Found 1 folders for prefix 'U3R' from memory
+   Compiling reengkigo-admin-app v0.1.0 (/Users/gyujinkim/Desktop/reengkigo/asset-server/reengkigo-admin-server)
+warning: unused import: `auth::AuthMiddleware`
+ --> src/middleware/mod.rs:3:9
+  |
+3 | pub use auth::AuthMiddleware;
+  |         ^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: struct `DashboardService` is never constructed
+  --> src/services/dashboard.rs:20:12
+   |
+20 | pub struct DashboardService;
+   |            ^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: associated items `new`, `get_dashboard_stats`, and `get_system_health` are never used
+  --> src/services/dashboard.rs:23:12
+   |
+22 | impl DashboardService {
+   | --------------------- associated items in this implementation
+23 |     pub fn new() -> Self {
+   |            ^^^
+...
+27 |     pub async fn get_dashboard_stats(&self) -> Result<DashboardStats> {
+   |                  ^^^^^^^^^^^^^^^^^^^
+...
+47 |     pub async fn get_system_health(&self) -> Result<SystemHealth> {
+   |                  ^^^^^^^^^^^^^^^^^
+
+warning: methods `is_director` and `can_access_director` are never used
+  --> src/models/user.rs:39:12
+   |
+29 | impl AdminUser {
+   | -------------- methods in this implementation
+...
+39 |     pub fn is_director(&self) -> bool {
+   |            ^^^^^^^^^^^
+...
+55 |     pub fn can_access_director(&self) -> bool {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: fields `book_id` and `title` are never read
+   --> src/handlers/dashboard.rs:503:9
+    |
+502 | pub struct SubtitleRequest {
+    |            --------------- fields in this struct
+503 |     pub book_id: String,
+    |         ^^^^^^^
+504 |     pub title: String,
+    |         ^^^^^
+    |
+    = note: `SubtitleRequest` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `bucket` is never read
+  --> src/dto/file.rs:26:9
+   |
+25 | pub struct FileListQuery {
+   |            ------------- field in this struct
+26 |     pub bucket: String,
+   |         ^^^^^^
+   |
+   = note: `FileListQuery` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: associated functions `require_admin_role`, `require_director_role`, and `require_any_role` are never used
+   --> src/middleware/auth.rs:65:18
+    |
+16  | impl AuthMiddleware {
+    | ------------------- associated functions in this implementation
+...
+65  |     pub async fn require_admin_role(
+    |                  ^^^^^^^^^^^^^^^^^^
+...
+85  |     pub async fn require_director_role(
+    |                  ^^^^^^^^^^^^^^^^^^^^^
+...
+100 |     pub async fn require_any_role(
+    |                  ^^^^^^^^^^^^^^^^
+
+warning: function `create_forbidden_response` is never used
+   --> src/middleware/auth.rs:180:4
+    |
+180 | fn create_forbidden_response(request: &Request) -> Response {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `get_current_user` is never used
+   --> src/middleware/auth.rs:206:8
+    |
+206 | pub fn get_current_user(request: &Request) -> Option<&AdminUser> {
+    |        ^^^^^^^^^^^^^^^^
+
+warning: `reengkigo-admin-app` (bin "reengkigo-admin-app") generated 9 warnings (run `cargo fix --bin "reengkigo-admin-app"` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.96s
+     Running `target/debug/reengkigo-admin-app`
+[2m2025-08-08T05:37:56.984470Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m65:[0m Loading application configuration...
+[2m2025-08-08T05:37:56.986186Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m76:[0m Configuration loaded successfully
+[2m2025-08-08T05:37:56.986204Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m77:[0m name: "reengkigo-admin"
+[2m2025-08-08T05:37:56.986216Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m78:[0m External API: https://r2-api.reengki.com
+[2m2025-08-08T05:37:56.986226Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m79:[0m Bucket: reengki-archive
+[2m2025-08-08T05:37:56.992158Z[0m [32m INFO[0m [2mreengkigo_admin_app[0m[2m:[0m [2msrc/main.rs[0m[2m:[0m[2m93:[0m Starting server on 0.0.0.0:3000
+   Compiling reengkigo-admin-app v0.1.0 (/Users/gyujinkim/Desktop/reengkigo/asset-server/reengkigo-admin-server)
+warning: unused import: `auth::AuthMiddleware`
+ --> src/middleware/mod.rs:3:9
+  |
+3 | pub use auth::AuthMiddleware;
+  |         ^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: struct `DashboardService` is never constructed
+  --> src/services/dashboard.rs:20:12
+   |
+20 | pub struct DashboardService;
+   |            ^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` on by default
+
+warning: associated items `new`, `get_dashboard_stats`, and `get_system_health` are never used
+  --> src/services/dashboard.rs:23:12
+   |
+22 | impl DashboardService {
+   | --------------------- associated items in this implementation
+23 |     pub fn new() -> Self {
+   |            ^^^
+...
+27 |     pub async fn get_dashboard_stats(&self) -> Result<DashboardStats> {
+   |                  ^^^^^^^^^^^^^^^^^^^
+...
+47 |     pub async fn get_system_health(&self) -> Result<SystemHealth> {
+   |                  ^^^^^^^^^^^^^^^^^
+
+warning: methods `is_director` and `can_access_director` are never used
+  --> src/models/user.rs:39:12
+   |
+29 | impl AdminUser {
+   | -------------- methods in this implementation
+...
+39 |     pub fn is_director(&self) -> bool {
+   |            ^^^^^^^^^^^
+...
+55 |     pub fn can_access_director(&self) -> bool {
+   |            ^^^^^^^^^^^^^^^^^^^
+
+warning: fields `book_id` and `title` are never read
+   --> src/handlers/dashboard.rs:503:9
+    |
+502 | pub struct SubtitleRequest {
+    |            --------------- fields in this struct
+503 |     pub book_id: String,
+    |         ^^^^^^^
+504 |     pub title: String,
+    |         ^^^^^
+    |
+    = note: `SubtitleRequest` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `bucket` is never read
+  --> src/dto/file.rs:26:9
+   |
+25 | pub struct FileListQuery {
+   |            ------------- field in this struct
+26 |     pub bucket: String,
+   |         ^^^^^^
+   |
+   = note: `FileListQuery` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: associated functions `require_admin_role`, `require_director_role`, and `require_any_role` are never used
+   --> src/middleware/auth.rs:65:18
+    |
+16  | impl AuthMiddleware {
+    | ------------------- associated functions in this implementation
+...
+65  |     pub async fn require_admin_role(
+    |                  ^^^^^^^^^^^^^^^^^^
+...
+85  |     pub async fn require_director_role(
+    |                  ^^^^^^^^^^^^^^^^^^^^^
+...
+100 |     pub async fn require_any_role(
+    |                  ^^^^^^^^^^^^^^^^
+
+warning: function `create_forbidden_response` is never used
+   --> src/middleware/auth.rs:180:4
+    |
+180 | fn create_forbidden_response(request: &Request) -> Response {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `get_current_user` is never used
+   --> src/middleware/auth.rs:206:8
+    |
+206 | pub fn get_current_user(request: &Request) -> Option<&AdminUser> {
+    |        ^^^^^^^^^^^^^^^^
+
+warning: `reengkigo-admin-app` (bin "reengkigo-admin-app") generated 9 warnings (run `cargo fix --bin "reengkigo-admin-app"` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.06s
+     Running `target/debug/reengkigo-admin-app`
+[2m2025-08-08T05:40:29.830328Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m65:[0m Loading application configuration...
+[2m2025-08-08T05:40:29.832545Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m76:[0m Configuration loaded successfully
+[2m2025-08-08T05:40:29.832564Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m77:[0m name: "reengkigo-admin"
+[2m2025-08-08T05:40:29.832578Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m78:[0m External API: https://r2-api.reengki.com
+[2m2025-08-08T05:40:29.832589Z[0m [32m INFO[0m [2mreengkigo_admin_app::config[0m[2m:[0m [2msrc/config/mod.rs[0m[2m:[0m[2m79:[0m Bucket: reengki-archive
+[2m2025-08-08T05:40:29.838609Z[0m [32m INFO[0m [2mreengkigo_admin_app[0m[2m:[0m [2msrc/main.rs[0m[2m:[0m[2m93:[0m Starting server on 0.0.0.0:3000
+[2m2025-08-08T05:42:23.058288Z[0m [32m INFO[0m [2mreengkigo_admin_app[0m[2m:[0m [2msrc/main.rs[0m[2m:[0m[2m55:[0m Received SIGTERM, shutting down gracefully...
