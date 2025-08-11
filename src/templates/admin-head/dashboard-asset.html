@@ -1818,12 +1818,12 @@
             menu.style.left = e.pageX + 'px';
             menu.style.top = e.pageY + 'px';
             
-            // 두번째 뎁스 폴더인 경우 정보 메뉴 추가
+            // 두번째 뎁스 폴더인 경우 수정 메뉴 추가
             const pathDepth = currentPath ? currentPath.split('/').filter(p => p).length : 0;
             if (item.item_type === 'folder' && pathDepth === 1) {
                 const infoItem = document.createElement('div');
                 infoItem.className = 'context-menu-item';
-                infoItem.innerHTML = '<i class="fas fa-info-circle text-info me-2"></i>정보';
+                infoItem.innerHTML = '<i class="fas fa-edit text-info me-2"></i>수정';
                 infoItem.onclick = () => {
                     menu.remove();
                     showFolderInfoPanel(item);
@@ -3828,9 +3828,14 @@
                             <div class="mb-3">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <label class="form-label mb-0">자막 목록</label>
-                                    <button type="button" class="btn btn-sm btn-outline-primary" onclick="addSubtitleItem()">
-                                        <i class="fas fa-plus"></i> 자막 추가
-                                    </button>
+                                    <div>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary me-2" onclick="sortSubtitleItems()" title="정렬">
+                                            <i class="fas fa-sort"></i> 정렬
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addSubtitleItem()">
+                                            <i class="fas fa-plus"></i> 자막 추가
+                                        </button>
+                                    </div>
                                 </div>
                                 <div id="subtitleItemsList" class="border rounded p-3" style="max-height: 500px; overflow-y: auto;">
                                     <!-- Subtitle items will be added here -->
@@ -3912,6 +3917,57 @@
             `;
             
             subtitlesList.insertAdjacentHTML('beforeend', itemHtml);
+        }
+        
+        // Sort subtitle items by splitting text with line breaks
+        function sortSubtitleItems() {
+            const subtitlesList = document.getElementById('subtitleItemsList');
+            if (!subtitlesList) return;
+            
+            // Get all subtitle items
+            const items = subtitlesList.querySelectorAll('.subtitle-item');
+            if (items.length === 0) {
+                Notification.warning('정렬할 자막이 없습니다.');
+                return;
+            }
+            
+            // Collect all text from existing items
+            let allTexts = [];
+            let currentPageNum = 1;
+            
+            items.forEach(item => {
+                const textArea = item.querySelector('.subtitle-text');
+                const pageInput = item.querySelector('.page-num');
+                if (textArea && textArea.value.trim()) {
+                    if (pageInput && pageInput.value) {
+                        currentPageNum = parseInt(pageInput.value) || 1;
+                    }
+                    // Split text by line breaks
+                    const lines = textArea.value.split('\n').filter(line => line.trim());
+                    lines.forEach(line => {
+                        allTexts.push({
+                            page: currentPageNum,
+                            text: line.trim()
+                        });
+                    });
+                }
+            });
+            
+            if (allTexts.length === 0) {
+                Notification.warning('정렬할 텍스트가 없습니다.');
+                return;
+            }
+            
+            // Clear existing items
+            subtitlesList.innerHTML = '';
+            
+            // Create new items for each line
+            let sentenceNum = 1;
+            allTexts.forEach((item, index) => {
+                addSubtitleItem(item.page, sentenceNum++, item.text);
+            });
+            
+            Notification.success(`텍스트가 ${allTexts.length}개의 문장으로 분리되었습니다.`);
         }
         
         // Remove subtitle item
