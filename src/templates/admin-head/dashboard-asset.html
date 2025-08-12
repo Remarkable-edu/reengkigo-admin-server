@@ -456,14 +456,14 @@
                                 <i class="fas fa-sync"></i> 새로고침
                             </button>
                         </div>
-                        <div class="btn-group">
+                        <!-- <div class="btn-group">
                             <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#importModal">
                                 <i class="fas fa-upload"></i> JSON 가져오기
                             </button>
                             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="exportAssets()">
                                 <i class="fas fa-download"></i> JSON 내보내기
                             </button>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
 
@@ -1227,7 +1227,7 @@
                     
                     if (isVideoFile) {
                         // 영상 파일은 player 경로 사용
-                        targetUrl = `https://reengki-assets-r2-worker.reengkigo.workers.dev/player/${bookId}/${title}/${fileName}`;
+                        targetUrl = `https://assets.reengkigo.com/player/${bookId}/${title}/${fileName}`;
                     } else {
                         // 기타 파일은 content 경로 사용
                         targetUrl = `https://reengki-assets-r2-worker.reengkigo.workers.dev/content/${bookId}/${title}/${fileName}`;
@@ -1277,7 +1277,7 @@
                     const bookId = pathParts[0];
                     // Remove .mp4 extension from filename for the title
                     const title = item.name.replace(/\.mp4$/i, '');
-                    const playerUrl = `https://reengki-assets-r2-worker.reengkigo.workers.dev/player/${bookId}/${title}/${title}.mp4`;
+                    const playerUrl = `https://assets.reengkigo.com/player/${bookId}/${title}/${title}.mp4`;
                     window.open(playerUrl, '_blank');
                 } else {
                     Notification.warning('MP4 파일의 경로가 올바르지 않습니다.');
@@ -1638,7 +1638,7 @@
                             if (pathParts.length >= 2) {
                                 const bookId = pathParts[0];
                                 const title = item.name.replace(/\.mp4$/i, '');
-                                const videoLink = `https://reengki-assets-r2-worker.reengkigo.workers.dev/player/${bookId}/${title}/${title}.mp4`;
+                                const videoLink = `https://assets.reengkigo.com/player/${bookId}/${title}/${title}.mp4`;
                                 
                                 videos.push({
                                     bookId: bookId,
@@ -2087,6 +2087,40 @@
         // Global variable to store CSV data
         let csvSubtitleData = null;
 
+        // Proper CSV parser that handles quoted fields
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            let i = 0;
+            
+            while (i < line.length) {
+                const char = line[i];
+                const nextChar = line[i + 1];
+                
+                if (char === '"') {
+                    if (inQuotes && nextChar === '"') {
+                        // Escaped quote
+                        current += '"';
+                        i += 2;
+                        continue;
+                    }
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                    i++;
+                    continue;
+                } else {
+                    current += char;
+                }
+                i++;
+            }
+            
+            result.push(current.trim());
+            return result;
+        }
+
         // Handle CSV file upload
         function handleCSVUpload(input) {
             const file = input.files[0];
@@ -2110,12 +2144,12 @@
                 }
 
                 // Parse header
-                const headers = lines[0].split(',').map(h => h.trim());
+                const headers = parseCSVLine(lines[0]);
                 
                 // Parse data rows
                 const data = [];
                 for (let i = 1; i < lines.length; i++) {
-                    const values = lines[i].split(',').map(v => v.trim());
+                    const values = parseCSVLine(lines[i]);
                     const row = {};
                     headers.forEach((header, index) => {
                         row[header] = values[index] || '';
@@ -3592,7 +3626,7 @@
                     
                     if (videoFiles.length > 0) {
                         const primaryVideo = videoFiles.find(vid => vid.name.toLowerCase() === `${title.toLowerCase()}.mp4`) || videoFiles[0];
-                        const videoUrl = `https://reengki-assets-r2-worker.reengkigo.workers.dev/player/${bookId}/${title}/${primaryVideo.name}`;
+                        const videoUrl = `https://assets.reengkigo.com/player/${bookId}/${title}/${primaryVideo.name}`;
                         const videoPath = `${bookId}/${title}/${primaryVideo.name}`;
                         
                         // Store the path for save operation
@@ -4299,12 +4333,12 @@
                 }
 
                 // Parse header
-                const headers = lines[0].split(',').map(h => h.trim());
+                const headers = parseCSVLine(lines[0]);
                 
                 // Parse data rows
                 const data = [];
                 for (let i = 1; i < lines.length; i++) {
-                    const values = lines[i].split(',').map(v => v.trim());
+                    const values = parseCSVLine(lines[i]);
                     const row = {};
                     headers.forEach((header, index) => {
                         row[header] = values[index] || '';
@@ -4452,12 +4486,12 @@
                 }
 
                 // Parse header
-                const headers = lines[0].split(',').map(h => h.trim());
+                const headers = parseCSVLine(lines[0]);
                 
                 // Parse data rows
                 const data = [];
                 for (let i = 1; i < lines.length; i++) {
-                    const values = lines[i].split(',').map(v => v.trim());
+                    const values = parseCSVLine(lines[i]);
                     const row = {};
                     headers.forEach((header, index) => {
                         row[header] = values[index] || '';
