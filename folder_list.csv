@@ -1,0 +1,190 @@
+링키영어_메인코스:
+  - 스테이지명: Stage1-1
+    스테이지코드: ST1-1
+    월별:
+      1월: R1R
+      2월: R1O
+      3월: R1Y
+      4월: R1G
+      5월: R1B
+      6월: R1P
+      7월: E2R
+      8월: E2O
+      9월: E2Y
+      10월: E2G
+      11월: E2B
+      12월: E2P
+  - 스테이지명: Stage1-2
+    스테이지코드: ST1-2
+    월별:
+      1월: M3R
+      2월: M3O
+      3월: M3Y
+      4월: M3G
+      5월: M3B
+      6월: M3P
+      7월: A4R
+      8월: A4O
+      9월: A4Y
+      10월: A4G
+      11월: A4B
+      12월: A4P
+  - 스테이지명: Stage2-1
+    스테이지코드: ST2-1
+    월별:
+      1월: R5R
+      2월: R5O
+      3월: R5Y
+      4월: R5G
+      5월: R5B
+      6월: R5P
+      7월: K6R
+      8월: K6O
+      9월: K6Y
+      10월: K6G
+      11월: K6B
+      12월: K6P
+  - 스테이지명: Stage2-2
+    스테이지코드: ST2-2
+    월별:
+      1월: A7R
+      2월: A7O
+      3월: A7Y
+      4월: A7G
+      5월: A7B
+      6월: A7P
+      7월: B8R
+      8월: B8O
+      9월: B8Y
+      10월: B8G
+      11월: B8B
+      12월: B8P
+  - 스테이지명: Stage3
+    스테이지코드: ST3
+    월별:
+      1월: L9R
+      2월: L9O
+      3월: L9Y
+      4월: L9G
+      5월: L9B
+      6월: L9P
+      7월: E10R
+      8월: E10O
+      9월: E10Y
+      10월: E10G
+      11월: E10B
+      12월: E10P
+
+익스텐션_코스:
+  - 스테이지명: JELLY
+    스테이지코드: JEL
+    월별:
+      1월: J1R
+      2월: J1O
+      3월: J1Y
+      4월: J1G
+      5월: J1B
+      6월: J1P
+      7월: J2R
+      8월: J2O
+      9월: J2Y
+      10월: J2G
+      11월: J2B
+      12월: J2P
+  - 스테이지명: JUICE
+    스테이지코드: JUI
+    월별:
+      1월: U1R
+      2월: U1O
+      3월: U1Y
+      4월: U1G
+      5월: U1B
+      6월: U1P
+      7월: U2R
+      8월: U2O
+      9월: U2Y
+      10월: U2G
+      11월: U2B
+      12월: U2P
+
+TEENZ_코스:
+  - 스테이지명: TEENZ1-1
+    스테이지코드: TZ1-1
+    레벨:
+      - T1R
+      - T1O
+      - T1Y
+      - T1G
+      - T1B
+      - T1P
+      - T2R
+      - T2O
+      - T2Y
+      - T2G
+      - T2B
+      - T2P
+  - 스테이지명: TEENZ1-2
+    스테이지코드: TZ1-2
+    레벨:
+      - T3R
+      - T3O
+      - T3Y
+      - T3G
+      - T3B
+      - T3P
+      - T4R
+      - T4O
+      - T4Y
+      - T4G
+      - T4B
+      - T4P
+  - 스테이지명: TEENZ2-1
+    스테이지코드: TZ2-1
+    레벨:
+      - T5R
+      - T5O
+      - T5Y
+      - T5G
+      - T5B
+      - T5P
+      - T6R
+      - T6O
+      - T6Y
+      - T6G
+      - T6B
+      - T6P
+  - 스테이지명: TEENZ2-2
+    스테이지코드: TZ2-2
+    레벨:
+      - T7R
+      - T7O
+      - T7Y
+      - T7G
+      - T7B
+      - T7P
+      - T8R
+      - T8O
+      - T8Y
+      - T8G
+      - T8B
+      - T8P
+  - 스테이지명: TEENZ_PHONICS
+    스테이지코드: TZP
+    레벨:
+      - TP1
+      - TP2
+      - TP3
+      - TP4
+
+Supplimentary_코스:
+  - 스테이지명: Reengki_Phonics
+    스테이지코드: RKP
+    레벨:
+      - Block
+      - RP1
+      - RP2
+      - RP3
+  - 스테이지명: Alphabet
+    스테이지코드: ALP
+    레벨:
+      - Alphabet

@@ -129,6 +129,39 @@
             padding: 15px;
             min-height: 300px;
         }
+
+        /* Stage Grouped View Styles */
+        .stage-grouped-view {
+            padding: 15px;
+        }
+
+
+
+
+        .stage-section {
+            margin-left: 15px;
+            border-left: 3px solid #e3e6f0;
+            padding-left: 15px;
+        }
+
+        .stage-header {
+            background-color: #ffffff;
+            border-radius: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .stage-items {
+            background-color: #ffffff;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .stage-item {
+            min-width: 80px;
+            max-width: 120px;
+        }
         
         .folder-item, .file-item {
             display: flex;
@@ -998,7 +1031,8 @@
         
         function hideLoadingState() {
             document.getElementById('loadingIndicator').style.display = 'none';
-            document.getElementById('folderContents').style.display = 'grid';
+            const folderContents = document.getElementById('folderContents');
+            folderContents.style.display = 'block';
         }
 
         function renderFolderView(data) {
@@ -1015,17 +1049,143 @@
             }
             
             emptyState.style.display = 'none';
-            folderContents.innerHTML = '';
             
-            currentAssets.forEach(item => {
-                const itemElement = createItemElement(item);
-                folderContents.appendChild(itemElement);
-            });
+            // 루트 레벨에서만 스테이지별 그룹화 적용
+            if (currentPath === '') {
+                renderStageGroupedView(currentAssets, folderContents);
+            } else {
+                // 하위 폴더에서는 기존 그리드 방식 유지
+                renderDefaultFolderView(currentAssets, folderContents);
+            }
             
             // 모든 아이콘에 스타일 강제 적용
             setTimeout(() => {
                 enforceIconStyles();
             }, 100);
+        }
+
+        function renderStageGroupedView(assets, container) {
+            container.innerHTML = '';
+            container.style.display = 'block';
+            container.className = 'stage-grouped-view';
+            
+            // 스테이지별로 직접 그룹화
+            const stageGroups = groupAssetsByStage(assets);
+            
+            // 스테이지 순서 정의 (CSV에서 정의된 순서대로)
+            const stageOrder = [
+                'Stage1-1', 'Stage1-2', 'Stage2-1', 'Stage2-2', 'Stage3', 
+                'JELLY', 'JUICE', 
+                'TEENZ1-1', 'TEENZ1-2', 'TEENZ2-1', 'TEENZ2-2', 'TEENZ_PHONICS',
+                'Reengki_Phonics', 'Alphabet'
+            ];
+            
+            // 정의된 순서대로 스테이지 처리
+            stageOrder.forEach(stageName => {
+                if (!stageGroups[stageName]) return;
+                const stageSection = document.createElement('div');
+                stageSection.className = 'stage-section mb-4';
+                
+                // 스테이지 헤더
+                const stageHeader = document.createElement('div');
+                stageHeader.className = 'stage-header mb-2 p-2 bg-light rounded';
+                stageHeader.innerHTML = `<h6 class="mb-0 text-primary"><i class="fas fa-layer-group me-2"></i>${stageName}</h6>`;
+                stageSection.appendChild(stageHeader);
+                
+                // 스테이지 아이템들을 한 줄로 표시
+                const stageItems = document.createElement('div');
+                stageItems.className = 'stage-items d-flex flex-wrap gap-2 ps-2';
+                
+                stageGroups[stageName].forEach(item => {
+                    const itemElement = createItemElement(item);
+                    itemElement.classList.add('stage-item');
+                    stageItems.appendChild(itemElement);
+                });
+                
+                stageSection.appendChild(stageItems);
+                container.appendChild(stageSection);
+            });
+            
+            // CSV에 없는 스테이지들을 "etc" 헤더로 처리
+            if (stageGroups['기타'] && stageGroups['기타'].length > 0) {
+                const etcSection = document.createElement('div');
+                etcSection.className = 'stage-section mb-4';
+                
+                // etc 헤더
+                const etcHeader = document.createElement('div');
+                etcHeader.className = 'stage-header mb-2 p-2 bg-secondary rounded';
+                etcHeader.innerHTML = `<h6 class="mb-0 text-white"><i class="fas fa-question-circle me-2"></i>etc</h6>`;
+                etcSection.appendChild(etcHeader);
+                
+                // etc 아이템들을 한 줄로 표시
+                const etcItems = document.createElement('div');
+                etcItems.className = 'stage-items d-flex flex-wrap gap-2 ps-2';
+                
+                stageGroups['기타'].forEach(item => {
+                    const itemElement = createItemElement(item);
+                    itemElement.classList.add('stage-item');
+                    etcItems.appendChild(itemElement);
+                });
+                
+                etcSection.appendChild(etcItems);
+                container.appendChild(etcSection);
+            }
+        }
+
+        function renderDefaultFolderView(assets, container) {
+            container.innerHTML = '';
+            container.className = 'folder-grid';
+            container.style.display = 'grid';
+            
+            assets.forEach(item => {
+                const itemElement = createItemElement(item);
+                container.appendChild(itemElement);
+            });
+        }
+
+
+        function groupAssetsByStage(assets) {
+            const stages = {};
+            
+            assets.forEach(asset => {
+                const stageName = getStageFromFolderName(asset.name);
+                if (!stages[stageName]) {
+                    stages[stageName] = [];
+                }
+                stages[stageName].push(asset);
+            });
+            
+            return stages;
+        }
+
+
+
+
+
+        function getStageFromFolderName(folderName) {
+            // 메인 코스 스테이지 매핑
+            if (/^[RE]\d+[ROYGBP]$/.test(folderName)) return 'Stage1-1';
+            if (/^[MA]\d+[ROYGBP]$/.test(folderName)) return 'Stage1-2';
+            if (/^[RK]\d+[ROYGBP]$/.test(folderName)) return 'Stage2-1';
+            if (/^[AB]\d+[ROYGBP]$/.test(folderName)) return 'Stage2-2';
+            if (/^[LE]\d+[ROYGBP]$/.test(folderName)) return 'Stage3';
+            
+            // 익스텐션 코스 스테이지 매핑
+            if (/^J\d+[ROYGBP]$/.test(folderName)) return 'JELLY';
+            if (/^U\d+[ROYGBP]$/.test(folderName)) return 'JUICE';
+            
+            // TEENZ 코스 스테이지 매핑
+            if (/^T[12][ROYGBP]$/.test(folderName)) return 'TEENZ1-1';
+            if (/^T[34][ROYGBP]$/.test(folderName)) return 'TEENZ1-2';
+            if (/^T[56][ROYGBP]$/.test(folderName)) return 'TEENZ2-1';
+            if (/^T[78][ROYGBP]$/.test(folderName)) return 'TEENZ2-2';
+            if (/^TP\d$/.test(folderName)) return 'TEENZ_PHONICS';
+            
+            // Supplimentary 코스 스테이지 매핑
+            if (folderName.startsWith('RP') || folderName === 'Block') return 'Reengki_Phonics';
+            if (folderName === 'Alphabet') return 'Alphabet';
+            
+            return '기타';
         }
 
         function createItemElement(item) {
