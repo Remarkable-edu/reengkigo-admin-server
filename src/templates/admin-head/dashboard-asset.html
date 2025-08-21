@@ -1163,25 +1163,42 @@
 
 
         function getStageFromFolderName(folderName) {
-            // 메인 코스 스테이지 매핑
-            if (/^[RE]\d+[ROYGBP]$/.test(folderName)) return 'Stage1-1';
-            if (/^[MA]\d+[ROYGBP]$/.test(folderName)) return 'Stage1-2';
-            if (/^[RK]\d+[ROYGBP]$/.test(folderName)) return 'Stage2-1';
-            if (/^[AB]\d+[ROYGBP]$/.test(folderName)) return 'Stage2-2';
-            if (/^[LE]\d+[ROYGBP]$/.test(folderName)) return 'Stage3';
+            // Stage1-1: R1R~R1P, E2R~E2P
+            if (/^R1[ROYGBP]$/.test(folderName)) return 'Stage1-1';
+            if (/^E2[ROYGBP]$/.test(folderName)) return 'Stage1-1';
             
-            // 익스텐션 코스 스테이지 매핑
-            if (/^J\d+[ROYGBP]$/.test(folderName)) return 'JELLY';
-            if (/^U\d+[ROYGBP]$/.test(folderName)) return 'JUICE';
+            // Stage1-2: M3R~M3P, A4R~A4P
+            if (/^M3[ROYGBP]$/.test(folderName)) return 'Stage1-2';
+            if (/^A4[ROYGBP]$/.test(folderName)) return 'Stage1-2';
             
-            // TEENZ 코스 스테이지 매핑
+            // Stage2-1: R5R~R5P, K6R~K6P
+            if (/^R5[ROYGBP]$/.test(folderName)) return 'Stage2-1';
+            if (/^K6[ROYGBP]$/.test(folderName)) return 'Stage2-1';
+            
+            // Stage2-2: A7R~A7P, B8R~B8P
+            if (/^A7[ROYGBP]$/.test(folderName)) return 'Stage2-2';
+            if (/^B8[ROYGBP]$/.test(folderName)) return 'Stage2-2';
+            
+            // Stage3: L9R~L9P, E10R~E10P
+            if (/^L9[ROYGBP]$/.test(folderName)) return 'Stage3';
+            if (/^E10[ROYGBP]$/.test(folderName)) return 'Stage3';
+            
+            // JELLY: J1R~J1P, J2R~J2P
+            if (/^J1[ROYGBP]$/.test(folderName)) return 'JELLY';
+            if (/^J2[ROYGBP]$/.test(folderName)) return 'JELLY';
+            
+            // JUICE: U1R~U1P, U2R~U2P
+            if (/^U1[ROYGBP]$/.test(folderName)) return 'JUICE';
+            if (/^U2[ROYGBP]$/.test(folderName)) return 'JUICE';
+            
+            // TEENZ 코스 스테이지 매핑 (기존 패턴 유지 - project_list.yaml에 없음)
             if (/^T[12][ROYGBP]$/.test(folderName)) return 'TEENZ1-1';
             if (/^T[34][ROYGBP]$/.test(folderName)) return 'TEENZ1-2';
             if (/^T[56][ROYGBP]$/.test(folderName)) return 'TEENZ2-1';
             if (/^T[78][ROYGBP]$/.test(folderName)) return 'TEENZ2-2';
             if (/^TP\d$/.test(folderName)) return 'TEENZ_PHONICS';
             
-            // Supplimentary 코스 스테이지 매핑
+            // Supplementary 코스 스테이지 매핑 (기존 패턴 유지 - project_list.yaml에 없음)
             if (folderName.startsWith('RP') || folderName === 'Block') return 'Reengki_Phonics';
             if (folderName === 'Alphabet') return 'Alphabet';
             

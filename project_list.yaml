@@ -1,4 +1,4 @@
-stage_1_1:
+Stage1-1:
   month_01: R1R
   month_02: R1O
   month_03: R1Y
@@ -11,7 +11,7 @@ stage_1_1:
   month_10: E2G
   month_11: E2B
   month_12: E2P
-stage_1_2:
+Stage1-2:
   month_01: M3R
   month_02: M3O
   month_03: M3Y
@@ -24,7 +24,7 @@ stage_1_2:
   month_10: A4G
   month_11: A4B
   month_12: A4P
-stage_2_2:
+Stage2-1:
   month_01: R5R
   month_02: R5O
   month_03: R5Y
@@ -37,7 +37,7 @@ stage_2_2:
   month_10: K6G
   month_11: K6B
   month_12: K6P
-stage_3:
+Stage2-2:
   month_01: A7R
   month_02: A7O
   month_03: A7Y
@@ -50,7 +50,7 @@ stage_3:
   month_10: B8G
   month_11: B8B
   month_12: B8P
-Stage-3:
+Stage3:
   month_01: L9R
   month_02: L9O
   month_03: L9Y
@@ -63,7 +63,7 @@ Stage-3:
   month_10: E10G
   month_11: E10B
   month_12: E10P
-jelly:
+JELLY:
   month_01: J1R
   month_02: J1O
   month_03: J1Y
@@ -76,7 +76,7 @@ jelly:
   month_10: J2G
   month_11: J2B
   month_12: J2P
-juice:
+JUICE:
   month_01: U1R
   month_02: U1O
   month_03: U1Y
