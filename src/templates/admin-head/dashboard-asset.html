@@ -1076,8 +1076,9 @@
             const stageOrder = [
                 'Stage1-1', 'Stage1-2', 'Stage2-1', 'Stage2-2', 'Stage3', 
                 'JELLY', 'JUICE', 
-                'TEENZ1-1', 'TEENZ1-2', 'TEENZ2-1', 'TEENZ2-2', 'TEENZ_PHONICS',
-                'Reengki_Phonics', 'Alphabet'
+                'CUBE1.1', 'CUBE1.2', 'CUBE1.3', 'CUBE1.4', 
+                'CUBE2.1', 'CUBE2.2', 'CUBE2.3', 'CUBE2.4',
+                'REENGKI_PHONICS', 'TEENZ_PHONICS'
             ];
             
             // 정의된 순서대로 스테이지 처리
@@ -1191,16 +1192,19 @@
             if (/^U1[ROYGBP]$/.test(folderName)) return 'JUICE';
             if (/^U2[ROYGBP]$/.test(folderName)) return 'JUICE';
             
-            // TEENZ 코스 스테이지 매핑 (기존 패턴 유지 - project_list.yaml에 없음)
-            if (/^T[12][ROYGBP]$/.test(folderName)) return 'TEENZ1-1';
-            if (/^T[34][ROYGBP]$/.test(folderName)) return 'TEENZ1-2';
-            if (/^T[56][ROYGBP]$/.test(folderName)) return 'TEENZ2-1';
-            if (/^T[78][ROYGBP]$/.test(folderName)) return 'TEENZ2-2';
-            if (/^TP\d$/.test(folderName)) return 'TEENZ_PHONICS';
+            // CUBE 시리즈 매핑
+            if (/^T1[ROYGBP]$/.test(folderName)) return 'CUBE1.1';
+            if (/^T2[ROYGBP]$/.test(folderName)) return 'CUBE1.2';
+            if (/^T3[ROYGBP]$/.test(folderName)) return 'CUBE1.3';
+            if (/^T4[ROYGBP]$/.test(folderName)) return 'CUBE1.4';
+            if (/^T5[ROYGBP]$/.test(folderName)) return 'CUBE2.1';
+            if (/^T6[ROYGBP]$/.test(folderName)) return 'CUBE2.2';
+            if (/^T7[ROYGBP]$/.test(folderName)) return 'CUBE2.3';
+            if (/^T8[ROYGBP]$/.test(folderName)) return 'CUBE2.4';
             
-            // Supplementary 코스 스테이지 매핑 (기존 패턴 유지 - project_list.yaml에 없음)
-            if (folderName.startsWith('RP') || folderName === 'Block') return 'Reengki_Phonics';
-            if (folderName === 'Alphabet') return 'Alphabet';
+            // PHONICS 매핑
+            if (/^RP\d$/.test(folderName)) return 'REENGKI_PHONICS';
+            if (/^TP\d$/.test(folderName)) return 'TEENZ_PHONICS';
             
             return '기타';
         }

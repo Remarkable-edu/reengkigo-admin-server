@@ -89,3 +89,74 @@ JUICE:
   month_10: U2G
   month_11: U2B
   month_12: U2P 
+CUBE1.1:
+  month_01: T1R
+  month_02: T1O
+  month_03: T1Y
+  month_04: T1G
+  month_05: T1B
+  month_06: T1P
+CUBE1.2:
+  month_01: T2R
+  month_02: T2O
+  month_03: T2Y
+  month_04: T2G
+  month_05: T2B
+  month_06: T2P
+CUBE1.3:
+  month_01: T3R
+  month_02: T3O
+  month_03: T3Y
+  month_04: T3G
+  month_05: T3B
+  month_06: T3P
+CUBE1.4:
+  month_01: T4R
+  month_02: T4O
+  month_03: T4Y
+  month_04: T4G
+  month_05: T4B
+  month_06: T4P
+CUBE2.1:
+  month_01: T5R
+  month_02: T5O
+  month_03: T5Y
+  month_04: T5G
+  month_05: T5B
+  month_06: T5P
+CUBE2.2:
+  month_01: T6R
+  month_02: T6O
+  month_03: T6Y
+  month_04: T6G
+  month_05: T6B
+  month_06: T6P
+CUBE2.3:
+  month_01: T7R
+  month_02: T7O
+  month_03: T7Y
+  month_04: T7G
+  month_05: T7B
+  month_06: T7P
+CUBE2.4:
+  month_01: T8R
+  month_02: T8O
+  month_03: T8Y
+  month_04: T8G
+  month_05: T8B
+  month_06: T8P
+REENGKI_PHONICS:
+  month_01: RP1
+  month_02: RP2
+  month_03: RP3
+TEENZ_PHONICS:
+  month_01: TP1
+  month_02: TP2
+  month_03: TP3
+  month_04: TP4
+  
+
+
+
+
+
