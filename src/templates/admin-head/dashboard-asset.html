@@ -1164,47 +1164,73 @@
 
 
         function getStageFromFolderName(folderName) {
-            // Stage1-1: R1R~R1P, E2R~E2P
-            if (/^R1[ROYGBP]$/.test(folderName)) return 'Stage1-1';
-            if (/^E2[ROYGBP]$/.test(folderName)) return 'Stage1-1';
+            // Stage1-1
+            const stage1_1 = ['R1R', 'R1O', 'R1Y', 'R1G', 'R1B', 'R1P', 'E2R', 'E2O', 'E2Y', 'E2G', 'E2B', 'E2P'];
+            if (stage1_1.includes(folderName)) return 'Stage1-1';
             
-            // Stage1-2: M3R~M3P, A4R~A4P
-            if (/^M3[ROYGBP]$/.test(folderName)) return 'Stage1-2';
-            if (/^A4[ROYGBP]$/.test(folderName)) return 'Stage1-2';
+            // Stage1-2
+            const stage1_2 = ['M3R', 'M3O', 'M3Y', 'M3G', 'M3B', 'M3P', 'A4R', 'A4O', 'A4Y', 'A4G', 'A4B', 'A4P'];
+            if (stage1_2.includes(folderName)) return 'Stage1-2';
             
-            // Stage2-1: R5R~R5P, K6R~K6P
-            if (/^R5[ROYGBP]$/.test(folderName)) return 'Stage2-1';
-            if (/^K6[ROYGBP]$/.test(folderName)) return 'Stage2-1';
+            // Stage2-1
+            const stage2_1 = ['R5R', 'R5O', 'R5Y', 'R5G', 'R5B', 'R5P', 'K6R', 'K6O', 'K6Y', 'K6G', 'K6B', 'K6P'];
+            if (stage2_1.includes(folderName)) return 'Stage2-1';
             
-            // Stage2-2: A7R~A7P, B8R~B8P
-            if (/^A7[ROYGBP]$/.test(folderName)) return 'Stage2-2';
-            if (/^B8[ROYGBP]$/.test(folderName)) return 'Stage2-2';
+            // Stage2-2
+            const stage2_2 = ['A7R', 'A7O', 'A7Y', 'A7G', 'A7B', 'A7P', 'B8R', 'B8O', 'B8Y', 'B8G', 'B8B', 'B8P'];
+            if (stage2_2.includes(folderName)) return 'Stage2-2';
             
-            // Stage3: L9R~L9P, E10R~E10P
-            if (/^L9[ROYGBP]$/.test(folderName)) return 'Stage3';
-            if (/^E10[ROYGBP]$/.test(folderName)) return 'Stage3';
+            // Stage3
+            const stage3 = ['L9R', 'L9O', 'L9Y', 'L9G', 'L9B', 'L9P', 'E10R', 'E10O', 'E10Y', 'E10G', 'E10B', 'E10P'];
+            if (stage3.includes(folderName)) return 'Stage3';
             
-            // JELLY: J1R~J1P, J2R~J2P
-            if (/^J1[ROYGBP]$/.test(folderName)) return 'JELLY';
-            if (/^J2[ROYGBP]$/.test(folderName)) return 'JELLY';
+            // JELLY
+            const jelly = ['J1R', 'J1O', 'J1Y', 'J1G', 'J1B', 'J1P', 'J2R', 'J2O', 'J2Y', 'J2G', 'J2B', 'J2P'];
+            if (jelly.includes(folderName)) return 'JELLY';
             
-            // JUICE: U1R~U1P, U2R~U2P
-            if (/^U1[ROYGBP]$/.test(folderName)) return 'JUICE';
-            if (/^U2[ROYGBP]$/.test(folderName)) return 'JUICE';
+            // JUICE
+            const juice = ['U1R', 'U1O', 'U1Y', 'U1G', 'U1B', 'U1P', 'U2R', 'U2O', 'U2Y', 'U2G', 'U2B', 'U2P'];
+            if (juice.includes(folderName)) return 'JUICE';
             
-            // CUBE 시리즈 매핑
-            if (/^T1[ROYGBP]$/.test(folderName)) return 'CUBE1.1';
-            if (/^T2[ROYGBP]$/.test(folderName)) return 'CUBE1.2';
-            if (/^T3[ROYGBP]$/.test(folderName)) return 'CUBE1.3';
-            if (/^T4[ROYGBP]$/.test(folderName)) return 'CUBE1.4';
-            if (/^T5[ROYGBP]$/.test(folderName)) return 'CUBE2.1';
-            if (/^T6[ROYGBP]$/.test(folderName)) return 'CUBE2.2';
-            if (/^T7[ROYGBP]$/.test(folderName)) return 'CUBE2.3';
-            if (/^T8[ROYGBP]$/.test(folderName)) return 'CUBE2.4';
+            // CUBE1.1
+            const cube1_1 = ['T1R', 'T1O', 'T1Y', 'T1G', 'T1B', 'T1P'];
+            if (cube1_1.includes(folderName)) return 'CUBE1.1';
             
-            // PHONICS 매핑
-            if (/^RP\d$/.test(folderName)) return 'REENGKI_PHONICS';
-            if (/^TP\d$/.test(folderName)) return 'TEENZ_PHONICS';
+            // CUBE1.2
+            const cube1_2 = ['T2R', 'T2O', 'T2Y', 'T2G', 'T2B', 'T2P'];
+            if (cube1_2.includes(folderName)) return 'CUBE1.2';
+            
+            // CUBE1.3
+            const cube1_3 = ['T3R', 'T3O', 'T3Y', 'T3G', 'T3B', 'T3P'];
+            if (cube1_3.includes(folderName)) return 'CUBE1.3';
+            
+            // CUBE1.4
+            const cube1_4 = ['T4R', 'T4O', 'T4Y', 'T4G', 'T4B', 'T4P'];
+            if (cube1_4.includes(folderName)) return 'CUBE1.4';
+            
+            // CUBE2.1
+            const cube2_1 = ['T5R', 'T5O', 'T5Y', 'T5G', 'T5B', 'T5P'];
+            if (cube2_1.includes(folderName)) return 'CUBE2.1';
+            
+            // CUBE2.2
+            const cube2_2 = ['T6R', 'T6O', 'T6Y', 'T6G', 'T6B', 'T6P'];
+            if (cube2_2.includes(folderName)) return 'CUBE2.2';
+            
+            // CUBE2.3
+            const cube2_3 = ['T7R', 'T7O', 'T7Y', 'T7G', 'T7B', 'T7P'];
+            if (cube2_3.includes(folderName)) return 'CUBE2.3';
+            
+            // CUBE2.4
+            const cube2_4 = ['T8R', 'T8O', 'T8Y', 'T8G', 'T8B', 'T8P'];
+            if (cube2_4.includes(folderName)) return 'CUBE2.4';
+            
+            // REENGKI_PHONICS
+            const reengki_phonics = ['RP1', 'RP2', 'RP3'];
+            if (reengki_phonics.includes(folderName)) return 'REENGKI_PHONICS';
+            
+            // TEENZ_PHONICS
+            const teenz_phonics = ['TP1', 'TP2', 'TP3', 'TP4'];
+            if (teenz_phonics.includes(folderName)) return 'TEENZ_PHONICS';
             
             return '기타';
         }

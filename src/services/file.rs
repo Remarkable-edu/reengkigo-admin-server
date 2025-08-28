@@ -232,22 +232,66 @@ impl FileService {
         Ok(filtered_files)
     }
     
-    // 전체 데이터 로드를 위한 직접 API 호출
+    // 전체 데이터 로드를 위한 직접 API 호출 (페이지네이션 지원)
     async fn get_r2_folder_files_direct(&self, key: &str) -> Result<R2WorkerFolderResponse> {
-        let url = "https://reengki-assets-r2-worker.reengkigo.workers.dev/folder-files";
+        let base_url = "https://reengki-assets-r2-worker.reengkigo.workers.dev/folder-files";
+        let mut all_items = Vec::new();
+        let mut cursor: Option<String> = None;
+        let mut page_count = 0;
         
-        let response = self.client
-            .get(url)
-            .query(&[("key", key)])
-            .send()
-            .await?;
-
-        if response.status().is_success() {
-            let result = response.json::<R2WorkerFolderResponse>().await?;
-            Ok(result)
-        } else {
-            anyhow::bail!("Failed to get R2 folder files: {}", response.status())
+        tracing::info!("Starting to fetch R2 folder files for key: {}", key);
+        
+        loop {
+            page_count += 1;
+            
+            // Build request with cursor if available
+            let mut request = self.client.get(base_url).query(&[("key", key)]);
+            
+            if let Some(ref cursor_value) = cursor {
+                request = request.query(&[("cursor", cursor_value.as_str())]);
+                tracing::debug!("Fetching page {} with cursor", page_count);
+            } else {
+                tracing::debug!("Fetching page {} (initial request)", page_count);
+            }
+            
+            let response = request.send().await?;
+            
+            if !response.status().is_success() {
+                anyhow::bail!("Failed to get R2 folder files: {}", response.status())
+            }
+            
+            // Parse the paginated response
+            let paginated_response = response.json::<R2WorkerPaginatedResponse>().await?;
+            
+            tracing::info!("Page {} fetched: {} items, next_cursor: {}", 
+                page_count, 
+                paginated_response.items.len(),
+                paginated_response.next_cursor.is_some()
+            );
+            
+            // Add items to the result
+            all_items.extend(paginated_response.items);
+            
+            // Check if there's more data to fetch
+            match paginated_response.next_cursor {
+                Some(next) if !next.is_empty() => {
+                    cursor = Some(next);
+                }
+                _ => {
+                    // No more pages
+                    break;
+                }
+            }
+            
+            // Safety check to prevent infinite loops (max 1000 pages)
+            if page_count >= 1000 {
+                tracing::warn!("Reached maximum page limit (1000), stopping pagination");
+                break;
+            }
         }
+        
+        tracing::info!("Completed fetching R2 folder files: {} total items from {} pages", all_items.len(), page_count);
+        Ok(all_items)
     }
     
     // 메모리 캐시에서 전체 데이터 가져오기 (캐시가 없으면 로드)
@@ -427,17 +471,30 @@ pub struct R2WorkerFileValue {
     pub file: String,
     pub original_file: String,
     pub size: u64,
+    #[serde(default)]
     pub subtitle: Vec<String>,
     #[serde(rename = "modifiedDate")]
     pub modified_date: String,
     #[serde(rename = "createDate")]
     pub create_date: String,
+    #[serde(rename = "play_link", skip_serializing_if = "Option::is_none")]
+    pub play_link: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct R2WorkerFileItem {
     pub key: String,
+    pub index: Option<u64>,
     pub value: R2WorkerFileValue,
+}
+
+// R2 Worker API 페이지네이션 응답 구조체
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct R2WorkerPaginatedResponse {
+    pub items: Vec<R2WorkerFileItem>,
+    pub count: u64,
+    #[serde(rename = "nextCursor")]
+    pub next_cursor: Option<String>,
 }
 
 // R2 Worker API는 직접 배열을 반환
