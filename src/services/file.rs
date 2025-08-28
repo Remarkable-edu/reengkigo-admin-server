@@ -204,11 +204,18 @@ impl FileService {
         
         // R2WorkerFolderResponse를 R2AllFilesResponse로 변환
         let files: Vec<R2FileInfo> = all_files_data.iter()
-            .map(|item| R2FileInfo {
-                key: item.key.clone(),
-                size: item.value.size,
-                last_modified: item.value.modified_date.clone(),
-                url: format!("https://r2-api.reengki.com/file?key={}", item.key),
+            .filter_map(|item| {
+                // file 필드가 있는 항목만 포함
+                if item.value.file.is_some() {
+                    Some(R2FileInfo {
+                        key: item.key.clone(),
+                        size: item.value.size,
+                        last_modified: item.value.modified_date.clone().unwrap_or_default(),
+                        url: format!("https://r2-api.reengki.com/file?key={}", item.key),
+                    })
+                } else {
+                    None
+                }
             })
             .collect();
         
@@ -245,9 +252,11 @@ impl FileService {
         tracing::info!("Starting optimized fetch for R2 folder files with key: {}", key);
         
         // First, get the initial page to determine if we need pagination
+        // Use limit=900 to fetch more data in a single request
+        let limit = "900";
         let initial_response = self.client
             .get(base_url)
-            .query(&[("key", key)])
+            .query(&[("key", key), ("limit", limit)])
             .send()
             .await?;
             
@@ -284,9 +293,10 @@ impl FileService {
                     let key = key.to_string();
                     
                     async move {
+                        let limit = "900".to_string();
                         let response = client
                             .get(&url)
-                            .query(&[("key", &key), ("cursor", &cursor)])
+                            .query(&[("key", &key), ("cursor", &cursor), ("limit", &limit)])
                             .send()
                             .await?;
                             
@@ -557,15 +567,18 @@ pub struct R2AllFilesResponse {
 // R2 Worker API용 구조체 (새로운 API)
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct R2WorkerFileValue {
-    pub file: String,
-    pub original_file: String,
+    #[serde(default)]
+    pub file: Option<String>,
+    #[serde(default)]
+    pub original_file: Option<String>,
+    #[serde(default)]
     pub size: u64,
     #[serde(default)]
     pub subtitle: Vec<String>,
-    #[serde(rename = "modifiedDate")]
-    pub modified_date: String,
-    #[serde(rename = "createDate")]
-    pub create_date: String,
+    #[serde(rename = "modifiedDate", default)]
+    pub modified_date: Option<String>,
+    #[serde(rename = "createDate", default)]
+    pub create_date: Option<String>,
     #[serde(rename = "play_link", skip_serializing_if = "Option::is_none")]
     pub play_link: Option<String>,
 }
@@ -584,6 +597,8 @@ pub struct R2WorkerPaginatedResponse {
     pub count: u64,
     #[serde(rename = "nextCursor")]
     pub next_cursor: Option<String>,
+    #[serde(rename = "listComplete", default)]
+    pub list_complete: Option<bool>,
 }
 
 // R2 Worker API는 직접 배열을 반환

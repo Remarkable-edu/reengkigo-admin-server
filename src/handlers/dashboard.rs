@@ -315,23 +315,27 @@ async fn build_folder_structure(app_state: &AppState, target_path: &str) -> Resu
                             // 교재 레벨 파일만 선택 (하위 폴더의 파일 제외)
                             let file_path_parts: Vec<&str> = item.key.split('/').collect();
                             if file_path_parts.len() == 2 && file_path_parts[0] == curriculum_id {
-                                let filename = item.value.file
-                                    .rsplit('/')
-                                    .next()
-                                    .unwrap_or(&item.value.file)
-                                    .to_string();
-                                let file_type = get_file_type(&filename);
-                                
-                                Some(FolderItem {
-                                    name: filename,
-                                    path: item.key.clone(),
-                                    item_type: "file".to_string(),
-                                    size: Some(item.value.size),
-                                    file_type: Some(file_type),
-                                    url: Some(format!("https://reengki-assets-r2-worker.reengkigo.workers.dev/content/{}/{}", curriculum_id, item.key.split('/').last().unwrap_or(&item.key))),
-                                    modified_at: Some(item.value.modified_date),
-                                    children_count: None,
-                                })
+                                if let Some(file_path) = &item.value.file {
+                                    let filename = file_path
+                                        .rsplit('/')
+                                        .next()
+                                        .unwrap_or(file_path)
+                                        .to_string();
+                                    let file_type = get_file_type(&filename);
+                                    
+                                    Some(FolderItem {
+                                        name: filename,
+                                        path: item.key.clone(),
+                                        item_type: "file".to_string(),
+                                        size: Some(item.value.size),
+                                        file_type: Some(file_type),
+                                        url: Some(format!("https://reengki-assets-r2-worker.reengkigo.workers.dev/content/{}/{}", curriculum_id, item.key.split('/').last().unwrap_or(&item.key))),
+                                        modified_at: item.value.modified_date.clone(),
+                                        children_count: None,
+                                    })
+                                } else {
+                                    None
+                                }
                             } else {
                                 None
                             }
@@ -368,24 +372,28 @@ async fn build_folder_structure(app_state: &AppState, target_path: &str) -> Resu
             match app_state.file_service.get_r2_folder_files(&folder_key).await {
                 Ok(folder_result) => {
                     let mut file_items: Vec<FolderItem> = folder_result.into_iter()
-                        .map(|item| {
-                            // item.value.file에서 마지막 '/' 이후의 파일명만 추출
-                            let filename = item.value.file
-                                .rsplit('/')
-                                .next()
-                                .unwrap_or(&item.value.file)
-                                .to_string();
-                            let file_type = get_file_type(&filename);
-                            
-                            FolderItem {
-                                name: filename,
-                                path: item.key.clone(),
-                                item_type: "file".to_string(),
-                                size: Some(item.value.size),
-                                file_type: Some(file_type),
-                                url: Some(format!("https://r2-api.reengki.com/file?key={}", item.key)),
-                                modified_at: Some(item.value.modified_date),
-                                children_count: None,
+                        .filter_map(|item| {
+                            // item.value.file이 있는 경우만 처리
+                            if let Some(file_path) = &item.value.file {
+                                let filename = file_path
+                                    .rsplit('/')
+                                    .next()
+                                    .unwrap_or(file_path)
+                                    .to_string();
+                                let file_type = get_file_type(&filename);
+                                
+                                Some(FolderItem {
+                                    name: filename,
+                                    path: item.key.clone(),
+                                    item_type: "file".to_string(),
+                                    size: Some(item.value.size),
+                                    file_type: Some(file_type),
+                                    url: Some(format!("https://r2-api.reengki.com/file?key={}", item.key)),
+                                    modified_at: item.value.modified_date.clone(),
+                                    children_count: None,
+                                })
+                            } else {
+                                None
                             }
                         })
                         .collect();
