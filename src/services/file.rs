@@ -8,6 +8,7 @@ use reqwest::{multipart, Client};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 use tokio::sync::RwLock;
+use futures::future::join_all;
 
 #[derive(Clone)]
 pub struct FileService {
@@ -33,10 +34,14 @@ impl AllFilesCache {
 
 impl FileService {
     pub fn new(base_url: String, bucket: String) -> Self {
-        // Create client with increased timeout for large file uploads
+        // Create client with optimized settings for better performance
         let client = Client::builder()
             .timeout(Duration::from_secs(600)) // 10 minutes timeout for large files
-            .connect_timeout(Duration::from_secs(30)) // 30 seconds connection timeout
+            .connect_timeout(Duration::from_secs(10)) // Reduced connection timeout
+            .pool_max_idle_per_host(20) // Increase connection pool size
+            .pool_idle_timeout(Duration::from_secs(90)) // Keep connections alive longer
+            .tcp_nodelay(true) // Disable Nagle's algorithm for lower latency
+            // gzip and brotli are enabled by default in reqwest
             .build()
             .expect("Failed to build HTTP client");
             
@@ -232,65 +237,105 @@ impl FileService {
         Ok(filtered_files)
     }
     
-    // 전체 데이터 로드를 위한 직접 API 호출 (페이지네이션 지원)
+    // 전체 데이터 로드를 위한 직접 API 호출 (최적화된 병렬 페이지네이션)
     async fn get_r2_folder_files_direct(&self, key: &str) -> Result<R2WorkerFolderResponse> {
         let base_url = "https://reengki-assets-r2-worker.reengkigo.workers.dev/folder-files";
-        let mut all_items = Vec::new();
-        let mut cursor: Option<String> = None;
-        let mut page_count = 0;
+        let start_time = Instant::now();
         
-        tracing::info!("Starting to fetch R2 folder files for key: {}", key);
+        tracing::info!("Starting optimized fetch for R2 folder files with key: {}", key);
         
-        loop {
-            page_count += 1;
+        // First, get the initial page to determine if we need pagination
+        let initial_response = self.client
+            .get(base_url)
+            .query(&[("key", key)])
+            .send()
+            .await?;
             
-            // Build request with cursor if available
-            let mut request = self.client.get(base_url).query(&[("key", key)]);
+        if !initial_response.status().is_success() {
+            anyhow::bail!("Failed to get R2 folder files: {}", initial_response.status())
+        }
+        
+        let first_page = initial_response.json::<R2WorkerPaginatedResponse>().await?;
+        let mut all_items = first_page.items;
+        
+        // If there's no next cursor, we're done
+        let Some(next_cursor) = first_page.next_cursor else {
+            tracing::info!("Single page fetch completed: {} items in {:?}", 
+                all_items.len(), start_time.elapsed());
+            return Ok(all_items);
+        };
+        
+        // For multiple pages, fetch remaining pages in batches
+        const PARALLEL_BATCH_SIZE: usize = 5; // Fetch 5 pages concurrently
+        let mut remaining_cursors = vec![next_cursor];
+        let mut page_count = 1;
+        
+        // Collect all pages using parallel batching
+        while !remaining_cursors.is_empty() {
+            let batch_size = remaining_cursors.len().min(PARALLEL_BATCH_SIZE);
+            let current_batch: Vec<_> = remaining_cursors.drain(..batch_size).collect();
             
-            if let Some(ref cursor_value) = cursor {
-                request = request.query(&[("cursor", cursor_value.as_str())]);
-                tracing::debug!("Fetching page {} with cursor", page_count);
-            } else {
-                tracing::debug!("Fetching page {} (initial request)", page_count);
-            }
+            // Create futures for parallel fetching
+            let fetch_futures: Vec<_> = current_batch
+                .into_iter()
+                .map(|cursor| {
+                    let client = self.client.clone();
+                    let url = base_url.to_string();
+                    let key = key.to_string();
+                    
+                    async move {
+                        let response = client
+                            .get(&url)
+                            .query(&[("key", &key), ("cursor", &cursor)])
+                            .send()
+                            .await?;
+                            
+                        if !response.status().is_success() {
+                            anyhow::bail!("Failed to get R2 folder files page: {}", response.status())
+                        }
+                        
+                        response.json::<R2WorkerPaginatedResponse>().await
+                            .map_err(|e| anyhow::anyhow!("Failed to parse JSON: {}", e))
+                    }
+                })
+                .collect();
             
-            let response = request.send().await?;
+            // Execute batch in parallel
+            let batch_results = join_all(fetch_futures).await;
             
-            if !response.status().is_success() {
-                anyhow::bail!("Failed to get R2 folder files: {}", response.status())
-            }
-            
-            // Parse the paginated response
-            let paginated_response = response.json::<R2WorkerPaginatedResponse>().await?;
-            
-            tracing::info!("Page {} fetched: {} items, next_cursor: {}", 
-                page_count, 
-                paginated_response.items.len(),
-                paginated_response.next_cursor.is_some()
-            );
-            
-            // Add items to the result
-            all_items.extend(paginated_response.items);
-            
-            // Check if there's more data to fetch
-            match paginated_response.next_cursor {
-                Some(next) if !next.is_empty() => {
-                    cursor = Some(next);
+            // Process results
+            for result in batch_results {
+                match result {
+                    Ok(page_response) => {
+                        page_count += 1;
+                        let items_count = page_response.items.len();
+                        all_items.extend(page_response.items);
+                        
+                        // Add next cursor if exists
+                        if let Some(next) = page_response.next_cursor {
+                            if !next.is_empty() {
+                                remaining_cursors.push(next);
+                            }
+                        }
+                        
+                        tracing::debug!("Batch page fetched: {} items", items_count);
+                    }
+                    Err(e) => {
+                        tracing::error!("Failed to fetch page in batch: {}", e);
+                        return Err(e);
+                    }
                 }
-                _ => {
-                    // No more pages
-                    break;
-                }
             }
             
-            // Safety check to prevent infinite loops (max 1000 pages)
+            // Safety check
             if page_count >= 1000 {
                 tracing::warn!("Reached maximum page limit (1000), stopping pagination");
                 break;
             }
         }
         
-        tracing::info!("Completed fetching R2 folder files: {} total items from {} pages", all_items.len(), page_count);
+        tracing::info!("Optimized fetch completed: {} total items from {} pages in {:?}", 
+            all_items.len(), page_count, start_time.elapsed());
         Ok(all_items)
     }
     
@@ -316,6 +361,11 @@ impl FileService {
         let cache_read = self.all_files_cache.read().await;
         if let Some(ref cache) = *cache_read {
             if !cache.is_expired() {
+                // 캐시가 곧 만료될 예정이면 백그라운드에서 미리 갱신
+                if cache.created_at.elapsed() > Duration::from_secs(480) { // 8분 경과
+                    drop(cache_read);
+                    self.refresh_cache_in_background();
+                }
                 return Ok(());
             }
         }
@@ -325,15 +375,54 @@ impl FileService {
         Ok(())
     }
     
+    // 백그라운드에서 캐시 갱신 (현재 캐시는 유지하면서 새 데이터 로드)
+    fn refresh_cache_in_background(&self) {
+        let cache = self.all_files_cache.clone();
+        let service = self.clone();
+        
+        tokio::spawn(async move {
+            tracing::info!("Starting background cache refresh");
+            match service.get_r2_folder_files_direct("*").await {
+                Ok(new_data) => {
+                    let ttl = Duration::from_secs(1800); // 30분 TTL (더 길게)
+                    let cache_entry = AllFilesCache {
+                        data: new_data.clone(),
+                        created_at: Instant::now(),
+                        ttl,
+                    };
+                    
+                    let mut cache_write = cache.write().await;
+                    *cache_write = Some(cache_entry);
+                    tracing::info!("Background cache refresh completed with {} files", new_data.len());
+                }
+                Err(e) => {
+                    tracing::error!("Failed to refresh cache in background: {}", e);
+                }
+            }
+        });
+    }
+    
     // 전체 데이터를 캐시에 로드
     async fn load_all_files_to_cache(&self) -> Result<R2WorkerFolderResponse> {
         tracing::info!("Loading all files to cache from R2 Worker API");
+        
+        // 이미 로딩 중인지 확인 (중복 로드 방지)
+        {
+            let cache_read = self.all_files_cache.read().await;
+            if let Some(ref cache) = *cache_read {
+                // 다른 스레드가 방금 로드했을 수 있음
+                if cache.created_at.elapsed() < Duration::from_secs(5) {
+                    tracing::info!("Cache was just loaded by another thread");
+                    return Ok(cache.data.clone());
+                }
+            }
+        }
         
         // R2 Worker API에서 전체 데이터 가져오기 ("*" 사용)
         let worker_response = self.get_r2_folder_files_direct("*").await?;
         
         // 캐시에 저장
-        let ttl = Duration::from_secs(600); // 10분 TTL
+        let ttl = Duration::from_secs(1800); // 30분 TTL로 증가
         let cache_entry = AllFilesCache {
             data: worker_response.clone(),
             created_at: Instant::now(),
