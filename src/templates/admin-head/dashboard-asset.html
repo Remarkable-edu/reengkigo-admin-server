@@ -1886,7 +1886,8 @@
         
         async function collectVideosRecursively(path, videos) {
             try {
-                const apiUrl = `/api/folders/${encodeURIComponent(path)}`;
+                const category = getCurrentCategory();
+                const apiUrl = `/api/folders/${encodeURIComponent(path)}?category=${encodeURIComponent(category)}`;
                 const response = await API.get(apiUrl);
                 
                 if (response && response.items) {
@@ -1977,7 +1978,8 @@
         
         async function collectSubtitlesRecursively(path, subtitles) {
             try {
-                const apiUrl = `/api/folders/${encodeURIComponent(path)}`;
+                const category = getCurrentCategory();
+                const apiUrl = `/api/folders/${encodeURIComponent(path)}?category=${encodeURIComponent(category)}`;
                 const response = await API.get(apiUrl);
                 
                 if (response && response.items) {
@@ -1990,7 +1992,8 @@
                                 const title = pathParts[1];
                                 
                                 try {
-                                    const subtitleResponse = await API.get(`/api/subtitle/${bookId}/${title}`);
+                                    const category = getCurrentCategory();
+                                    const subtitleResponse = await API.get(`/api/subtitle/${bookId}/${title}?category=${encodeURIComponent(category)}`);
                                     if (subtitleResponse.success && subtitleResponse.data && Array.isArray(subtitleResponse.data)) {
                                         subtitleResponse.data.forEach(subtitleItem => {
                                             subtitles.push({
