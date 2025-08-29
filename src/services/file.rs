@@ -8,15 +8,15 @@ use reqwest::{multipart, Client};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 use tokio::sync::RwLock;
-use futures::future::join_all;
+use std::collections::HashMap;
 
 #[derive(Clone)]
 pub struct FileService {
     client: Arc<Client>,
     base_url: String,
     bucket: String,
-    // 단일 전체 데이터 메모리 캐시
-    all_files_cache: Arc<RwLock<Option<AllFilesCache>>>,
+    // 카테고리별 전체 데이터 메모리 캐시
+    all_files_cache: Arc<RwLock<HashMap<String, AllFilesCache>>>,
 }
 
 #[derive(Debug, Clone)]
@@ -49,7 +49,7 @@ impl FileService {
             client: Arc::new(client),
             base_url,
             bucket,
-            all_files_cache: Arc::new(RwLock::new(None)),
+            all_files_cache: Arc::new(RwLock::new(HashMap::new())),
         }
     }
 
@@ -263,105 +263,41 @@ impl FileService {
         let base_url = "https://assets.reengkigo.com/folder-files";
         let start_time = Instant::now();
         
-        tracing::info!("Starting optimized fetch for R2 folder files with key: {} and category: {}", key, category);
+        tracing::info!("Fetching R2 folder files with key: {} and category: {}", key, category);
         
-        // First, get the initial page to determine if we need pagination
-        // Use limit=900 to fetch more data in a single request
-        let limit = "900";
-        let initial_response = self.client
+        // Try simple API call first (no pagination parameters)
+        let response = self.client
             .get(base_url)
-            .query(&[("key", key), ("limit", limit), ("category", category)])
+            .query(&[("key", key), ("category", category)])
             .send()
             .await?;
             
-        if !initial_response.status().is_success() {
-            anyhow::bail!("Failed to get R2 folder files: {}", initial_response.status())
+        if !response.status().is_success() {
+            tracing::error!("API request failed with status: {}", response.status());
+            anyhow::bail!("Failed to get R2 folder files: {}", response.status())
         }
         
-        let first_page = initial_response.json::<R2WorkerPaginatedResponse>().await?;
-        let mut all_items = first_page.items;
+        // Try to parse as direct array first
+        let response_text = response.text().await?;
+        tracing::debug!("API response length: {} chars", response_text.len());
         
-        // If there's no next cursor, we're done
-        let Some(next_cursor) = first_page.next_cursor else {
-            tracing::info!("Single page fetch completed: {} items in {:?}", 
-                all_items.len(), start_time.elapsed());
-            return Ok(all_items);
-        };
-        
-        // For multiple pages, fetch remaining pages in batches
-        const PARALLEL_BATCH_SIZE: usize = 5; // Fetch 5 pages concurrently
-        let mut remaining_cursors = vec![next_cursor];
-        let mut page_count = 1;
-        
-        // Collect all pages using parallel batching
-        while !remaining_cursors.is_empty() {
-            let batch_size = remaining_cursors.len().min(PARALLEL_BATCH_SIZE);
-            let current_batch: Vec<_> = remaining_cursors.drain(..batch_size).collect();
-            
-            // Create futures for parallel fetching
-            let fetch_futures: Vec<_> = current_batch
-                .into_iter()
-                .map(|cursor| {
-                    let client = self.client.clone();
-                    let url = base_url.to_string();
-                    let key = key.to_string();
-                    let category = category.to_string();
-                    
-                    async move {
-                        let limit = "900".to_string();
-                        let response = client
-                            .get(&url)
-                            .query(&[("key", &key), ("cursor", &cursor), ("limit", &limit), ("category", &category)])
-                            .send()
-                            .await?;
-                            
-                        if !response.status().is_success() {
-                            anyhow::bail!("Failed to get R2 folder files page: {}", response.status())
-                        }
-                        
-                        response.json::<R2WorkerPaginatedResponse>().await
-                            .map_err(|e| anyhow::anyhow!("Failed to parse JSON: {}", e))
-                    }
-                })
-                .collect();
-            
-            // Execute batch in parallel
-            let batch_results = join_all(fetch_futures).await;
-            
-            // Process results
-            for result in batch_results {
-                match result {
-                    Ok(page_response) => {
-                        page_count += 1;
-                        let items_count = page_response.items.len();
-                        all_items.extend(page_response.items);
-                        
-                        // Add next cursor if exists
-                        if let Some(next) = page_response.next_cursor {
-                            if !next.is_empty() {
-                                remaining_cursors.push(next);
-                            }
-                        }
-                        
-                        tracing::debug!("Batch page fetched: {} items", items_count);
-                    }
-                    Err(e) => {
-                        tracing::error!("Failed to fetch page in batch: {}", e);
-                        return Err(e);
-                    }
-                }
-            }
-            
-            // Safety check
-            if page_count >= 1000 {
-                tracing::warn!("Reached maximum page limit (1000), stopping pagination");
-                break;
-            }
+        // Try parsing as direct array (Vec<R2WorkerFileItem>)
+        if let Ok(items) = serde_json::from_str::<R2WorkerFolderResponse>(&response_text) {
+            tracing::info!("Direct array parse successful: {} items in {:?}", 
+                items.len(), start_time.elapsed());
+            return Ok(items);
         }
         
-        tracing::info!("Optimized fetch completed: {} total items from {} pages in {:?}", 
-            all_items.len(), page_count, start_time.elapsed());
-        Ok(all_items)
+        // If that fails, try parsing as paginated response
+        if let Ok(paginated) = serde_json::from_str::<R2WorkerPaginatedResponse>(&response_text) {
+            tracing::info!("Paginated response parse successful: {} items in {:?}", 
+                paginated.items.len(), start_time.elapsed());
+            return Ok(paginated.items);
+        }
+        
+        tracing::error!("Failed to parse API response as either direct array or paginated response");
+        tracing::debug!("Response text preview: {}", &response_text[..response_text.len().min(500)]);
+        anyhow::bail!("Failed to parse API response")
     }
     
     // 메모리 캐시에서 전체 데이터 가져오기 (캐시가 없으면 로드)
@@ -373,9 +309,9 @@ impl FileService {
         self.ensure_all_files_loaded_with_category(category).await?;
         
         let cache_read = self.all_files_cache.read().await;
-        if let Some(ref cache) = *cache_read {
+        if let Some(cache) = cache_read.get(category) {
             if !cache.is_expired() {
-                tracing::info!("Cache hit for all_files (age: {:?})", cache.created_at.elapsed());
+                tracing::info!("Cache hit for all_files category '{}' (age: {:?})", category, cache.created_at.elapsed());
                 return Ok(cache.data.clone());
             }
         }
@@ -392,7 +328,7 @@ impl FileService {
     
     async fn ensure_all_files_loaded_with_category(&self, category: &str) -> Result<()> {
         let cache_read = self.all_files_cache.read().await;
-        if let Some(ref cache) = *cache_read {
+        if let Some(cache) = cache_read.get(category) {
             if !cache.is_expired() {
                 // 캐시가 곧 만료될 예정이면 백그라운드에서 미리 갱신
                 if cache.created_at.elapsed() > Duration::from_secs(480) { // 8분 경과
@@ -430,7 +366,7 @@ impl FileService {
                     };
                     
                     let mut cache_write = cache.write().await;
-                    *cache_write = Some(cache_entry);
+                    cache_write.insert(category.clone(), cache_entry);
                     tracing::info!("Background cache refresh completed with {} files for category: {}", new_data.len(), category);
                 }
                 Err(e) => {
@@ -451,10 +387,10 @@ impl FileService {
         // 이미 로딩 중인지 확인 (중복 로드 방지)
         {
             let cache_read = self.all_files_cache.read().await;
-            if let Some(ref cache) = *cache_read {
+            if let Some(cache) = cache_read.get(category) {
                 // 다른 스레드가 방금 로드했을 수 있음
                 if cache.created_at.elapsed() < Duration::from_secs(5) {
-                    tracing::info!("Cache was just loaded by another thread");
+                    tracing::info!("Cache was just loaded by another thread for category: {}", category);
                     return Ok(cache.data.clone());
                 }
             }
@@ -473,7 +409,7 @@ impl FileService {
         
         {
             let mut cache_write = self.all_files_cache.write().await;
-            *cache_write = Some(cache_entry);
+            cache_write.insert(category.to_string(), cache_entry);
         }
         
         tracing::info!("Cached all_files with {} files for category: {} (TTL: {:?})", worker_response.len(), category, ttl);
@@ -531,42 +467,42 @@ impl FileService {
     // 전체 캐시 초기화 (첫 진입 시)
     pub async fn clear_all_cache(&self) {
         let mut cache_write = self.all_files_cache.write().await;
-        *cache_write = None;
+        cache_write.clear();
         tracing::info!("All files cache cleared");
     }
     
     // 업로드/삭제 시 캐시 무효화 
     pub async fn invalidate_cache_for_path(&self, _path: &str) {
-        // 전체 데이터를 하나로 관리하므로 항상 전체 캐시 무효화
+        // 모든 카테고리 캐시 무효화
         let mut cache_write = self.all_files_cache.write().await;
-        *cache_write = None;
-        tracing::info!("All files cache invalidated due to path change: {}", _path);
+        cache_write.clear();
+        tracing::info!("All category caches invalidated due to path change: {}", _path);
     }
     
     // 만료된 캐시 정리 (자동으로 처리됨)
     pub async fn cleanup_expired_cache(&self) {
         let mut cache_write = self.all_files_cache.write().await;
-        if let Some(ref cache) = *cache_write {
-            if cache.is_expired() {
-                *cache_write = None;
-                tracing::info!("Expired cache cleaned up");
-            }
+        let expired_categories: Vec<String> = cache_write
+            .iter()
+            .filter(|(_, cache)| cache.is_expired())
+            .map(|(category, _)| category.clone())
+            .collect();
+        
+        for category in expired_categories {
+            cache_write.remove(&category);
+            tracing::info!("Expired cache cleaned up for category: {}", category);
         }
     }
     
     // 캐시 통계 정보 반환
     pub async fn get_cache_stats(&self) -> (usize, usize) {
         let cache_read = self.all_files_cache.read().await;
-        match *cache_read {
-            Some(ref cache) => {
-                if cache.is_expired() {
-                    (1, 1) // 1개 있지만 만료됨
-                } else {
-                    (1, 0) // 1개 있고 유효함
-                }
-            }
-            None => (0, 0) // 캐시 없음
-        }
+        let total = cache_read.len();
+        let expired = cache_read
+            .values()
+            .filter(|cache| cache.is_expired())
+            .count();
+        (total, expired)
     }
 
 }

@@ -532,25 +532,36 @@ pub struct SubtitleRequest {
 }
 
 async fn find_subtitle_filename(book_id: &str, title: &str) -> String {
-    let folder_url = format!("https://r2-api.reengki.com/folder-files?key={}/{}", book_id, title);
+    find_subtitle_filename_with_category(book_id, title, "reengkigo").await
+}
+
+async fn find_subtitle_filename_with_category(book_id: &str, title: &str, category: &str) -> String {
+    let folder_url = format!("https://assets.reengkigo.com/folder-files?key={}/{}&category={}", book_id, title, category);
     
     match reqwest::get(&folder_url).await {
         Ok(folder_response) => {
             if folder_response.status().is_success() {
                 match folder_response.text().await {
                     Ok(folder_content) => {
-                        if let Ok(folder_data) = serde_json::from_str::<serde_json::Value>(&folder_content) {
-                            if let Some(files) = folder_data.as_array() {
-                                // Find subtitle file
-                                for file in files {
-                                    if let Some(key) = file.get("key").and_then(|k| k.as_str()) {
-                                        let filename = key.split('/').last().unwrap_or("");
-                                        if filename.to_lowercase().ends_with(".json") && 
-                                           (filename.to_lowercase().contains("subtitle") || 
-                                            filename.to_lowercase().contains("sub")) {
-                                            info!("Found subtitle file: {}", filename);
-                                            return filename.to_string();
-                                        }
+                        // Try parsing as direct array first
+                        if let Ok(files) = serde_json::from_str::<serde_json::Value>(&folder_content) {
+                            let files_array = if files.is_array() {
+                                files.as_array().unwrap()
+                            } else if let Some(items) = files.get("items").and_then(|i| i.as_array()) {
+                                items
+                            } else {
+                                return "subtitle.json".to_string();
+                            };
+                            
+                            // Find subtitle file
+                            for file in files_array {
+                                if let Some(key) = file.get("key").and_then(|k| k.as_str()) {
+                                    let filename = key.split('/').last().unwrap_or("");
+                                    if filename.to_lowercase().ends_with(".json") && 
+                                       (filename.to_lowercase().contains("subtitle") || 
+                                        filename.to_lowercase().contains("sub")) {
+                                        info!("Found subtitle file: {} for category: {}", filename, category);
+                                        return filename.to_string();
                                     }
                                 }
                             }
@@ -570,11 +581,12 @@ async fn find_subtitle_filename(book_id: &str, title: &str) -> String {
 pub async fn get_subtitle_data(
     State(_app_state): State<AppState>,
     Path((book_id, title)): Path<(String, String)>,
+    Query(query): Query<CategoryQuery>
 ) -> impl IntoResponse {
-    info!("Getting subtitle data for: {}/{}", book_id, title);
+    info!("Getting subtitle data for: {}/{} with category: {}", book_id, title, query.category);
     
     // Find the actual subtitle filename
-    let subtitle_filename = find_subtitle_filename(&book_id, &title).await;
+    let subtitle_filename = find_subtitle_filename_with_category(&book_id, &title, &query.category).await;
     let subtitle_url = format!("https://r2-api.reengki.com/download/{}/{}/{}", book_id, title, subtitle_filename);
     
     match reqwest::get(&subtitle_url).await {
@@ -775,6 +787,7 @@ pub async fn upload_single_file(
     
     let mut file_data: Option<(String, axum::body::Bytes)> = None;
     let mut full_path = String::new();
+    let mut category = String::from("reengkigo"); // 기본값
     
     while let Some(field) = multipart.next_field().await.unwrap_or(None) {
         match field.name().unwrap_or("") {
@@ -797,6 +810,9 @@ pub async fn upload_single_file(
             }
             "full_path" => {
                 full_path = field.text().await.unwrap_or_default();
+            }
+            "category" => {
+                category = field.text().await.unwrap_or(String::from("reengkigo"));
             }
             _ => {}
         }
@@ -827,7 +843,7 @@ pub async fn upload_single_file(
         
         // Use the file service to upload the file
         let files = vec![(filename.clone(), bytes)];
-        match app_state.file_service.upload_file(files, None, base_path, None).await {
+        match app_state.file_service.upload_file(files, None, base_path, Some(&category)).await {
             Ok(response) => {
                 info!("File uploaded successfully to: {}", full_path);
                 (

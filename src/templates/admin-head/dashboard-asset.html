@@ -519,7 +519,6 @@
                                 <select class="form-select" id="categoryFilter" onchange="onCategoryChange()">
                                     <option value="reengkigo">Reengkigo</option>
                                     <option value="class">Class</option>
-                                    <option value="teenz">Teenz</option>
                                 </select>
                             </div>
                         </div>
@@ -599,7 +598,6 @@
                             <select class="form-select" id="assetCategory" name="category" required>
                                 <option value="reengkigo">Reengkigo</option>
                                 <option value="class">Class</option>
-                                <option value="teenz">Teenz</option>
                             </select>
                         </div>
 
@@ -866,6 +864,15 @@
                         }
                         
                         modal.show();
+                        
+                        // Set current category after modal is shown
+                        setTimeout(() => {
+                            const currentCategory = getCurrentCategory();
+                            const categorySelect = document.getElementById('assetCategory');
+                            if (categorySelect) {
+                                categorySelect.value = currentCategory;
+                            }
+                        }, 100);
                     } else {
                         alert('에셋은 루트 또는 첫 번째 하위 폴더에서만 추가할 수 있습니다.');
                     }
@@ -2209,17 +2216,25 @@
                 });
                 modal.show();
                 
-                // Auto-fill book ID if we're in second depth
-                if (bookId) {
-                    setTimeout(() => {
+                // Auto-fill book ID and category
+                setTimeout(() => {
+                    // Set current category
+                    const currentCategory = getCurrentCategory();
+                    const categorySelect = document.getElementById('assetCategory');
+                    if (categorySelect) {
+                        categorySelect.value = currentCategory;
+                    }
+                    
+                    // Auto-fill book ID if we're in second depth
+                    if (bookId) {
                         const bookIdInput = document.getElementById('bookId');
                         if (bookIdInput) {
                             bookIdInput.value = bookId;
                             bookIdInput.readOnly = true;
                             bookIdInput.style.backgroundColor = '#f8f9fa';
                         }
-                    }, 100);
-                }
+                    }
+                }, 100);
             };
             menu.appendChild(addItem);
             
@@ -3063,6 +3078,10 @@
                 // full_path 파라미터 추가 (서버에서 요구함)
                 formData.append('full_path', bookId + '/' + coverFileName);
                 
+                // Add current category
+                const currentCategory = getCurrentCategory();
+                formData.append('category', currentCategory);
+                
                 // Progress elements
                 const progressSection = document.getElementById('coverUploadProgressSection');
                 const progressBar = document.getElementById('coverUploadProgressBar');
@@ -3872,7 +3891,9 @@
             videoContent.dataset.title = title;
             
             // Find video file
-            API.get(`/api/folders/${bookId}/${title}`)
+            const currentCategory = getCurrentCategory();
+            const timestamp = Date.now();
+            API.get(`/api/folders/${bookId}/${title}?category=${encodeURIComponent(currentCategory)}&_t=${timestamp}`)
                 .then(response => {
                     const videoFiles = response.items.filter(item => 
                         item.item_type === 'file' && 
@@ -3978,7 +3999,9 @@
             });
             
             // Find image files
-            API.get(`/api/folders/${bookId}/${title}`)
+            const currentCategory = getCurrentCategory();
+            const timestamp = Date.now();
+            API.get(`/api/folders/${bookId}/${title}?category=${encodeURIComponent(currentCategory)}&_t=${timestamp}`)
                 .then(response => {
                     const imageFiles = response.items.filter(item => 
                         item.item_type === 'file' && 
@@ -4077,7 +4100,8 @@
             subtitleContent.dataset.title = title;
             
             // Use internal API endpoint
-            API.get(`/api/subtitle/${bookId}/${title}`)
+            const currentCategory = getCurrentCategory();
+            API.get(`/api/subtitle/${bookId}/${title}?category=${encodeURIComponent(currentCategory)}`)
                 .then(response => {
                     
                     if (!response.success) {
@@ -4529,6 +4553,10 @@
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('full_path', subtitlePath);
+                
+                // Add current category
+                const currentCategory = getCurrentCategory();
+                formData.append('category', currentCategory);
                 
                 const response = await fetch('/api/upload-file', {
                     method: 'POST',
@@ -5007,6 +5035,10 @@
                 formData.append('file', renamedFile);
                 formData.append('full_path', imagePath);
                 
+                // Add current category
+                const currentCategory = getCurrentCategory();
+                formData.append('category', currentCategory);
+                
                 const response = await fetch('/api/upload-file', {
                     method: 'POST',
                     credentials: 'include',
@@ -5255,6 +5287,10 @@
                 const renamedFile = new File([file], originalFileName, { type: file.type });
                 formData.append('file', renamedFile);
                 formData.append('full_path', videoPath);
+                
+                // Add current category
+                const currentCategory = getCurrentCategory();
+                formData.append('category', currentCategory);
                 
                 // Set up progress tracking
                 xhr.upload.addEventListener('progress', (e) => {
