@@ -49,7 +49,7 @@ pub async fn upload_file(
     }
 
     let bucket_param = if bucket.is_empty() { None } else { Some(bucket.as_str()) };
-    match file_service.upload_file(files, bucket_param, &full_path).await {
+    match file_service.upload_file(files, bucket_param, &full_path, None).await {
         Ok(response) => (StatusCode::OK, Json(response)).into_response(),
         Err(e) => {
             error!("Upload failed: {}", e);

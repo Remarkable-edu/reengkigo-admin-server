@@ -504,7 +504,7 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <div class="row align-items-center">
-                            <div class="col-12">
+                            <div class="col-md-8">
                                 <div class="input-group">
                                     <input type="text" class="form-control" id="searchInput" placeholder="파일 및 폴더 검색..." oninput="filterItems()" onkeydown="handleSearchKeydown(event)">
                                     <button class="btn btn-outline-secondary" type="button" onclick="clearSearch()" id="clearSearchBtn" style="display: none;">
@@ -514,6 +514,13 @@
                                         <i class="fas fa-search"></i>
                                     </button>
                                 </div>
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" id="categoryFilter" onchange="onCategoryChange()">
+                                    <option value="reengkigo">Reengkigo</option>
+                                    <option value="class">Class</option>
+                                    <option value="teenz">Teenz</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -586,10 +593,14 @@
                             <input type="text" class="form-control" id="assetTitle" name="title" required placeholder="제목을 입력하세요">
                         </div>
 
-                        <!-- 카테고리 (옵션) -->
+                        <!-- 카테고리 (필수) -->
                         <div class="mb-3">
-                            <label for="assetCategory" class="form-label">카테고리</label>
-                            <input type="text" class="form-control" id="assetCategory" name="category" placeholder="예: 영어, 과학, 수학">
+                            <label for="assetCategory" class="form-label">카테고리 <span class="text-danger">*</span></label>
+                            <select class="form-select" id="assetCategory" name="category" required>
+                                <option value="reengkigo">Reengkigo</option>
+                                <option value="class">Class</option>
+                                <option value="teenz">Teenz</option>
+                            </select>
                         </div>
 
                         <!-- 표지 이미지 (옵션) -->
@@ -610,10 +621,10 @@
                         <div class="mb-3">
                             <label class="form-label">비디오 영상 <span class="text-danger">*</span></label>
                             <div class="border rounded p-3">
-                                <input type="file" class="form-control mb-2" id="videoFile" accept="video/*" required onchange="handleVideoFileChange()">
+                                <input type="file" class="form-control mb-2" id="videoFile" accept="video/*,audio/*" required onchange="handleVideoFileChange()">
                                 <div class="form-text">
                                     <i class="fas fa-info-circle"></i> 
-                                    MP4, AVI, MOV 등의 비디오 파일을 지원합니다.
+                                    MP4, AVI, MOV 등의 비디오 파일과 MP3, WAV 등의 오디오 파일을 지원합니다.
                                 </div>
                                 <div id="videoPreview" class="mt-2">
                                 </div>
@@ -999,7 +1010,11 @@
 
         function loadFolderContents(path = '') {
             // Don't encode the path - let the server handle it as is
-            const apiUrl = path ? `/api/folders/${path}` : '/api/folders';
+            const baseUrl = path ? `/api/folders/${path}` : '/api/folders';
+            const category = getCurrentCategory();
+            // Add cache-busting timestamp to prevent caching issues when switching categories
+            const timestamp = Date.now();
+            const apiUrl = `${baseUrl}?category=${encodeURIComponent(category)}&_t=${timestamp}`;
             
             // 로딩 상태 표시
             showLoadingState();
@@ -1730,7 +1745,7 @@
             const lower = filename.toLowerCase();
             if (lower.endsWith('.png') || lower.endsWith('.jpg') || lower.endsWith('.jpeg') || lower.endsWith('.gif') || lower.endsWith('.webp')) {
                 return 'image';
-            } else if (lower.endsWith('.mp4') || lower.endsWith('.mov') || lower.endsWith('.avi') || lower.endsWith('.mkv') || lower.endsWith('.webm')) {
+            } else if (lower.endsWith('.mp4') || lower.endsWith('.mov') || lower.endsWith('.avi') || lower.endsWith('.mkv') || lower.endsWith('.webm') || lower.endsWith('.mp3') || lower.endsWith('.wav') || lower.endsWith('.m4a') || lower.endsWith('.aac')) {
                 return 'video';
             } else if (lower.endsWith('.pdf')) {
                 return 'pdf';
@@ -1792,6 +1807,39 @@
         function searchFiles() {
             // This function is kept for the search button
             filterItems();
+        }
+
+        function onCategoryChange() {
+            const category = document.getElementById('categoryFilter').value;
+            // Reload folder contents with new category
+            const currentPath = getCurrentPath();
+            loadFolderContents(currentPath);
+        }
+
+        function getCurrentCategory() {
+            return document.getElementById('categoryFilter').value;
+        }
+
+        function getCurrentPath() {
+            // Extract current path from breadcrumbs or URL
+            const breadcrumbs = document.querySelectorAll('.breadcrumb-item');
+            if (breadcrumbs.length <= 1) {
+                return '';
+            }
+            
+            const pathParts = [];
+            for (let i = 1; i < breadcrumbs.length; i++) {
+                const breadcrumb = breadcrumbs[i];
+                if (!breadcrumb.classList.contains('active')) {
+                    const link = breadcrumb.querySelector('a');
+                    if (link) {
+                        pathParts.push(link.textContent.trim());
+                    }
+                } else {
+                    pathParts.push(breadcrumb.textContent.trim());
+                }
+            }
+            return pathParts.join('/');
         }
 
 
@@ -3828,7 +3876,7 @@
                 .then(response => {
                     const videoFiles = response.items.filter(item => 
                         item.item_type === 'file' && 
-                        item.name.toLowerCase().match(/\.(mp4|mov|avi|mkv|wmv|flv|webm)$/)
+                        item.name.toLowerCase().match(/\.(mp4|mov|avi|mkv|wmv|flv|webm|mp3|wav|m4a|aac)$/)
                     );
                     
                     if (videoFiles.length > 0) {
@@ -3867,8 +3915,8 @@
                                 <div id="videoEditMode" style="display: none;">
                                     <div class="mb-3">
                                         <label class="form-label">새 영상 파일 선택</label>
-                                        <input type="file" class="form-control" id="videoFileInput" accept="video/*">
-                                        <div class="form-text">MP4, MOV, AVI, WebM 등 영상 파일을 선택하세요. (최대 2GB)</div>
+                                        <input type="file" class="form-control" id="videoFileInput" accept="video/*,audio/*">
+                                        <div class="form-text">MP4, MOV, AVI, WebM 등 영상 파일 또는 MP3, WAV 등 오디오 파일을 선택하세요. (최대 2GB)</div>
                                     </div>
                                     
                                     <div class="mb-3">
@@ -5090,8 +5138,8 @@
                         <div id="videoEditMode">
                             <div class="mb-3">
                                 <label class="form-label">영상 파일 선택</label>
-                                <input type="file" class="form-control" id="videoFileInput" accept="video/*">
-                                <div class="form-text">MP4, MOV, AVI, WebM 등 영상 파일을 선택하세요. (최대 2GB)</div>
+                                <input type="file" class="form-control" id="videoFileInput" accept="video/*,audio/*">
+                                <div class="form-text">MP4, MOV, AVI, WebM 등 영상 파일 또는 MP3, WAV 등 오디오 파일을 선택하세요. (최대 2GB)</div>
                             </div>
                             
                             <div class="mb-3">
@@ -5187,8 +5235,8 @@
             
             try {
                 // Validate file type
-                if (!file.type.startsWith('video/')) {
-                    throw new Error('비디오 파일만 업로드할 수 있습니다.');
+                if (!file.type.startsWith('video/') && !file.type.startsWith('audio/')) {
+                    throw new Error('비디오 또는 오디오 파일만 업로드할 수 있습니다.');
                 }
                 
                 // Check file size (2GB limit)

@@ -1,5 +1,5 @@
 use axum::{
-    extract::{Multipart, State, Path},
+    extract::{Multipart, State, Path, Query},
     http::{StatusCode, HeaderMap, HeaderValue},
     response::{Html, IntoResponse, Json},
 };
@@ -43,13 +43,24 @@ pub struct BreadcrumbItem {
     pub path: String,
 }
 
+#[derive(Deserialize)]
+pub struct CategoryQuery {
+    #[serde(default = "default_category")]
+    pub category: String,
+}
+
+fn default_category() -> String {
+    "reengkigo".to_string()
+}
+
 pub async fn get_folder_contents(
     State(app_state): State<AppState>,
-    Path(folder_path): Path<String>
+    Path(folder_path): Path<String>,
+    Query(query): Query<CategoryQuery>
 ) -> impl IntoResponse {
-    info!("Getting folder contents for path: {}", folder_path);
+    info!("Getting folder contents for path: {} with category: {}", folder_path, query.category);
     
-    match build_folder_structure(&app_state, &folder_path).await {
+    match build_folder_structure_with_category(&app_state, &folder_path, &query.category).await {
         Ok(response) => {
             (StatusCode::OK, Json(response)).into_response()
         }
@@ -65,10 +76,13 @@ pub async fn get_folder_contents(
     }
 }
 
-pub async fn get_root_folders(State(app_state): State<AppState>) -> impl IntoResponse {
-    info!("Getting root folders");
+pub async fn get_root_folders(
+    State(app_state): State<AppState>,
+    Query(query): Query<CategoryQuery>
+) -> impl IntoResponse {
+    info!("Getting root folders with category: {}", query.category);
     
-    match build_folder_structure(&app_state, "").await {
+    match build_folder_structure_with_category(&app_state, "", &query.category).await {
         Ok(response) => {
             (StatusCode::OK, Json(response)).into_response()
         }
@@ -92,6 +106,7 @@ pub async fn create_asset(
     let file_service = &app_state.file_service;
     let mut book_id = String::new();
     let mut title = String::new();
+    let mut category = String::from("reengkigo"); // 기본값
     let mut files = Vec::new();
     let mut subtitles_json = String::new();
 
@@ -100,7 +115,7 @@ pub async fn create_asset(
         match field.name().unwrap_or("") {
             "book_id" => book_id = field.text().await.unwrap_or_default(),
             "title" => title = field.text().await.unwrap_or_default(),
-            "category" => { let _ = field.text().await.unwrap_or_default(); },
+            "category" => category = field.text().await.unwrap_or(String::from("reengkigo")),
             "subtitles" => subtitles_json = field.text().await.unwrap_or_default(),
             "cover_image" | "video_file" => {
                 let filename = field.file_name().unwrap_or("unknown").to_string();
@@ -197,7 +212,7 @@ pub async fn create_asset(
     let total_size_mb: f64 = renamed_files.iter().map(|(_, data)| data.len() as f64 / (1024.0 * 1024.0)).sum();
     info!("Total upload size: {:.2}MB", total_size_mb);
     
-    match file_service.upload_file(renamed_files, None, &full_path).await {
+    match file_service.upload_file(renamed_files, None, &full_path, Some(&category)).await {
         Ok(response) => {
             let cover_image_url = response.uploaded.iter()
                 .find(|f| f.filename.to_lowercase().contains(".png") || 
@@ -242,6 +257,10 @@ pub async fn create_asset(
 
 
 async fn build_folder_structure(app_state: &AppState, target_path: &str) -> Result<FolderContentsResponse, String> {
+    build_folder_structure_with_category(app_state, target_path, "reengkigo").await
+}
+
+async fn build_folder_structure_with_category(app_state: &AppState, target_path: &str, category: &str) -> Result<FolderContentsResponse, String> {
     // 경로 정규화 (빈 문자열은 루트)
     let normalized_path = if target_path.is_empty() || target_path == "/" {
         ""
@@ -253,7 +272,7 @@ async fn build_folder_structure(app_state: &AppState, target_path: &str) -> Resu
     
     if normalized_path.is_empty() {
         // 루트 레벨: 교재ID (첫 번째 레벨) 추출 - 최적화된 방법 사용
-        let folder_names = app_state.file_service.get_folder_structure("").await
+        let folder_names = app_state.file_service.get_folder_structure_with_category("", category).await
             .map_err(|e| format!("Failed to get folder structure: {}", e))?;
         
         let folder_items: Vec<FolderItem> = folder_names.into_iter()
@@ -289,7 +308,7 @@ async fn build_folder_structure(app_state: &AppState, target_path: &str) -> Resu
             let curriculum_id = path_parts[0];
             
             // 1. 폴더 구조 가져오기
-            let folder_names = app_state.file_service.get_folder_structure(curriculum_id).await
+            let folder_names = app_state.file_service.get_folder_structure_with_category(curriculum_id, category).await
                 .map_err(|e| format!("Failed to get folder structure: {}", e))?;
             
             let mut all_items: Vec<FolderItem> = folder_names.into_iter()
@@ -308,7 +327,7 @@ async fn build_folder_structure(app_state: &AppState, target_path: &str) -> Resu
                 .collect();
             
             // 2. 교재 레벨의 파일들도 가져오기 (예: U2R_cover.png 등)
-            match app_state.file_service.get_r2_folder_files(&format!("{}/", curriculum_id)).await {
+            match app_state.file_service.get_r2_folder_files_with_category(&format!("{}/", curriculum_id), category).await {
                 Ok(folder_result) => {
                     let curriculum_files: Vec<FolderItem> = folder_result.into_iter()
                         .filter_map(|item| {
@@ -369,7 +388,7 @@ async fn build_folder_structure(app_state: &AppState, target_path: &str) -> Resu
             // 교재ID/제목 레벨: R2 Worker API 사용하여 파일 목록 가져오기
             let folder_key = format!("{}/", normalized_path); // key는 trailing slash 필요
             
-            match app_state.file_service.get_r2_folder_files(&folder_key).await {
+            match app_state.file_service.get_r2_folder_files_with_category(&folder_key, category).await {
                 Ok(folder_result) => {
                     let mut file_items: Vec<FolderItem> = folder_result.into_iter()
                         .filter_map(|item| {
@@ -808,7 +827,7 @@ pub async fn upload_single_file(
         
         // Use the file service to upload the file
         let files = vec![(filename.clone(), bytes)];
-        match app_state.file_service.upload_file(files, None, base_path).await {
+        match app_state.file_service.upload_file(files, None, base_path, None).await {
             Ok(response) => {
                 info!("File uploaded successfully to: {}", full_path);
                 (

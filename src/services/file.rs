@@ -58,6 +58,7 @@ impl FileService {
         files: Vec<(String, Bytes)>,
         bucket: Option<&str>,
         base_path: &str,
+        category: Option<&str>,
     ) -> Result<FileUploadResponse> {
         let url = format!("{}/upload", self.base_url);
         let bucket_name = bucket.unwrap_or(&self.bucket);
@@ -75,6 +76,11 @@ impl FileService {
             let mut form = multipart::Form::new()
                 .text("bucket", bucket_name.to_string())
                 .text("fullpath", full_path.clone());
+            
+            // Add category if provided
+            if let Some(cat) = category {
+                form = form.text("category", cat.to_string());
+            }
 
             let part = multipart::Part::bytes(bytes.to_vec()).file_name(filename.clone());
             form = form.part("file", part);
@@ -223,10 +229,14 @@ impl FileService {
     }
 
     pub async fn get_r2_folder_files(&self, key: &str) -> Result<R2WorkerFolderResponse> {
-        tracing::info!("Getting folder files for key: '{}' (from memory)", key);
+        self.get_r2_folder_files_with_category(key, "reengkigo").await
+    }
+    
+    pub async fn get_r2_folder_files_with_category(&self, key: &str, category: &str) -> Result<R2WorkerFolderResponse> {
+        tracing::info!("Getting folder files for key: '{}' with category: '{}' (from memory)", key, category);
         
         // 메모리에서 전체 데이터 가져오기
-        let all_files = self.get_cached_all_files().await?;
+        let all_files = self.get_cached_all_files_with_category(category).await?;
         
         // key로 필터링 (key는 보통 "folder/" 형태이므로 prefix로 매칭)
         let prefix = if key == "*" {
@@ -240,23 +250,27 @@ impl FileService {
             .filter(|item| item.key.starts_with(&prefix))
             .collect();
         
-        tracing::info!("Found {} files for key '{}' from memory", filtered_files.len(), key);
+        tracing::info!("Found {} files for key '{}' with category '{}' from memory", filtered_files.len(), key, category);
         Ok(filtered_files)
     }
     
     // 전체 데이터 로드를 위한 직접 API 호출 (최적화된 병렬 페이지네이션)
     async fn get_r2_folder_files_direct(&self, key: &str) -> Result<R2WorkerFolderResponse> {
-        let base_url = "https://reengki-assets-r2-worker.reengkigo.workers.dev/folder-files";
+        self.get_r2_folder_files_direct_with_category(key, "reengkigo").await
+    }
+    
+    async fn get_r2_folder_files_direct_with_category(&self, key: &str, category: &str) -> Result<R2WorkerFolderResponse> {
+        let base_url = "https://assets.reengkigo.com/folder-files";
         let start_time = Instant::now();
         
-        tracing::info!("Starting optimized fetch for R2 folder files with key: {}", key);
+        tracing::info!("Starting optimized fetch for R2 folder files with key: {} and category: {}", key, category);
         
         // First, get the initial page to determine if we need pagination
         // Use limit=900 to fetch more data in a single request
         let limit = "900";
         let initial_response = self.client
             .get(base_url)
-            .query(&[("key", key), ("limit", limit)])
+            .query(&[("key", key), ("limit", limit), ("category", category)])
             .send()
             .await?;
             
@@ -291,12 +305,13 @@ impl FileService {
                     let client = self.client.clone();
                     let url = base_url.to_string();
                     let key = key.to_string();
+                    let category = category.to_string();
                     
                     async move {
                         let limit = "900".to_string();
                         let response = client
                             .get(&url)
-                            .query(&[("key", &key), ("cursor", &cursor), ("limit", &limit)])
+                            .query(&[("key", &key), ("cursor", &cursor), ("limit", &limit), ("category", &category)])
                             .send()
                             .await?;
                             
@@ -351,7 +366,11 @@ impl FileService {
     
     // 메모리 캐시에서 전체 데이터 가져오기 (캐시가 없으면 로드)
     async fn get_cached_all_files(&self) -> Result<R2WorkerFolderResponse> {
-        self.ensure_all_files_loaded().await?;
+        self.get_cached_all_files_with_category("reengkigo").await
+    }
+    
+    async fn get_cached_all_files_with_category(&self, category: &str) -> Result<R2WorkerFolderResponse> {
+        self.ensure_all_files_loaded_with_category(category).await?;
         
         let cache_read = self.all_files_cache.read().await;
         if let Some(ref cache) = *cache_read {
@@ -363,36 +382,45 @@ impl FileService {
         
         // 캐시가 만료된 경우 다시 로드
         drop(cache_read);
-        self.load_all_files_to_cache().await
+        self.load_all_files_to_cache_with_category(category).await
     }
     
     // 전체 데이터가 캐시에 로드되어 있는지 확인하고 없으면 로드
     async fn ensure_all_files_loaded(&self) -> Result<()> {
+        self.ensure_all_files_loaded_with_category("reengkigo").await
+    }
+    
+    async fn ensure_all_files_loaded_with_category(&self, category: &str) -> Result<()> {
         let cache_read = self.all_files_cache.read().await;
         if let Some(ref cache) = *cache_read {
             if !cache.is_expired() {
                 // 캐시가 곧 만료될 예정이면 백그라운드에서 미리 갱신
                 if cache.created_at.elapsed() > Duration::from_secs(480) { // 8분 경과
                     drop(cache_read);
-                    self.refresh_cache_in_background();
+                    self.refresh_cache_in_background_with_category(category);
                 }
                 return Ok(());
             }
         }
         drop(cache_read);
         
-        self.load_all_files_to_cache().await?;
+        self.load_all_files_to_cache_with_category(category).await?;
         Ok(())
     }
     
     // 백그라운드에서 캐시 갱신 (현재 캐시는 유지하면서 새 데이터 로드)
     fn refresh_cache_in_background(&self) {
+        self.refresh_cache_in_background_with_category("reengkigo");
+    }
+    
+    fn refresh_cache_in_background_with_category(&self, category: &str) {
         let cache = self.all_files_cache.clone();
         let service = self.clone();
+        let category = category.to_string();
         
         tokio::spawn(async move {
-            tracing::info!("Starting background cache refresh");
-            match service.get_r2_folder_files_direct("*").await {
+            tracing::info!("Starting background cache refresh for category: {}", category);
+            match service.get_r2_folder_files_direct_with_category("*", &category).await {
                 Ok(new_data) => {
                     let ttl = Duration::from_secs(1800); // 30분 TTL (더 길게)
                     let cache_entry = AllFilesCache {
@@ -403,10 +431,10 @@ impl FileService {
                     
                     let mut cache_write = cache.write().await;
                     *cache_write = Some(cache_entry);
-                    tracing::info!("Background cache refresh completed with {} files", new_data.len());
+                    tracing::info!("Background cache refresh completed with {} files for category: {}", new_data.len(), category);
                 }
                 Err(e) => {
-                    tracing::error!("Failed to refresh cache in background: {}", e);
+                    tracing::error!("Failed to refresh cache in background for category {}: {}", category, e);
                 }
             }
         });
@@ -414,7 +442,11 @@ impl FileService {
     
     // 전체 데이터를 캐시에 로드
     async fn load_all_files_to_cache(&self) -> Result<R2WorkerFolderResponse> {
-        tracing::info!("Loading all files to cache from R2 Worker API");
+        self.load_all_files_to_cache_with_category("reengkigo").await
+    }
+    
+    async fn load_all_files_to_cache_with_category(&self, category: &str) -> Result<R2WorkerFolderResponse> {
+        tracing::info!("Loading all files to cache from R2 Worker API for category: {}", category);
         
         // 이미 로딩 중인지 확인 (중복 로드 방지)
         {
@@ -429,7 +461,7 @@ impl FileService {
         }
         
         // R2 Worker API에서 전체 데이터 가져오기 ("*" 사용)
-        let worker_response = self.get_r2_folder_files_direct("*").await?;
+        let worker_response = self.get_r2_folder_files_direct_with_category("*", category).await?;
         
         // 캐시에 저장
         let ttl = Duration::from_secs(1800); // 30분 TTL로 증가
@@ -444,16 +476,20 @@ impl FileService {
             *cache_write = Some(cache_entry);
         }
         
-        tracing::info!("Cached all_files with {} files (TTL: {:?})", worker_response.len(), ttl);
+        tracing::info!("Cached all_files with {} files for category: {} (TTL: {:?})", worker_response.len(), category, ttl);
         Ok(worker_response)
     }
     
     // 폴더 구조를 위한 경로 기반 폴더 조회 (메모리 필터링)
     pub async fn get_folder_structure(&self, prefix: &str) -> Result<Vec<String>> {
-        tracing::info!("Getting folder structure for prefix: '{}' (from memory)", prefix);
+        self.get_folder_structure_with_category(prefix, "reengkigo").await
+    }
+    
+    pub async fn get_folder_structure_with_category(&self, prefix: &str, category: &str) -> Result<Vec<String>> {
+        tracing::info!("Getting folder structure for prefix: '{}' with category: '{}' (from memory)", prefix, category);
         
         // 메모리에서 전체 데이터 가져오기
-        let all_files = self.get_cached_all_files().await?;
+        let all_files = self.get_cached_all_files_with_category(category).await?;
         
         let mut folders = std::collections::HashSet::new();
         
@@ -581,6 +617,8 @@ pub struct R2WorkerFileValue {
     pub create_date: Option<String>,
     #[serde(rename = "play_link", skip_serializing_if = "Option::is_none")]
     pub play_link: Option<String>,
+    #[serde(default)]
+    pub category: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

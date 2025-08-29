@@ -132,9 +132,12 @@ const API = {
     request: async function(url, options = {}) {
         const defaultOptions = {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'Pragma': 'no-cache'
             },
-            credentials: 'include' // This ensures cookies are sent with requests
+            credentials: 'include', // This ensures cookies are sent with requests
+            cache: 'no-store' // Disable caching
         };
         
         const finalOptions = {
