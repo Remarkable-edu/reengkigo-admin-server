@@ -60,7 +60,7 @@ impl FileService {
         base_path: &str,
         category: Option<&str>,
     ) -> Result<FileUploadResponse> {
-        let url = format!("{}/upload", self.base_url);
+        let url = "https://media-api.reengki.com/upload".to_string();
         let bucket_name = bucket.unwrap_or(&self.bucket);
         
         let file_count = files.len();
