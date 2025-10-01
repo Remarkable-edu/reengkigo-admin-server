@@ -41,6 +41,7 @@ impl FileService {
             .pool_max_idle_per_host(20) // Increase connection pool size
             .pool_idle_timeout(Duration::from_secs(90)) // Keep connections alive longer
             .tcp_nodelay(true) // Disable Nagle's algorithm for lower latency
+            .danger_accept_invalid_certs(true) // Accept self-signed certificates for development
             // gzip and brotli are enabled by default in reqwest
             .build()
             .expect("Failed to build HTTP client");
