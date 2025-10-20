@@ -3078,8 +3078,8 @@
                 
                 // FormData에 파일 추가
                 formData.append('file', file, coverFileName);
-                // full_path 파라미터 추가 (서버에서 요구함)
-                formData.append('full_path', bookId + '/' + coverFileName);
+                // fullpath 파라미터 추가 (서버에서 요구함)
+                formData.append('fullpath', bookId + '/' + coverFileName);
                 
                 // Add current category
                 const currentCategory = getCurrentCategory();
@@ -4555,7 +4555,7 @@
                 // Upload the file using the new endpoint
                 const formData = new FormData();
                 formData.append('file', file);
-                formData.append('full_path', subtitlePath);
+                formData.append('fullpath', subtitlePath);
                 
                 // Add current category
                 const currentCategory = getCurrentCategory();
@@ -5036,7 +5036,7 @@
                 const formData = new FormData();
                 const renamedFile = new File([file], targetFileName, { type: file.type });
                 formData.append('file', renamedFile);
-                formData.append('full_path', imagePath);
+                formData.append('fullpath', imagePath);
                 
                 // Add current category
                 const currentCategory = getCurrentCategory();
@@ -5289,7 +5289,7 @@
                 const formData = new FormData();
                 const renamedFile = new File([file], originalFileName, { type: file.type });
                 formData.append('file', renamedFile);
-                formData.append('full_path', videoPath);
+                formData.append('fullpath', videoPath);
                 
                 // Add current category
                 const currentCategory = getCurrentCategory();

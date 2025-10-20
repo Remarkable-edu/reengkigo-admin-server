@@ -157,7 +157,7 @@ pub async fn create_asset(
         }
     }
 
-    // Validate required fields (only video file is required now, cover image is optional)
+    // Validate required fields (video or audio file is required, cover image is optional)
     if book_id.is_empty() || title.is_empty() {
         return (
             StatusCode::BAD_REQUEST,
@@ -180,7 +180,9 @@ pub async fn create_asset(
         let new_filename = format!("{}{}", title, extension);
         
         let lower = new_filename.to_lowercase();
-        if lower.ends_with(".mp4") || lower.ends_with(".mov") || lower.ends_with(".avi") {
+        if lower.ends_with(".mp4") || lower.ends_with(".mov") || lower.ends_with(".avi")
+            || lower.ends_with(".mkv") || lower.ends_with(".webm")
+            || lower.ends_with(".mp3") || lower.ends_with(".wav") || lower.ends_with(".m4a") || lower.ends_with(".aac") {
             has_video = true;
         }
         
@@ -199,7 +201,7 @@ pub async fn create_asset(
             Json(CreateAssetResponse {
                 success: false,
                 asset_id: None,
-                message: "비디오 파일이 필요합니다".to_string(),
+                message: "비디오 또는 오디오 파일이 필요합니다".to_string(),
                 cover_image_url: None,
                 video_url: None,
             })
@@ -221,9 +223,12 @@ pub async fn create_asset(
                 .map(|f| f.url.clone());
                 
             let video_url = response.uploaded.iter()
-                .find(|f| f.filename.to_lowercase().contains(".mp4") || 
-                          f.filename.to_lowercase().contains(".mov") || 
-                          f.filename.to_lowercase().contains(".avi"))
+                .find(|f| {
+                    let lower = f.filename.to_lowercase();
+                    lower.contains(".mp4") || lower.contains(".mov") || lower.contains(".avi")
+                        || lower.contains(".mkv") || lower.contains(".webm")
+                        || lower.contains(".mp3") || lower.contains(".wav") || lower.contains(".m4a") || lower.contains(".aac")
+                })
                 .map(|f| f.url.clone());
 
             info!("Asset created successfully: {} - {}", book_id, title);
