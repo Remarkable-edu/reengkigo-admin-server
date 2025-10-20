@@ -813,7 +813,7 @@ pub async fn upload_single_file(
                 };
                 file_data = Some((filename, data));
             }
-            "full_path" => {
+            "fullpath" | "full_path" => {
                 full_path = field.text().await.unwrap_or_default();
             }
             "category" => {
@@ -829,7 +829,7 @@ pub async fn upload_single_file(
                 StatusCode::BAD_REQUEST,
                 Json(serde_json::json!({
                     "success": false,
-                    "error": "Missing full_path parameter"
+                    "error": "Missing fullpath parameter"
                 }))
             ).into_response();
         }

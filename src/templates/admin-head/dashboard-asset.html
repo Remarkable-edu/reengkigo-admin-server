@@ -5036,7 +5036,7 @@
                 const formData = new FormData();
                 const renamedFile = new File([file], targetFileName, { type: file.type });
                 formData.append('file', renamedFile);
-                formData.append('fullpath', imagePath);
+                formData.append('full_path', imagePath);
                 
                 // Add current category
                 const currentCategory = getCurrentCategory();
@@ -5289,7 +5289,7 @@
                 const formData = new FormData();
                 const renamedFile = new File([file], originalFileName, { type: file.type });
                 formData.append('file', renamedFile);
-                formData.append('fullpath', videoPath);
+                formData.append('full_path', videoPath);
                 
                 // Add current category
                 const currentCategory = getCurrentCategory();
