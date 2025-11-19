@@ -1156,10 +1156,18 @@
         }
 
         function renderDefaultFolderView(assets, container) {
+            console.log('renderDefaultFolderView called with', assets.length, 'items');
+
+            // 폴더와 파일 분리해서 로그
+            const folders = assets.filter(item => item.item_type === 'folder');
+            const files = assets.filter(item => item.item_type === 'file');
+            console.log('  Folders:', folders.length, folders.map(f => f.name));
+            console.log('  Files:', files.length, files.map(f => f.name));
+
             container.innerHTML = '';
             container.className = 'folder-grid';
             container.style.display = 'grid';
-            
+
             assets.forEach(item => {
                 const itemElement = createItemElement(item);
                 container.appendChild(itemElement);
@@ -4097,28 +4105,43 @@
         function loadSubtitleContent(bookId, title) {
             const subtitleContent = document.getElementById('subtitleContent');
             subtitleContent.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">로딩중...</span></div></div>';
-            
+
             // Store current bookId and title for save operation
             subtitleContent.dataset.bookId = bookId;
             subtitleContent.dataset.title = title;
-            
+
             // Use internal API endpoint
             const currentCategory = getCurrentCategory();
-            API.get(`/api/subtitle/${bookId}/${title}?category=${encodeURIComponent(currentCategory)}`)
-                .then(response => {
-                    
-                    if (!response.success) {
-                        throw new Error(response.error || '자막 데이터 로드 실패');
+            const timestamp = Date.now();
+
+            // Load subtitle data and TTS files in parallel
+            Promise.all([
+                API.get(`/api/subtitle/${bookId}/${title}?category=${encodeURIComponent(currentCategory)}`),
+                API.get(`/api/folders/${bookId}/${title}/tts?category=${encodeURIComponent(currentCategory)}&_t=${timestamp}`).catch(() => ({ items: [] }))
+            ]).then(([subtitleResponse, ttsResponse]) => {
+
+                    if (!subtitleResponse.success) {
+                        throw new Error(subtitleResponse.error || '자막 데이터 로드 실패');
                     }
-                    
-                    const subtitleData = response.data;
-                    const subtitlePath = response.path || `${bookId}/${title}/subtitle.json`;
-                    const subtitleFilename = response.filename || 'subtitle.json';
-                    
+
+                    const subtitleData = subtitleResponse.data;
+                    const subtitlePath = subtitleResponse.path || `${bookId}/${title}/subtitle.json`;
+                    const subtitleFilename = subtitleResponse.filename || 'subtitle.json';
+
+                    // Extract MP3 file names from TTS folder
+                    const mp3Files = (ttsResponse.items || [])
+                        .filter(item => item.item_type === 'file' && item.name.toLowerCase().endsWith('.mp3'))
+                        .map(item => item.name);
+
+                    console.log('MP3 files found:', mp3Files);
+
+                    // Store MP3 files for later use
+                    subtitleContent.dataset.mp3Files = JSON.stringify(mp3Files);
+
                     // Store the path and filename for save operation
                     subtitleContent.dataset.subtitlePath = subtitlePath;
                     subtitleContent.dataset.subtitleFilename = subtitleFilename;
-                    
+
                     if (!subtitleData || subtitleData.length === 0) {
                         subtitleContent.innerHTML = `
                             <div class="alert alert-warning">
@@ -4137,14 +4160,25 @@
                         return;
                     }
                     
+                    // Helper function to check if MP3 exists
+                    const hasMp3 = (pageNum, sentenceNum) => {
+                        const expectedFileName = `page${pageNum}_sentence${sentenceNum}.mp3`;
+                        return mp3Files.includes(expectedFileName);
+                    };
+
                     // Display subtitle data with edit mode similar to editSubtitlesModal
                     const subtitleHtml = `
                         <div class="subtitle-editor">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <div>
                                     <span class="text-muted">자막 파일: ${subtitlePath}</span>
+                                    <span class="badge bg-info ms-2">${mp3Files.length}개 MP3</span>
                                 </div>
                                 <div>
+                                    <button type="button" class="btn btn-sm btn-outline-success me-2" onclick="document.getElementById('bulkMp3Input').click()">
+                                        <i class="fas fa-file-audio"></i> MP3 일괄 업로드
+                                    </button>
+                                    <input type="file" id="bulkMp3Input" accept=".mp3" multiple style="display: none;" onchange="handleBulkMp3Upload(this)">
                                     <button type="button" class="btn btn-sm btn-outline-secondary me-2" onclick="refreshSubtitleContent()">
                                         <i class="fas fa-sync-alt"></i> 새로고침
                                     </button>
@@ -4153,20 +4187,23 @@
                                     </button>
                                 </div>
                             </div>
-                            
+
                             <!-- View Mode -->
                             <div id="subtitleViewMode">
                                 <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
                                     <table class="table table-sm table-striped table-hover">
                                         <thead class="table-light sticky-top">
                                             <tr>
-                                                <th class="text-center" style="width: 12%; color: black; font-size: 13px;">페이지</th>
-                                                <th class="text-center" style="width: 12%; color: black; font-size: 13px;">문장</th>
-                                                <th style="width: 76%; color: black; font-size: 13px; padding-left: 15px;">텍스트</th>
+                                                <th class="text-center" style="width: 8%; color: black; font-size: 13px;">페이지</th>
+                                                <th class="text-center" style="width: 8%; color: black; font-size: 13px;">문장</th>
+                                                <th style="width: 68%; color: black; font-size: 13px; padding-left: 15px;">텍스트</th>
+                                                <th class="text-center" style="width: 16%; color: black; font-size: 13px;">MP3</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            ${subtitleData.map((item, index) => `
+                                            ${subtitleData.map((item, index) => {
+                                                const mp3Exists = hasMp3(item.page_num, item.sentence_num);
+                                                return `
                                                 <tr>
                                                     <td class="text-center">
                                                         <span class="badge bg-primary">${item.page_num || 'N/A'}</span>
@@ -4175,12 +4212,24 @@
                                                         <span class="badge bg-secondary">${item.sentence_num || 'N/A'}</span>
                                                     </td>
                                                     <td class="text-start" style="font-size: 14px; line-height: 1.5;">${item.text || ''}</td>
+                                                    <td class="text-center">
+                                                        <div class="d-flex align-items-center justify-content-center gap-2">
+                                                            ${mp3Exists
+                                                                ? '<span style="color: green; font-weight: bold; font-size: 16px;">O</span>'
+                                                                : '<span style="color: #ccc;">-</span>'}
+                                                            <button class="btn btn-sm btn-outline-primary" style="padding: 2px 8px; font-size: 11px;"
+                                                                onclick="uploadSingleMp3(${item.page_num}, ${item.sentence_num})"
+                                                                title="${mp3Exists ? 'MP3 교체' : 'MP3 업로드'}">
+                                                                <i class="fas fa-${mp3Exists ? 'sync-alt' : 'upload'}"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
                                                 </tr>
-                                            `).join('')}
+                                            `}).join('')}
                                         </tbody>
                                     </table>
                                     <div class="text-muted small mt-2">
-                                        총 ${subtitleData.length}개의 자막 항목
+                                        총 ${subtitleData.length}개의 자막 항목 (MP3: ${subtitleData.filter(item => hasMp3(item.page_num, item.sentence_num)).length}개)
                                     </div>
                                 </div>
                             </div>
@@ -4239,16 +4288,230 @@
         }
         
         // Refresh functions for each content type
-        function refreshSubtitleContent() {
+        async function refreshSubtitleContent() {
             const subtitleContent = document.getElementById('subtitleContent');
             const bookId = subtitleContent.dataset.bookId;
             const title = subtitleContent.dataset.title;
-            
+
             if (bookId && title) {
-                loadSubtitleContent(bookId, title);
+                // Show loading state
+                subtitleContent.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">새로고침 중...</span></div><div class="mt-2">캐시를 갱신하고 있습니다...</div></div>';
+
+                try {
+                    // Clear cache first to get fresh data
+                    await API.post('/api/cache/clear');
+                    console.log('Cache cleared for refresh');
+
+                    // Wait a bit for cache to clear
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    // Reload content
+                    loadSubtitleContent(bookId, title);
+                } catch (error) {
+                    console.error('Failed to clear cache:', error);
+                    // Still try to reload even if cache clear fails
+                    loadSubtitleContent(bookId, title);
+                }
             }
         }
-        
+
+        // Handle single MP3 upload for a specific subtitle
+        async function uploadSingleMp3(pageNum, sentenceNum) {
+            const subtitleContent = document.getElementById('subtitleContent');
+            const bookId = subtitleContent.dataset.bookId;
+            const title = subtitleContent.dataset.title;
+
+            if (!bookId || !title) {
+                Notification.error('폴더 정보를 찾을 수 없습니다.');
+                return;
+            }
+
+            // Create hidden file input
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.mp3';
+
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                // Validate file type
+                if (!file.name.toLowerCase().endsWith('.mp3')) {
+                    Notification.error('MP3 파일만 업로드 가능합니다.');
+                    return;
+                }
+
+                const expectedFileName = `page${pageNum}_sentence${sentenceNum}.mp3`;
+                const currentCategory = getCurrentCategory();
+
+                try {
+                    Notification.info(`${expectedFileName} 업로드 중...`);
+
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('category', currentCategory);
+                    formData.append('fullpath', `${bookId}/${title}/tts/${expectedFileName}`);
+
+                    const response = await fetch('/api/upload-file', {
+                        method: 'POST',
+                        body: formData,
+                        credentials: 'include'
+                    });
+
+                    if (response.ok) {
+                        Notification.success(`${expectedFileName} 업로드 성공!`);
+
+                        // Auto-refresh to show updated status
+                        setTimeout(() => {
+                            refreshSubtitleContent();
+                        }, 500);
+                    } else {
+                        const errorText = await response.text();
+                        console.error('Upload failed:', errorText);
+                        Notification.error(`업로드 실패: ${response.status}`);
+                    }
+                } catch (error) {
+                    console.error('Error uploading file:', error);
+                    Notification.error(`업로드 오류: ${error.message}`);
+                }
+            };
+
+            // Trigger file selection
+            input.click();
+        }
+
+        // Handle bulk MP3 upload for subtitles
+        async function handleBulkMp3Upload(input) {
+            const files = Array.from(input.files);
+
+            if (files.length === 0) {
+                return;
+            }
+
+            const subtitleContent = document.getElementById('subtitleContent');
+            const bookId = subtitleContent.dataset.bookId;
+            const title = subtitleContent.dataset.title;
+
+            if (!bookId || !title) {
+                Notification.error('폴더 정보를 찾을 수 없습니다.');
+                return;
+            }
+
+            // Validate file names
+            const invalidFiles = [];
+            const validFiles = [];
+            const mp3Pattern = /^page(\d+)_sentence(\d+)\.mp3$/;
+
+            files.forEach(file => {
+                const match = file.name.match(mp3Pattern);
+                if (match) {
+                    validFiles.push({
+                        file: file,
+                        pageNum: parseInt(match[1]),
+                        sentenceNum: parseInt(match[2]),
+                        fileName: file.name
+                    });
+                } else {
+                    invalidFiles.push(file.name);
+                }
+            });
+
+            // Show error if there are invalid files
+            if (invalidFiles.length > 0) {
+                const fileList = invalidFiles.join(', ');
+                Notification.error(`파일명 형식이 올바르지 않습니다. 형식: page{페이지번호}_sentence{문장번호}.mp3\n\n잘못된 파일: ${fileList}`);
+                input.value = ''; // Clear the input
+                return;
+            }
+
+            if (validFiles.length === 0) {
+                Notification.warning('업로드할 파일이 없습니다.');
+                return;
+            }
+
+            // Confirm upload
+            if (!confirm(`${validFiles.length}개의 MP3 파일을 업로드하시겠습니까?`)) {
+                input.value = '';
+                return;
+            }
+
+            // Create progress overlay
+            const progressOverlay = document.createElement('div');
+            progressOverlay.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 9999; display: flex; align-items: center; justify-content: center;';
+            progressOverlay.innerHTML = `
+                <div style="background: white; padding: 30px; border-radius: 10px; min-width: 400px;">
+                    <h5 class="mb-3">MP3 파일 업로드 중</h5>
+                    <div class="progress mb-2" style="height: 25px;">
+                        <div id="mp3UploadProgressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%">0%</div>
+                    </div>
+                    <div id="mp3UploadStatus" class="text-muted">0 / ${validFiles.length} 완료</div>
+                </div>
+            `;
+            document.body.appendChild(progressOverlay);
+
+            const progressBar = document.getElementById('mp3UploadProgressBar');
+            const statusText = document.getElementById('mp3UploadStatus');
+
+            // Upload files one by one
+            let successCount = 0;
+            let failCount = 0;
+            const currentCategory = getCurrentCategory();
+
+            for (let i = 0; i < validFiles.length; i++) {
+                const fileInfo = validFiles[i];
+                try {
+                    const formData = new FormData();
+                    formData.append('file', fileInfo.file);
+                    formData.append('category', currentCategory);
+                    formData.append('fullpath', `${bookId}/${title}/tts/${fileInfo.fileName}`);
+
+                    const response = await fetch('/api/upload-file', {
+                        method: 'POST',
+                        body: formData,
+                        credentials: 'include'
+                    });
+
+                    if (response.ok) {
+                        successCount++;
+                    } else {
+                        failCount++;
+                        console.error(`Failed to upload ${fileInfo.fileName}:`, await response.text());
+                    }
+                } catch (error) {
+                    failCount++;
+                    console.error(`Error uploading ${fileInfo.fileName}:`, error);
+                }
+
+                // Update progress
+                const completed = i + 1;
+                const percentage = Math.round((completed / validFiles.length) * 100);
+                progressBar.style.width = `${percentage}%`;
+                progressBar.textContent = `${percentage}%`;
+                statusText.textContent = `${completed} / ${validFiles.length} 완료 (성공: ${successCount}, 실패: ${failCount})`;
+            }
+
+            // Remove progress overlay
+            document.body.removeChild(progressOverlay);
+
+            // Clear input
+            input.value = '';
+
+            // Show result
+            if (failCount === 0) {
+                Notification.success(`${successCount}개의 MP3 파일이 성공적으로 업로드되었습니다.`);
+            } else {
+                Notification.warning(`업로드 완료: 성공 ${successCount}개, 실패 ${failCount}개`);
+            }
+
+            // Auto-refresh to show updated MP3 status
+            if (successCount > 0) {
+                console.log('Auto-refreshing subtitle content after MP3 upload');
+                setTimeout(() => {
+                    refreshSubtitleContent();
+                }, 1000);
+            }
+        }
+
         function refreshImageContent() {
             const imageContent = document.getElementById('imageContent');
             const bookId = imageContent.dataset.bookId;
@@ -5399,6 +5662,56 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MP3 Bulk Upload Modal -->
+    <div class="modal fade" id="mp3BulkUploadModal" tabindex="-1" aria-labelledby="mp3BulkUploadModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mp3BulkUploadModalLabel">
+                        <i class="fas fa-file-audio me-2"></i>MP3 파일 일괄 업로드
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Instructions -->
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>파일명 형식:</strong> page{페이지번호}_sentence{문장번호}.mp3<br>
+                        <small>예시: page1_sentence1.mp3, page2_sentence3.mp3</small>
+                    </div>
+
+                    <!-- Drag and Drop Area -->
+                    <div id="mp3DropZone" class="border border-2 border-dashed rounded p-5 text-center mb-3"
+                         style="cursor: pointer; transition: all 0.3s ease;">
+                        <i class="fas fa-cloud-upload-alt fa-3x mb-3 text-muted"></i>
+                        <h5>파일을 여기에 드래그하거나 클릭하여 선택하세요</h5>
+                        <p class="text-muted">여러 MP3 파일을 동시에 선택할 수 있습니다</p>
+                        <input type="file" id="mp3FileInput" accept=".mp3" multiple style="display: none;">
+                    </div>
+
+                    <!-- File List -->
+                    <div id="mp3FileListContainer" style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6>선택된 파일 (<span id="mp3FileCount">0</span>개)</h6>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="clearMp3Files()">
+                                <i class="fas fa-trash"></i> 전체 삭제
+                            </button>
+                        </div>
+                        <div id="mp3FileList" class="border rounded p-3" style="max-height: 400px; overflow-y: auto;">
+                            <!-- File items will be added here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary" id="startMp3Upload" onclick="startMp3BulkUpload()" disabled>
+                        <i class="fas fa-upload"></i> 업로드 시작
+                    </button>
                 </div>
             </div>
         </div>

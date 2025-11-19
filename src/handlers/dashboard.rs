@@ -390,66 +390,102 @@ async fn build_folder_structure_with_category(app_state: &AppState, target_path:
                 breadcrumbs,
             })
         } else {
-            // 교재ID/제목 레벨: R2 Worker API 사용하여 파일 목록 가져오기
-            let folder_key = format!("{}/", normalized_path); // key는 trailing slash 필요
-            
+            // 교재ID/제목 레벨 이상: 하위 폴더와 파일 모두 가져오기
+            let folder_key = format!("{}/", normalized_path);
+            let mut all_items: Vec<FolderItem> = Vec::new();
+
+            // 1. 하위 폴더 가져오기 (예: tts 폴더)
+            match app_state.file_service.get_folder_structure_with_category(normalized_path, category).await {
+                Ok(folder_names) => {
+                    info!("Found {} subfolders for path '{}': {:?}", folder_names.len(), normalized_path, folder_names);
+                    let folder_items: Vec<FolderItem> = folder_names.into_iter()
+                        .map(|folder_name| {
+                            FolderItem {
+                                name: folder_name.clone(),
+                                path: format!("{}/{}", normalized_path, folder_name),
+                                item_type: "folder".to_string(),
+                                size: None,
+                                file_type: None,
+                                url: None,
+                                modified_at: None,
+                                children_count: None,
+                            }
+                        })
+                        .collect();
+                    all_items.extend(folder_items);
+                }
+                Err(e) => {
+                    info!("No subfolders found for {}: {}", normalized_path, e);
+                }
+            }
+
+            // 2. 현재 레벨의 파일들 가져오기
             match app_state.file_service.get_r2_folder_files_with_category(&folder_key, category).await {
                 Ok(folder_result) => {
-                    let mut file_items: Vec<FolderItem> = folder_result.into_iter()
+                    // 현재 depth의 파일만 필터링 (하위 폴더의 파일 제외)
+                    let current_depth = normalized_path.split('/').count();
+                    let file_items: Vec<FolderItem> = folder_result.into_iter()
                         .filter_map(|item| {
-                            // item.value.file이 있는 경우만 처리
+                            // item.value.file이 있고, depth가 현재 depth + 1인 경우만 처리
                             if let Some(file_path) = &item.value.file {
-                                let filename = file_path
-                                    .rsplit('/')
-                                    .next()
-                                    .unwrap_or(file_path)
-                                    .to_string();
-                                let file_type = get_file_type(&filename);
-                                
-                                Some(FolderItem {
-                                    name: filename,
-                                    path: item.key.clone(),
-                                    item_type: "file".to_string(),
-                                    size: Some(item.value.size),
-                                    file_type: Some(file_type),
-                                    url: Some(format!("https://r2-api.reengki.com/file?key={}", item.key)),
-                                    modified_at: item.value.modified_date.clone(),
-                                    children_count: None,
-                                })
+                                let item_depth = item.key.trim_end_matches('/').split('/').count();
+                                if item_depth == current_depth + 1 {
+                                    let filename = file_path
+                                        .rsplit('/')
+                                        .next()
+                                        .unwrap_or(file_path)
+                                        .to_string();
+                                    let file_type = get_file_type(&filename);
+
+                                    Some(FolderItem {
+                                        name: filename,
+                                        path: item.key.clone(),
+                                        item_type: "file".to_string(),
+                                        size: Some(item.value.size),
+                                        file_type: Some(file_type),
+                                        url: Some(format!("https://r2-api.reengki.com/file?key={}", item.key)),
+                                        modified_at: item.value.modified_date.clone(),
+                                        children_count: None,
+                                    })
+                                } else {
+                                    None
+                                }
                             } else {
                                 None
                             }
                         })
                         .collect();
-                    
-                    file_items.sort_by(|a, b| a.name.cmp(&b.name));
-                    
-                    let breadcrumbs = build_breadcrumbs(normalized_path);
-                    
-                    Ok(FolderContentsResponse {
-                        current_path: normalized_path.to_string(),
-                        items: file_items,
-                        breadcrumbs,
-                    })
+                    all_items.extend(file_items);
                 }
                 Err(e) => {
-                    error!("Failed to get folder files from R2 Worker API: {}", e);
-                    // Fallback: 빈 폴더 반환
-                    Ok(FolderContentsResponse {
-                        current_path: normalized_path.to_string(),
-                        items: vec![],
-                        breadcrumbs: build_breadcrumbs(normalized_path),
-                    })
+                    info!("No files found at {} level: {}", normalized_path, e);
                 }
             }
+
+            // 3. 정렬: 폴더 먼저, 그 다음 파일 (이름순)
+            all_items.sort_by(|a, b| {
+                match (a.item_type.as_str(), b.item_type.as_str()) {
+                    ("folder", "file") => std::cmp::Ordering::Less,
+                    ("file", "folder") => std::cmp::Ordering::Greater,
+                    _ => a.name.cmp(&b.name),
+                }
+            });
+
+            let breadcrumbs = build_breadcrumbs(normalized_path);
+
+            Ok(FolderContentsResponse {
+                current_path: normalized_path.to_string(),
+                items: all_items,
+                breadcrumbs,
+            })
         }
     }
 }
 
 fn get_file_type(filename: &str) -> String {
     let lower_filename = filename.to_lowercase();
-    
-    if lower_filename.ends_with(".png") || lower_filename.ends_with(".jpg") || 
+
+    if lower_filename.ends_with(".png") || lower_filename.ends_with(".jpg") ||
        lower_filename.ends_with(".jpeg") || lower_filename.ends_with(".gif") ||
        lower_filename.ends_with(".webp") {
         "image".to_string()
@@ -457,6 +493,10 @@ fn get_file_type(filename: &str) -> String {
               lower_filename.ends_with(".avi") || lower_filename.ends_with(".mkv") ||
               lower_filename.ends_with(".webm") {
         "video".to_string()
+    } else if lower_filename.ends_with(".mp3") || lower_filename.ends_with(".wav") ||
+              lower_filename.ends_with(".m4a") || lower_filename.ends_with(".aac") ||
+              lower_filename.ends_with(".ogg") || lower_filename.ends_with(".flac") {
+        "audio".to_string()
     } else if lower_filename.ends_with(".pdf") {
         "pdf".to_string()
     } else if lower_filename.ends_with(".txt") || lower_filename.ends_with(".json") ||
